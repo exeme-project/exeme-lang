@@ -81,4 +81,4 @@ spaces:
 
 ## Acknowledgements
 
-This code is based on the [LLVM Code of Conduct](https://llvm.org/docs/CodeOfConduct.html).
+This file is based on the [LLVM Code of Conduct](https://llvm.org/docs/CodeOfConduct.html).

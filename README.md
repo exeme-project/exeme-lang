@@ -2,6 +2,7 @@
 
 [![Licensed under the MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/skifli/exeme/blob/master/LICENSE)
 [![PR's Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/skifli/exeme/pulls)
+[![Website Status](https://img.shields.io/website?down_message=offline&up_message=online&url=https%3A%2F%2Fskifli.github.io%2Fexeme)](https://skifli.github.io/exeme)
 
 - [Exeme Programming Language](#exeme-programming-language)
   - [The Exeme Project](#the-exeme-project)
@@ -49,7 +50,7 @@ Exeme is ***not*** ready for use. It is currently in progress, but there is no w
 
 ## Join us
 
-Exeme is commited ot having a welcoming and inclusive environment where everyone can contribute.
+Exeme is commited to having a welcoming and inclusive environment where everyone can contribute.
 
 * Most of the activity relating to Exeme happens on our [Discord](https://discord.gg/9SCfXMZKSf).
 * See our [code of conduct](CODE_OF_CONDUCT.md) and [contributing guidelines](CONTRIBUTING.md) for information about the Exeme development community.
