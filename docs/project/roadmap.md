@@ -40,3 +40,9 @@ Our end goal is to compile a minimal but non-trivial example of bi-directionally
 ## Objectives for 2024
 
 A major milestone will be the first production-ready version of Exeme.
+
+Goals in this time frame will encompass the broader ecosystem of the language:
+
+* Package management
+* Teaching / training material
+* Etc
