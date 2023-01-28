@@ -42,7 +42,7 @@ Exeme is designed to:
 
 While many languages share subsets of these goals, the combination of them together into one programming language is what sets Exeme apart.
 
-> **Note** If you are interested in a deeper understanding of our goals, the [goals](docs/project/goals.md) document fleshes out these ideas, and provides a deeper view into the goals for the Exeme project.
+> **Note** If you are interested in a deeper understanding of our goals, the [**`docs/project/goals.md`**](docs/project/goals.md) file fleshes out these ideas, and provides a deeper view into the goals for the Exeme project.
 
 ## Project status
 
