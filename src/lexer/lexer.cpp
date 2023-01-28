@@ -81,8 +81,8 @@ struct LexerToken {
 
 class Lexer {
   private:
-	char chr, prevChr, indentChr;
-	size_t chrIndex, lineNum, indent, prevIndent, indentIncrement;
+	char chr, prevChr;
+	size_t chrIndex, lineNum;
 	std::string filePath;
 	std::ifstream file;
 	LexerToken *token;
@@ -130,8 +130,6 @@ class Lexer {
 
 		this->prevChr = this->chr;
 		this->chr = '\0';
-		this->prevIndent = this->indent;
-		this->indent = 0;
 
 		this->chrIndex = -1;
 		this->lineNum++;
@@ -142,42 +140,11 @@ class Lexer {
 				return (this->file.fail()) ? true : false;
 			}
 
-			if (this->chr == ' ') {
-				if (this->indentChr == '\0') {
-					this->indentChr = this->chr;
-				} else if (this->chr == '\t') {
-					this->error("incosistent of indentation types (expected "
-								"tabs, got spaces)",
-								-1);
-				}
-			} else if (this->chr == '\t') {
-				if (this->indentChr == '\0') {
-					this->indentChr = this->chr;
-				} else if (this->chr == ' ') {
-					this->error("incosistent of indentation types (expected "
-								"spaces, got tabs)",
-								-1);
-				}
+			if (isspace(this->chr)) {
+				continue;
 			} else {
 				this->file.unget();
-				this->chr = this->indentChr;
-				break;
-			}
-
-			this->indent++;
-		}
-
-		if (this->indentIncrement == 0) {
-			if (this->indent != 0) {
-				this->indentIncrement = this->indent;
-			}
-		} else if (this->indent > this->prevIndent) {
-			if (this->indent != this->prevIndent + this->indentIncrement) {
-				this->error("inconsistent indent increments", -1);
-			}
-		} else if (this->indent < this->prevIndent) {
-			if (this->indent % this->indentIncrement != 0) {
-				this->error("inconsistent indent increments", -1);
+				this->chr == this->prevChr;
 			}
 		}
 
@@ -313,13 +280,9 @@ class Lexer {
 
 		this->chr = '\n';
 		this->prevChr = '\0';
-		this->indentChr = '\0';
 
 		this->chrIndex = 0;
 		this->lineNum = 0;
-		this->indent = 0;
-		this->prevIndent = 0;
-		this->indentIncrement = 0;
 	}
 
 	bool lex() {
