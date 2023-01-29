@@ -6,7 +6,7 @@
     - [A toolchain that can build a mixed C++ and Exeme program](#a-toolchain-that-can-build-a-mixed-c-and-exeme-program)
   - [Objectives for 2024](#objectives-for-2024)
 
-> **Note** Goals are hard to pin down, and always subject to change, but we want to give an idea of what kind of things are expected.
+> **Note** Last updated 29.01.2023. This document's contents are subject to change at any time.
 
 ## Objectives for 2023
 

@@ -34,11 +34,11 @@ With this approach, we can build on the existing ecosystem of C++ and bring with
 Exeme is designed to:
 
 * Run as fast as C++.
-* Be written in a way that is easy to read, understand and write. High quality code deserves easy development, and Exeme is the epitome of this.
-* Support practical code security / testing mechanisms.
+* Be written in a way that is easy to read, understand and write. High quality code merits easy development, and Exeme is the epitome of this.
+* Support practical code security and testing mechanisms.
 * Support a fast and scalable development process.
 * Support all modern OS platforms and provide OS independent APIs.
-* Interoperable with existing C++ code, enabling easy migration.
+* Be interoperable with existing C++ code, enabling easy migration.
 
 While many languages share subsets of these goals, combining them together is what sets Exeme apart.
 
