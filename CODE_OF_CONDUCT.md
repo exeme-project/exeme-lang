@@ -15,7 +15,7 @@ Exeme's goal is to be a welcoming and friendly community. We have a few ground r
 * Be careful about the words you use so that you don't convey the wrong message
 * Try to understand why someone disagrees with you
 
-> Note** This is not a comprehensive list. Rather, take it in the spirit in which it is meant - as a guide to making it easier to communicate and participate in the community.
+> **Note** This is not a comprehensive list. Rather, take it in the spirit in which it is meant - as a guide to making it easier to communicate and participate in the community.
 
 This code of conduct applies to all spaces managed by the Exeme project. This includes chat systems, forums, emails (on lists or between members), issue trackers, events and any other spaces the community uses for communication. It applies to all your communication and conduct in these spaces, including emails, chats, things you say, slides, videos, posters, signs, or even t-shirts you display in these spaces.
 
