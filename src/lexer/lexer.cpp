@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string>
 #include <variant>
+#include <vector>
 
 enum LexerTokenIdentifier { // The ordering of the enum items is important.
 	Keyword,
@@ -86,7 +87,6 @@ class Lexer {
 	size_t chrIndex, lineNum;
 	std::string filePath;
 	std::ifstream file;
-	LexerToken *token;
 
 	void error(const char *ERROR_MSG, size_t startChrIndex) {
 		std::cout << ERROR_MSG << std::endl;
@@ -145,7 +145,8 @@ class Lexer {
 				continue;
 			} else {
 				this->file.unget();
-				this->chr == this->prevChr;
+				this->chr = this->prevChr;
+				break;
 			}
 		}
 
@@ -189,9 +190,9 @@ class Lexer {
 				}
 
 				if (this->chr == '\'') {
-					this->token =
+					this->tokens.emplace_back(
 						new LexerToken(Chr, this->filePath, startChrIndex,
-									   this->chrIndex, this->lineNum, chr);
+									   this->chrIndex, this->lineNum, chr));
 					return;
 				}
 
@@ -220,9 +221,9 @@ class Lexer {
 		while (this->getLine(false)) {
 			while (this->getChr(false)) {
 				if (this->chr == '"') {
-					this->token =
+					this->tokens.emplace_back(
 						new LexerToken(String, this->filePath, startChrIndex,
-									   this->chrIndex, this->lineNum, string);
+									   this->chrIndex, this->lineNum, string));
 					return;
 				}
 
@@ -240,6 +241,28 @@ class Lexer {
 		this->error("unterminated string literal", startChrIndex);
 	}
 
+	void lexFloat(size_t startChrIndex, std::string integer) {
+		while (this->getLine(false)) {
+			while (this->getChr(false)) {
+				if (isspace(this->chr)) {
+					break;
+				}
+
+				if (this->chr == '.') {
+					this->error("too many dots for float", startChrIndex);
+				} else if (!isdigit(this->chr)) {
+					this->error("invalid character for integer", startChrIndex);
+				}
+
+				integer += this->chr;
+			}
+		}
+
+		this->tokens.emplace_back(new LexerToken(Float, this->filePath,
+												 startChrIndex, this->chrIndex,
+												 this->lineNum, integer));
+	}
+
 	void lexInteger() {
 		bool includeChr = false;
 		size_t startChrIndex = this->chrIndex;
@@ -250,7 +273,42 @@ class Lexer {
 				if (isspace(this->chr)) {
 					break;
 				}
+
+				integer += this->chr;
+
+				if (this->chr == '.') {
+					return lexFloat(startChrIndex, integer);
+				} else if (!isdigit(this->chr)) {
+					this->error("invalid character for integer", startChrIndex);
+				}
 			}
+		}
+
+		this->tokens.emplace_back(new LexerToken(Integer, this->filePath,
+												 startChrIndex, this->chrIndex,
+												 this->lineNum, integer));
+	}
+
+	void lexEquals() {
+		bool equality = true;
+
+		if (!this->getChr(false)) {
+			equality = false;
+		}
+
+		if (this->chr != '=') {
+			equality = false;
+			this->file.unget();
+		}
+
+		if (equality) {
+			this->tokens.emplace_back(
+				new LexerToken(Equality, this->filePath, this->chrIndex - 1,
+							   this->chrIndex, this->lineNum, ""));
+		} else {
+			this->tokens.emplace_back(
+				new LexerToken(Equals, this->filePath, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
 		}
 	}
 
@@ -262,14 +320,26 @@ class Lexer {
 		case '"':
 			this->lexString();
 			break;
+		case '=':
+			this->lexEquals();
+			break;
+		case ',':
+			this->tokens.emplace_back(
+				new LexerToken(Comma, this->filePath, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
+			break;
 		default:
 			if (isdigit(this->chr)) {
 				this->lexInteger();
+			} else {
+				std::cout << this->chr;
 			}
 		}
 	}
 
   public:
+	std::vector<LexerToken *> tokens;
+
 	Lexer(std::string filePath) {
 		this->file.open(this->filePath = filePath);
 

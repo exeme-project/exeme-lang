@@ -10,6 +10,7 @@ class Parser {
 
 	void parse() {
 		while (this->lexer->lex()) {
+			;
 		}
 	}
 };

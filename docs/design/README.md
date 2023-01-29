@@ -149,7 +149,7 @@ Every code block in curly braces defines a scope. Names are visible from their d
 All source code should be encoded in `utf-8`. Comments, identifiers, and strings are allowed to have non-ASCII (Unicode) characters.
 
 ```
-var cómo = "mágica"
+cómo = "no mágica" # In English, `how = "non-magical"`
 ```
 
 ## Comments

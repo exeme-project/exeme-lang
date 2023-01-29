@@ -10,24 +10,19 @@
   - [Project status](#project-status)
   - [Join us](#join-us)
 
-
 ## The Exeme Project
 
 C++ remains the dominant language for performance-critical software. However, it is struggling to keep up with the needs of modern developers, in no small part due to the accumulation of decades of technical debt. Incremental improvement of C++ is difficult, not only because of the technical complexity of the language, but also because of challenges in its evolution process. The best way to address these problems is to avoid inheriting the legacy of C/C++, and instead start with solid language foundations such as modular code organisation and a simple syntax.
 
 Many modern languages already provide an excellent developer experience - **Go**, **Rust** and **Kotlin** are examples, among many others. Developers who ***can*** use one of these languages ***should*** use them. However, the design of these languages presents significant barriers to migrating from C++. These barriers range from the design of the language to performance overheads.
 
-Designed for interoperability with C++, Exeme is fundamentally a **successor language** rather than an attempt to incrementally improve C++. In fact, the standard library is implemented into C++ for higher performance. A successor language to C++ requires:
+Designed for interoperability with C++, Exeme is fundamentally a **successor language** rather than an attempt to incrementally improve C++. A successor language to C++ requires:
 
 * Performance parity with C++, which is an essential feature for developers who are migrating.
-* Seamless interoperability with C++, so that a library written in C++ can be easily integrated into an Exeme project without the need for a complete port.
+* Seamless interoperability with C++, so that a library written in C++ can be easily integrated into an Exeme project without the need for a complete port. In fact, the standard library is implemented into C++ for higher performance.
 * A gentle learning curve, with *reasonable* familiarity for C++ developers.
 
-With this approach, we can build on the existing ecosystem of C++ and bring with us the countless existing investments, code bases and developer communities. Few languages have followed this model, and Exeme aims to fill that role for C++.
-
-* JavaScript -> TypeScript
-* Java -> Kotlin
-* C++ -> ***Exeme***
+With this approach, we can build on the existing ecosystem of C++ and bring with us the countless existing investments, code bases and developer communities.
 
 ## Goals
 
