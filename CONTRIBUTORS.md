@@ -1,6 +1,6 @@
 # Contributors
 
-> **Note** This is the official list of people who contributed to the Exeme project in some way. Kindly keep the list sorted by appending your name to the end of the file, and aligning the columns of the table.
+> **Note** This is the official list of people who have contributed to the Exeme project in some way. Kindly keep the list sorted by appending your name to the end of the file, and aligning the columns of the table.
 
 | Name   | GitHub Profile            | Email                                     |
 | ------ | ------------------------- | ----------------------------------------- |

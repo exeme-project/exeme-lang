@@ -4,20 +4,20 @@
   - [Contributing to Exeme](#contributing-to-exeme)
   - [Where to make changes](#where-to-make-changes)
   - [Code style and syntax rules](#code-style-and-syntax-rules)
-  - [Add Docs](#add-docs)
-  - [Contributors File](#contributors-file)
+  - [Adding docs](#adding-docs)
+  - [Contributors file](#contributors-file)
 
 ## Contributing to Exeme
-Everyone is welcome to contribute to Exeme. Contributing doesn’t just mean submitting pull requests - there are many different ways for you to get involved, including reporting bugs, adding new functionalities, or just participating in the project.
+Everyone is welcome to be a contributor to Exeme. Contributing doesn't just mean submitting pull requests - there are many different ways you can get involved, including reporting bugs, adding new features, or just participating in the project.
 
 ## Where to make changes
-Core libraries and documentation are probably the areas that need major contribution. Any improvments to parts of the compiler are welcomed.
+The core libraries and documentation are probably the areas that are in most need of input. Any enhancements to parts of the compiler are welcome.
 
 ## Code style and syntax rules
-Looking at the Exeme source code, you can easily follow the same coding style and syntax rule. It is also recommended to install **clang-format**, which can format your code using the [.clang-format](src/.clang-format) file.
+You can easily follow the same coding style and syntax rules by looking at the Exeme source code. It is also recommended to install **clang-format**, which can format your code using the [.clang-format](src/.clang-format) file.
 
-## Add Docs
-If you add new functionality, or edit the way that current functionality works, add or edit the docs to reflect this so that there is documentation of the new changes for new users.
+## Adding docs
+If you add new functionality, or change the way current functionality works, add or edit the docs to reflect this. This is so that users have documentation of the new changes.
 
-## Contributors File
-Don't forget to add your name and your email address to the official [**CONTRIBUTORS**](CONTRIBUTORS.md) file!
+## Contributors file
+Don't forget to add your name and email address to the official [**CONTRIBUTORS**](CONTRIBUTORS.md) file!

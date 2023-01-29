@@ -13,17 +13,17 @@
 
 ## The Exeme Project
 
-C++ remains the predoimnant language for performance-critical software. However, it is struggling to keep up with the needs of modern developers, in no small part due to accumulating decades of technical debt. Incrementally improving C++ is difficult, not just due to the technical complexities, but also due to challenges with its evolution process. The best way to address these problems is to avoid inheriting the legacy of C / C++, and instead start with solid language foundations like modular code orgainisation, and a simple syntax.
+C++ remains the dominant language for performance-critical software. However, it is struggling to keep up with the needs of modern developers, in no small part due to the accumulation of decades of technical debt. Incremental improvement of C++ is difficult, not only because of the technical complexity of the language, but also because of challenges in its evolution process. The best way to address these problems is to avoid inheriting the legacy of C/C++, and instead start with solid language foundations such as modular code organisation and a simple syntax.
 
-Many modern languages already provide an excellent developer experience - **Go**, **Rust**, and **Kotlin**, are examples among many others. Developers that ***can*** use one of these languages ***should***. However, the design of these languages present significant barriers to migration from C++. These barries range from the language's design, to performance overheads.
+Many modern languages already provide an excellent developer experience - **Go**, **Rust** and **Kotlin** are examples, among many others. Developers who ***can*** use one of these languages ***should*** use them. However, the design of these languages presents significant barriers to migrating from C++. These barriers range from the design of the language to performance overheads.
 
-Exeme is fundamentally a **successor language**, rather than an attempt to incrementally improve C++, and is designed around interoperability with C++. In fact, the standard library will be implemented in C++ for higher performance. A successor language to C++ requires:
+Designed for interoperability with C++, Exeme is fundamentally a **successor language** rather than an attempt to incrementally improve C++. In fact, the standard library is implemented into C++ for higher performance. A successor language to C++ requires:
 
-* **Performance matching C++**, an essential property required for developers who are migrating.
-* **Seamless interoperability with C++**, such that a library written in C++ can be easily integrated into an Exeme project, without porting it in its entirety.
-* **A gentle learning curve**, with *reasonable* familiarity for C++ developers.
+* Performance parity with C++, which is an essential feature for developers who are migrating.
+* Seamless interoperability with C++, so that a library written in C++ can be easily integrated into an Exeme project without the need for a complete port.
+* A gentle learning curve, with *reasonable* familiarity for C++ developers.
 
-With this approach we can build upon C++'s existing ecosystem, and bring along countless existing investments, codebases, and developers populations. There are few languages that have followed this model, and Exeme aims to fill the role for C++.
+With this approach, we can build on the existing ecosystem of C++ and bring with us the countless existing investments, code bases and developer communities. Few languages have followed this model, and Exeme aims to fill that role for C++.
 
 * JavaScript -> TypeScript
 * Java -> Kotlin
@@ -34,15 +34,15 @@ With this approach we can build upon C++'s existing ecosystem, and bring along c
 Exeme is designed to:
 
 * Run as fast as C++.
-* Be written in a way that is easy to read, understand, and write. High quality code merits easy development, and Exeme embodies this.
-* Support practical code safety / testing mechanisms.
-* Support fast and scalable development.
-* Support all modern OS platforms, and provide APIs that are OS independent.
-* Have interoperability with existing C++ code, leading to easy migration.
+* Be written in a way that is easy to read, understand and write. High quality code deserves easy development, and Exeme is the epitome of this.
+* Support practical code security / testing mechanisms.
+* Support a fast and scalable development process.
+* Support all modern OS platforms and provide OS independent APIs.
+* Interoperable with existing C++ code, enabling easy migration.
 
-While many languages share subsets of these goals, the combination of them together into one programming language is what sets Exeme apart.
+While many languages share subsets of these goals, combining them together is what sets Exeme apart.
 
-> **Note** If you are interested in a deeper understanding of our goals, the [**`docs/project/goals.md`**](docs/project/goals.md) file fleshes out these ideas, and provides a deeper view into the goals for the Exeme project.
+> **Note** If you are interested in a deeper understanding of our goals, the [**`docs/project/goals.md`**](docs/project/goals.md) file fleshes out these ideas, and provides a deeper insight into the goals of the Exeme project.
 
 ## Project status
 
@@ -50,7 +50,7 @@ Exeme is ***not*** ready for use. It is currently a work in progress, but there 
 
 ## Join us
 
-Exeme is commited to having a welcoming and inclusive environment where everyone can contribute.
+Exeme is committed to maintaining a welcoming and inclusive environment where everyone can contribute.
 
-* Most of the activity relating to Exeme happens on our [Discord](https://discord.gg/9SCfXMZKSf).
-* See our [code of conduct](CODE_OF_CONDUCT.md) and [contributing guidelines](CONTRIBUTING.md) for information about the Exeme development community.
+* Most activity around Exeme happens on our [Discord](https://discord.gg/9SCfXMZKSf).
+* For information about the Exeme development community, see our [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing Guidelines](CONTRIBUTING.md).
