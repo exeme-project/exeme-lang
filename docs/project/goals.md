@@ -1,7 +1,5 @@
 # Goals
 
-> **Note** Last updated 29.01.2023. This document's contents are subject to change at any time.
-
 - [Goals](#goals)
   - [Overview](#overview)
   - [Project goals](#project-goals)

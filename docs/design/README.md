@@ -1,7 +1,5 @@
 # Language design
 
-> **Note** Last updated 29.01.2023. This document's contents are subject to change at any time.
-
 - [Language design](#language-design)
   - [Introduction](#introduction)
   - [The basics](#the-basics)
@@ -13,6 +11,7 @@
     - [Control flow statements](#control-flow-statements)
   - [Code](#code)
   - [Comments](#comments-1)
+  - [Build modes](#build-modes)
 
 ## Introduction
 
@@ -117,7 +116,7 @@ i = 1
 ```
 > **Note** This may not work well with more complex data structures.
 
-You can modify the value of a variable with an [assignment statement]():
+You can modify the value of a variable with an [assignment statement](assignment.md):
 
 ```
 i = 1
@@ -160,3 +159,10 @@ Comments start with a hashtag `#`, and span the rest of the line. They are compl
 ```
 # Can be divided without a remainder
 ```
+
+## Build modes
+
+The behavoior of the Exeme compiler, and the performance of the resultant executable depends on the *build mode*:
+
+* In a ***development build***, the priority is diagnosing problems, so build times are the fastest.
+* In a ***performance build***, the priority is highly optimised, with faster execution times.

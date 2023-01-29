@@ -27,6 +27,7 @@ enum LexerTokenIdentifier { // The ordering of the enum items is important.
 	Comma,			  // ','
 	Period,			  // '.'
 	At,				  // '@'
+	Hashtag,		  // '#'
 
 	// Operators
 	Exponent,	 // '**'

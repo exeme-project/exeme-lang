@@ -6,8 +6,6 @@
     - [A toolchain that can build a mixed C++ and Exeme program](#a-toolchain-that-can-build-a-mixed-c-and-exeme-program)
   - [Objectives for 2024](#objectives-for-2024)
 
-> **Note** Last updated 29.01.2023. This document's contents are subject to change at any time.
-
 ## Objectives for 2023
 
 There is still a lot of work left to make Exeme into a production quality language.
