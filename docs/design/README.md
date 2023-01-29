@@ -12,6 +12,11 @@
   - [Code](#code)
   - [Comments](#comments-1)
   - [Build modes](#build-modes)
+  - [Primitive types](#primitive-types)
+    - [`bool`](#bool)
+    - [Integer types](#integer-types)
+      - [Signed integer types](#signed-integer-types)
+      - [Unsigned integer types](#unsigned-integer-types)
 
 ## Introduction
 
@@ -127,7 +132,7 @@ i -= 1
 Constatants are declared with the `const` data type. Constants are effectively a container for their inner data type, that do not allow overwriting of the inner value.
 
 ```
-i: const[i32] = 1
+i: const(i32) = 1
 ```
 
 ### Control flow statements
@@ -165,4 +170,31 @@ Comments start with a hashtag `#`, and span the rest of the line. They are compl
 The behavoior of the Exeme compiler, and the performance of the resultant executable depends on the *build mode*:
 
 * In a ***development build***, the priority is diagnosing problems, so build times are the fastest.
-* In a ***performance build***, the priority is highly optimised, with faster execution times.
+* In a ***performance build***, the priority is a highly optimised binary, with faster execution times.
+
+## Primitive types
+
+Primitive types fall into the following categories:
+
+* The boolean type `bool`
+* Signed and unsigned integer types (e.g., `i32`, `ui32`)
+* Floating-point types (e.g, `f32`, `f64`)
+* String types
+
+These types are available by default in any Exeme code due to the [prelude]().
+
+### `bool`
+
+The type `bool` is a boolean with two possible values - `true` or `false`. `bool`, `true`, and `false` are keywords. [Comparison expressions]() produce values of the `bool` type. The arguments in [control-flow statements]() (such as [`if`]() and [`while`]()) take `bool` values.
+
+### Integer types
+
+> **Note** `X` has to be a positive multiple of 8. `0` is neither positive nor negative, and so is not valid.
+
+#### Signed integer types
+
+The signed-integer type with bit width `X` may be written as `iX`. For example, `i32` is a signed 32-Bit integer.
+
+#### Unsigned integer types
+
+The unsigned-integer type with bit width `X` may be written as `uiX`. For example, `ui32` is an unsigned 32-Bit integer.

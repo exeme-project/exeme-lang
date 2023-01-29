@@ -1,1 +1,1 @@
-myList = list[string] {"a", "b"}
+myList = list(str) ["a", "b"]
