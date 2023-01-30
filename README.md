@@ -20,13 +20,17 @@ Many modern languages already provide an excellent developer experience - **Go**
 
 Exeme is designed to:
 
-* Have performance parity with C++.
-* Be written in a way that is easy to read, understand and write. High quality code merits easy development, and Exeme is the epitome of this.
-* Support practical code security and testing mechanisms.
-* Support a fast and scalable development process.
-* Support all modern OS platforms and provide OS independent APIs.
+* Have performance parity with C++
+* Be written in a way that is easy to read, understand and write. High quality code merits easy development, and Exeme is the epitome of this
+* Support practical code security and testing mechanisms
+* Support a fast and scalable development process
+* Support all modern OS platforms and provide OS independent APIs
 
 While many languages share subsets of these goals, combining them together is what sets Exeme apart.
+
+We also have non-goals for Exeme, notably including:
+
+* Perfect backwards / forwards compatability
 
 > **Note** If you are interested in a deeper understanding of our goals, the [**`docs/project/goals.md`**](docs/project/goals.md) file fleshes out these ideas, and provides a deeper insight into the goals of the Exeme project.
 
