@@ -51,21 +51,17 @@ fn main() {
 }
 ```
 
-Exeme is a language that should feel familiar to C++ developers. The example has familiar constructs such as [imports](), [function definitions](), [typed arguments](), and [expressions](). Blocks of statements are surrounded in curly braces `{`...`}`.
-
-However, a few other features unlike to C++ may stand out. `fn` introduces a function declaration, and comments start with `#` not `//`.
-
 ### `import` declaration
 
-The example starts with an [`import` declaration](). Exeme imports are akin to [C++ modules](https://en.cppreference.com/w/cpp/language/modules) than [source file inclusing during preprocessing](https://en.cppreference.com/w/cpp/preprocessor/include). The `import` declaration imports the `io` library from the `std` package (see [what are files, libraries, and packages]()). It must appear at the top of an Exeme source file, the first line after the [optional `package` declaration]().  Libraries can be optionally split into [api and implementation files](), similar to C++'s header and source files. The import from the example:
+The example starts with an [`import` declaration](). Exeme imports are akin to [C++ modules](https://en.cppreference.com/w/cpp/language/modules) rather than [source file inclusing during preprocessing](https://en.cppreference.com/w/cpp/preprocessor/include). The `import` declaration imports the `io` library from the `std` package (see [what are files, libraries, and packages]()). It must appear at the top of an Exeme source file, the first line after the [optional `package` declaration]().  Libraries can be optionally split into [api and implementation files](), similar to C++'s header and source files. The import from the example:
 
 ```import "std.io"```
 
-imports the default library for the package `std.io`. The names from this library are accessible as members of `io`, such as `io::out`, and `io::in`. Unlike C++, the namespaces of different packages are kept separate, so there are no name conflicts.
+imports the default library for the package `std.io`. The names from this library are accessible as members of `io`, such as `io::out`, and `io::in`. Unlike C++, different packages are automatically assigned their own namespace upon import, so there are no name conflicts.
 
 ### `using` declaration
 
-In the next line, a familiar declaration to C++ developers can be found - [`using`](). `using` introduces a name that is defined elsewhere into the scope where the using-declaration appears. This allows us to use the `out` function out of the `io` namespace.
+In the next line, a familiar declaration to C++ developers can be found - [`using`](). `using` introduces a name that is defined elsewhere into the scope where the using-declaration appears. This allows us to use the `out` function in the `io` namespace in the global namespace.
 
 ### Comments
 

@@ -28,12 +28,9 @@ We need concrete milestones that have to be reached, for us to gain confidence f
 * Quality of implementation in the toolchain
 * Necessary documentation - not just online, but commented in the implementations
 
-### A toolchain that can build a mixed C++ and Exeme program
+### A toolchain that can build an Exeme program
 
-Our end goal is to compile a minimal but non-trivial example of bi-directionally by mixing C++ and Exeme code, and running it successfully. However, completing everything involved in this example isn't expected to be realistic by the end of the year. Instead, we expect to work towards the following goals (in *probable* priority order) and all the Exeme features that they depend on:
-
-* Calling C++ functions from Exeme.
-* Importing C++ types as their Exeme equivalent.
+Our end goal is to compile a minimal but non-trivial example of Exeme code, and run it successfully. However, completing everything involved in this example isn't expected to be realistic by the end of the year.
 
 ## Objectives for 2024
 

@@ -7,9 +7,7 @@
 
 ## Overview
 
-Exeme is a programming language that explores a distant future for the C++ programming language, designed around a specific set of goals, priorities and use cases. Programming languages can be thought of as tools, and different tools are created for different purposes. A clear statement of the priorities of Exeme will help the community to evaluate and use the language effectively.
-
-Since there are large ecosystems and codebases in C++, one of Exeme's main goals is interoperability with C++. It should be attractive and easy for C++ developers to try Exeme and gradually adopt it, even in libraries where C++ code is used. This requires strong interoperability with C++, migration tools, and an easy learning curve for C++ developers.
+Exeme is a programming language that explores a distant future for programming languages, designed around a specific set of goals, priorities and use cases. Programming languages can be thought of as tools, and different tools are created for different purposes. A clear statement of the priorities of Exeme will help the community to evaluate and use the language effectively.
 
 ## Project goals
 
