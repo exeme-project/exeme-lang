@@ -50,4 +50,4 @@ You can view the different documentation available [here](docs/).
 Exeme is committed to maintaining a welcoming and inclusive environment where everyone can contribute.
 
 * Most activity around Exeme happens on our [Discord](https://discord.gg/9SCfXMZKSf).
-* For information about the Exeme development community, see our [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing Guidelines](CONTRIBUTING.md).
+* For information about the Exeme development community, see our [Code of Conduct](contributors/Code of Conduct.md) and [Contributing Guidelines](contributors/Contributing.md).
