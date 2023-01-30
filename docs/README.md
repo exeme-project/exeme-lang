@@ -1,5 +1,4 @@
-<!-- Part of the Exeme language project, under the MIT license. See '/LICENSE' for
-license information. SPDX-License-Identifier: MIT License. -->
+<!-- Part of the Exeme language project, under the MIT license. See '/LICENSE' for license information. SPDX-License-Identifier: MIT License. -->
 
 # Docs
 
@@ -12,19 +11,19 @@ The current documentation underlying Exeme is located in this directory. These d
 
 For more information about Exeme, you can start at [**`/README.md`**](../README.md).
 
-## Design
+## [Design](design/README.md) 
 
-Exeme language's design and rationale are documented in the [**`design/`**](design/README.md) directory. This documentation is intended for the following audiences:
+Exeme language's design and rationale are documented in this directory. This documentation is intended for the following audiences:
 
 * People who are considering whether Exeme is the right choice for a project in comparison to other programming languages.
 * People who are working on the further development of the Exeme language and who want to understand the reasoning behind the design decisions that have been made.
 * People working on a specific implementation of the Exeme language who need a detailed understanding of the intended design.
 * People writing Exeme code who have a need to understand why certain language rules are the way they are.
 
-## Guides
+## [Guides](guides/README.md) 
 
-The [**`guides/`**](guides/README.md) directory contains documentation for developers writing programs in Exeme.
+Contains documentation for developers writing programs in Exeme.
 
-## Project
+## [Project](project/README.md)
 
-The [**`project/`**](project/README.md) directory contains project-related information for Exeme.
+Contains project-related information for Exeme.
