@@ -1,3 +1,6 @@
+<!-- Part of the Exeme language project, under the MIT license. See '/LICENSE' for
+license information. SPDX-License-Identifier: MIT License. -->
+
 # Exeme Programming Language
 
 [![Licensed under the MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/skifli/exeme/blob/master/LICENSE)
@@ -8,6 +11,7 @@
   - [The Exeme Project](#the-exeme-project)
   - [Goals](#goals)
   - [Project status](#project-status)
+  - [Documentation](#documentation)
   - [Join us](#join-us)
 
 ## The Exeme Project
@@ -37,6 +41,10 @@ We also have non-goals for Exeme, notably including:
 ## Project status
 
 Exeme is ***not*** ready for use. It is currently a work in progress, but there is no working compiler / toolchain ***yet***. If you're interested in contributing, we would love help with completing the compiler. You can see the [full roadmap](/docs/project/roadmap.md) for more details.
+
+## Documentation
+
+You can view the different documentation available [here](docs/README.md).
 
 ## Join us
 

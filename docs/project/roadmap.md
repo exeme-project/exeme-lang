@@ -1,9 +1,12 @@
+<!-- Part of the Exeme language project, under the MIT license. See '/LICENSE' for
+license information. SPDX-License-Identifier: MIT License. -->
+
 # Roadmap
 
 - [Roadmap](#roadmap)
   - [Objectives for 2023](#objectives-for-2023)
     - [A concrete definition of what the language is](#a-concrete-definition-of-what-the-language-is)
-    - [A toolchain that can build a mixed C++ and Exeme program](#a-toolchain-that-can-build-a-mixed-c-and-exeme-program)
+    - [A toolchain that can build an Exeme program](#a-toolchain-that-can-build-an-exeme-program)
   - [Objectives for 2024](#objectives-for-2024)
 
 ## Objectives for 2023

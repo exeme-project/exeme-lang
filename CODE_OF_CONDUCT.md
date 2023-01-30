@@ -1,3 +1,6 @@
+<!-- Part of the Exeme language project, under the MIT license. See '/LICENSE' for
+license information. SPDX-License-Identifier: MIT License. -->
+
 # Code of conduct
 
 - [Code of conduct](#code-of-conduct)
