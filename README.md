@@ -43,7 +43,7 @@ Exeme is ***not*** ready for use. It is currently a work in progress, but there 
 
 ## Documentation
 
-You can view the different documentation available [here](docs/README.md).
+You can view the different documentation available [here](docs/).
 
 ## Join us
 

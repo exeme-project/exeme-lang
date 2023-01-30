@@ -24,7 +24,7 @@ i += 1 # Same as `a = a + 1`
 
 ## Syntax
 
-The operands of the `=` operator can be any [expression](expressions/README.md).
+The operands of the `=` operator can be any [expression](expressions/).
 
 ## Compund assignment semantics
 

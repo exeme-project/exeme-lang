@@ -3,15 +3,17 @@
 # Docs
 
 - [Docs](#docs)
-  - [Design](#design)
-  - [Guides](#guides)
-  - [Project](#project)
+  - [Design\*](#design)
+  - [Guides\*](#guides)
+  - [Project\*](#project)
 
 The current documentation underlying Exeme is located in this directory. These documents cover all aspects of Exeme, from the project itself down to detailed designs for specific features of the language.
 
-For more information about Exeme, you can start at [**`/README.md`**](../README.md).
+For more information about Exeme, you can start at [**`/README.md`**](../).
 
-## [Design](design/README.md) 
+> **Note** If a header is suffixed with `*`, it points to a directory.
+
+## [Design](design/)*
 
 Exeme language's design and rationale are documented in this directory. This documentation is intended for the following audiences:
 
@@ -20,10 +22,10 @@ Exeme language's design and rationale are documented in this directory. This doc
 * People working on a specific implementation of the Exeme language who need a detailed understanding of the intended design.
 * People writing Exeme code who have a need to understand why certain language rules are the way they are.
 
-## [Guides](guides/README.md) 
+## [Guides](guides/)*
 
 Contains documentation for developers writing programs in Exeme.
 
-## [Project](project/README.md)
+## [Project](project/)*
 
 Contains project-related information for Exeme.
