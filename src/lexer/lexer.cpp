@@ -11,7 +11,7 @@
 #include <variant>
 #include <vector>
 
-enum LexerTokenIdentifier { // The ordering of the enum items is important.
+enum LexerTokenIdentifier {
 	Keyword,
 
 	// Data types
@@ -33,7 +33,7 @@ enum LexerTokenIdentifier { // The ordering of the enum items is important.
 	At,				  // '@'
 	Hashtag,		  // '#'
 
-	// Operators
+	// Operators (order is important)
 	Exponent,	 // '**'
 	Divide,		 // '/'
 	FloorDivide, // '//'
@@ -54,7 +54,7 @@ enum LexerTokenIdentifier { // The ordering of the enum items is important.
 	LessEquals,		   // '<='
 	PlusEquals,		   // '+='
 	SubtractEquals,	   // '-='
-	MultipleEquals,	   // '*='
+	MultiplyEquals,	   // '*='
 	DivideEquals,	   // '/='
 	FlootDivideEquals, // '//='
 	ExponentEquals,	   // '**='
@@ -106,7 +106,8 @@ class Lexer {
 
 			if (!this->file.get(this->chr)) {
 				this->file.close();
-				return false;
+				std::cout << "failed to get char in " << this->filePath;
+				exit(EXIT_FAILURE);
 			}
 
 			this->chrIndex++;
@@ -123,6 +124,21 @@ class Lexer {
 				break;
 			}
 		}
+
+		return true;
+	}
+
+	bool unGetChr() {
+		this->file.unget();
+
+		if (this->file.fail()) {
+			this->file.close();
+			std::cout << "failed to unget char in " << this->filePath;
+			exit(EXIT_FAILURE);
+		}
+
+		this->chrIndex--;
+		this->chr = this->prevChr;
 
 		return true;
 	}
@@ -147,8 +163,7 @@ class Lexer {
 			if (isspace(this->chr)) {
 				continue;
 			} else {
-				this->file.unget();
-				this->chr = this->prevChr;
+				this->unGetChr();
 				break;
 			}
 		}
@@ -247,7 +262,8 @@ class Lexer {
 	void lexFloat(size_t startChrIndex, std::string integer) {
 		while (this->getLine(false)) {
 			while (this->getChr(false)) {
-				if (isspace(this->chr)) {
+				if (isspace(this->chr) ||
+					(this->chr != '.' && !isalpha(this->chr))) {
 					break;
 				}
 
@@ -273,7 +289,8 @@ class Lexer {
 
 		while (this->getLine(false)) {
 			while (this->getChr(false)) {
-				if (isspace(this->chr)) {
+				if (isspace(this->chr) ||
+					(this->chr != '.' && !isalpha(this->chr))) {
 					break;
 				}
 
@@ -292,27 +309,65 @@ class Lexer {
 												 this->lineNum, integer));
 	}
 
-	void lexEquals() {
-		bool equality = true;
+	LexerToken *lexCheckForRepetition(LexerTokenIdentifier ifNotRepeated,
+									  LexerTokenIdentifier ifRepeated) {
+		bool repeated = true;
+		char chr = this->chr;
 
-		if (!this->getChr(false)) {
-			equality = false;
-		}
-
-		if (this->chr != '=') {
-			equality = false;
-			this->file.unget();
-		}
-
-		if (equality) {
-			this->tokens.emplace_back(
-				new LexerToken(Equality, this->filePath, this->chrIndex - 1,
-							   this->chrIndex, this->lineNum, ""));
+		if (this->getChr(false)) {
+			if (this->chr != chr) {
+				repeated = false;
+				this->unGetChr();
+			}
 		} else {
-			this->tokens.emplace_back(
-				new LexerToken(Equals, this->filePath, this->chrIndex,
-							   this->chrIndex, this->lineNum, ""));
+			repeated = false;
 		}
+
+		if (repeated) {
+			return new LexerToken(ifRepeated, this->filePath,
+								  this->chrIndex - 1, this->chrIndex,
+								  this->lineNum, std::string(this->chr, 2));
+		} else {
+			return new LexerToken(ifNotRepeated, this->filePath, this->chrIndex,
+								  this->chrIndex, this->lineNum, this->chr);
+		}
+	}
+
+	bool lexCheckForEquals() {
+		if (this->getChr(false)) {
+			if (this->chr != '=') {
+				this->unGetChr();
+				return false;
+			}
+		} else {
+			return false;
+		}
+
+		return true;
+	}
+
+	void lexCheckForContinuation() {}
+
+	void lexEquals() {
+		this->tokens.emplace_back(
+			this->lexCheckForRepetition(Equals, Equality));
+
+		this->lexCheckForContinuation();
+	}
+
+	void lexAsterix() {
+		LexerToken *token = this->lexCheckForRepetition(Multiply, Exponent);
+		bool trailingEquals = this->lexCheckForEquals();
+
+		if (trailingEquals) {
+			token->identifier = (token->identifier == Multiply)
+									? MultiplyEquals
+									: ExponentEquals;
+		}
+
+		this->tokens.emplace_back(token);
+
+		this->lexCheckForContinuation();
 	}
 
 	void lexNext() {
@@ -326,10 +381,58 @@ class Lexer {
 		case '=':
 			this->lexEquals();
 			break;
+		case '(':
+			this->tokens.emplace_back(
+				new LexerToken(OpenBrace, this->filePath, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
+			break;
+		case '[':
+			this->tokens.emplace_back(
+				new LexerToken(OpenSqaureBrace, this->filePath, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
+			break;
+		case '{':
+			this->tokens.emplace_back(
+				new LexerToken(OpenCurlyBrace, this->filePath, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
+			break;
+		case ')':
+			this->tokens.emplace_back(
+				new LexerToken(CloseBrace, this->filePath, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
+			break;
+		case ']':
+			this->tokens.emplace_back(
+				new LexerToken(CloseSquareBrace, this->filePath, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
+			break;
+		case '}':
+			this->tokens.emplace_back(
+				new LexerToken(CloseCurlyBrace, this->filePath, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
+			break;
 		case ',':
 			this->tokens.emplace_back(
 				new LexerToken(Comma, this->filePath, this->chrIndex,
 							   this->chrIndex, this->lineNum, ""));
+			break;
+		case '.':
+			this->tokens.emplace_back(
+				new LexerToken(Period, this->filePath, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
+			break;
+		case '@':
+			this->tokens.emplace_back(
+				new LexerToken(At, this->filePath, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
+			break;
+		case '#':
+			this->tokens.emplace_back(
+				new LexerToken(Hashtag, this->filePath, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
+			break;
+		case '*':
+			this->lexAsterix();
 			break;
 		default:
 			if (isdigit(this->chr)) {

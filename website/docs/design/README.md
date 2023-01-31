@@ -109,10 +109,12 @@ i += 1
 i -= 1
 ```
 
-Constatants are declared with the `const` data type. Constants are effectively a container for their inner data type, that do not allow overwriting of the inner value.
+#### Constant variable declaration
+
+Constatants are declared by subscripting the `const` type with the variable's type. Constants are effectively a container for their inner data type that do not allow overwriting of the inner value.
 
 ```
-i: const(i32) = 1
+i: const[i32] = 1
 ```
 
 ### Control flow statements
