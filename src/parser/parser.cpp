@@ -6,6 +6,18 @@
 #include "../lexer/lexer.cpp"
 
 class Parser {
+  private:
+	void parseNext() {
+		auto token = this->lexer->tokens[this->lexer->tokens.size() - 1];
+
+		std::cout << "identifier: " << token->identifier
+				  << "\nfilePath: " << token->filePath
+				  << "\nstartChrIndex: " << token->startChrIndex
+				  << "\nchrIndex: " << token->chrIndex
+				  << "\nlineNum: " << token->lineNum
+				  << "\nvalue: " << token->value << "\n\n";
+	}
+
   public:
 	Lexer *lexer;
 
@@ -13,7 +25,7 @@ class Parser {
 
 	void parse() {
 		while (this->lexer->lex()) {
-			;
+			this->parseNext();
 		}
 	}
 };
