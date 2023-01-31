@@ -2,12 +2,6 @@
 
 # Assignment
 
-- [Assignment](#assignment)
-  - [Overview](#overview)
-  - [Syntax](#syntax)
-  - [Compund assignment semantics](#compund-assignment-semantics)
-  - [Built-in types](#built-in-types)
-
 ## Overview
 
 Values can be assigned to variables using the `=` operator.

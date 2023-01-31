@@ -2,15 +2,6 @@
 
 # Goals
 
-- [Goals](#goals)
-  - [Overview](#overview)
-  - [Project goals](#project-goals)
-    - [Community](#community)
-      - [The community and project needs a code of conduct.](#the-community-and-project-needs-a-code-of-conduct)
-      - [An open process for Exeme changes.](#an-open-process-for-exeme-changes)
-      - [Being inclusive is different from including everyone](#being-inclusive-is-different-from-including-everyone)
-    - [Language tools and ecosystem](#language-tools-and-ecosystem)
-
 ## Overview
 
 Exeme is a programming language that explores a distant future for programming languages, designed around a specific set of goals, priorities and use cases. Programming languages can be thought of as tools, and different tools are created for different purposes. A clear statement of the priorities of Exeme will help the community to evaluate and use the language effectively.

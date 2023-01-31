@@ -2,24 +2,6 @@
 
 # Language design
 
-- [Language design](#language-design)
-  - [Introduction](#introduction)
-  - [The basics](#the-basics)
-    - [`import` declaration](#import-declaration)
-    - [`using` declaration](#using-declaration)
-    - [Comments](#comments)
-    - [Funtion declaration](#funtion-declaration)
-    - [Variable declaration](#variable-declaration)
-    - [Control flow statements](#control-flow-statements)
-  - [Code](#code)
-  - [Comments](#comments-1)
-  - [Build modes](#build-modes)
-  - [Primitive types](#primitive-types)
-    - [`bool`](#bool)
-    - [Integer types](#integer-types)
-      - [Signed integer types](#signed-integer-types)
-      - [Unsigned integer types](#unsigned-integer-types)
-
 ## Introduction
 
 This documentation is an overview of the Exeme project in its current state, and is written for the maintainers of Exeme, and for those interested in learning more about Exeme. It is a description of the design of the Exeme language, and the rationale behind the design.

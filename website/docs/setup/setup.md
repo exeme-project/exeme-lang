@@ -1,12 +1,5 @@
 # Setup
 
-- [Setup](#setup)
-  - [Windows](#windows)
-  - [macOS](#macos)
-  - [GNU/Linux and other \*Nix](#gnulinux-and-other-nix)
-    - [Linux](#linux)
-    - [FreeBSD](#freebsd)
-
 ## Windows
 
 * Install [Visual Studio Code](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSFeaturesPage&passive=true&tailored=cplus&cid=2031#cplusplus) with support for C++ development. If you used the above link then it should automatically choose the required options to install.

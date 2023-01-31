@@ -2,12 +2,6 @@
 
 # Roadmap
 
-- [Roadmap](#roadmap)
-  - [Objectives for 2023](#objectives-for-2023)
-    - [A concrete definition of what the language is](#a-concrete-definition-of-what-the-language-is)
-    - [A toolchain that can build an Exeme program](#a-toolchain-that-can-build-an-exeme-program)
-  - [Objectives for 2024](#objectives-for-2024)
-
 ## Objectives for 2023
 
 There is still a lot of work left to make Exeme into a production quality language.

@@ -1,8 +1,5 @@
 # Glossary
 
-- [Glossary](#glossary)
-  - [identifier](#identifier)
-
 ## identifier
 
 An ***identifier*** is the token which names an entity, and is also used in code to

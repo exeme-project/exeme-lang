@@ -6,13 +6,6 @@
 [![PR's Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/skifli/exeme/pulls)
 [![Website Status](https://img.shields.io/website?down_message=offline&up_message=online&url=https%3A%2F%2Fskifli.github.io%2Fexeme)](https://skifli.github.io/exeme)
 
-- [Exeme Programming Language](#exeme-programming-language)
-  - [The Exeme Project](#the-exeme-project)
-  - [Goals](#goals)
-  - [Project status](#project-status)
-  - [Documentation](#documentation)
-  - [Join us](#join-us)
-
 ## The Exeme Project
 
 C++ remains the dominant language for performance-critical software. However, it is struggling to keep up with the needs of modern developers, in no small part due to the accumulation of decades of technical debt. Incremental improvement of C++ is difficult, not only because of the technical complexity of the language, but also because of challenges in its evolution process. The best way to address these problems is to avoid inheriting the legacy of C/C++, and instead start with solid language foundations such as modular code organisation and a simple syntax.
