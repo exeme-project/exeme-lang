@@ -1,1 +1,5 @@
-myList = list[string] {"a", "b"}
+package main
+
+fn main() {
+    myList = list[string] {"a", "b"}
+}

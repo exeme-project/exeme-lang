@@ -1,7 +1,9 @@
+#pragma once
+
 #include <string>
 
 namespace Foreground {
-const std::string BLACK = "\u001b[30m";
+const std::string BLACK = "\u001b[30ma";
 const std::string RED = "\u001b[31m";
 const std::string GREEN = "\u001b[32m";
 const std::string YELLOW = "\u001b[33m";

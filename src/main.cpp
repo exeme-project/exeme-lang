@@ -4,7 +4,7 @@
 #include "parser/parser.cpp"
 
 int main() {
-	Parser *parser = new Parser("main.exl");
+	Parser *parser = new Parser("../../src/main.exl");
 
 	parser->parse();
 }

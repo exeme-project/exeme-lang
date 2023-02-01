@@ -7,7 +7,6 @@ plugins:
       lang: en
   - git-revision-date-localized:
       enable_creation_date: true
-  - offline
 
 theme:
   name: material

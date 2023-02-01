@@ -13,11 +13,15 @@
 #include <vector>
 
 std::vector<std::string> KEYWORDS = {
-	"break", "catch", "class",	"continue", "elif", "else", "finally",
-	"for",	 "if",	  "import", "return",	"try",	"while"};
+	"break", "catch", "class", "continue", "elif",	 "else", "finally",
+	"fn",	 "for",	  "if",	   "import",   "return", "try",	 "while"};
 auto KEYWORDS_BEGIN = KEYWORDS.begin();
 auto KEYWORDS_END = KEYWORDS.end();
 
+/**
+ * @brief Used to identify different tokens.
+ *
+ */
 enum LexerTokenIdentifier {
 	Keyword,
 	Variable,
@@ -73,12 +77,26 @@ enum LexerTokenIdentifier {
 	Not, // '!'
 };
 
+/**
+ * @brief The LexerToken struct. Contains data relating to a lexer token.
+ *
+ */
 struct LexerToken {
 	LexerTokenIdentifier identifier;
 	std::string filePath;
 	size_t startChrIndex, chrIndex, lineNum;
 	std::string value;
 
+	/**
+	 * @brief Construct a new Lexer Token object.
+	 *
+	 * @param identifier Token identifier.
+	 * @param filePath File path token originates from.
+	 * @param startChrIndex Start char index of token.
+	 * @param chrIndex End char index of the token.
+	 * @param lineNum Line num of the token.
+	 * @param value Value of the token.
+	 */
 	LexerToken(LexerTokenIdentifier identifier, std::string filePath,
 			   size_t startChrIndex, size_t chrIndex, size_t lineNum,
 			   std::string value) {
@@ -91,6 +109,10 @@ struct LexerToken {
 	}
 };
 
+/**
+ * @brief The Lexer class. Handles logic for lexing a file.
+ *
+ */
 class Lexer {
   private:
 	bool closed;
@@ -99,42 +121,14 @@ class Lexer {
 	std::string filePath;
 	std::ifstream file;
 
-	void error(std::string ERROR_MSG, size_t startChrIndex) {
-		std::cout << Foreground::BRIGHT_BLUE << Style::BOLD << "--> "
-				  << Style::RESET << this->filePath << "\n";
+	/**
+	 * @brief Get the next character.
+	 * @see unGetChr()
 
-		size_t lineNum = 0;
-		std::string line;
-
-		std::ifstream file;
-		file.open(this->filePath);
-
-		while (std::getline(file, line)) {
-			lineNum++;
-
-			if (lineNum == this->lineNum) {
-				break;
-			}
-		}
-
-		size_t length = std::to_string(this->lineNum).length() + 3;
-
-		std::cout << this->lineNum << " | " << line << "\n";
-
-		if (startChrIndex == -1) {
-			std::cout << std::string(length + this->chrIndex, ' ') << "^ "
-					  << Foreground::BRIGHT_RED << Style::BOLD
-					  << "error: " << Style::RESET << ERROR_MSG << "\n";
-		} else {
-			std::cout << std::string(length + startChrIndex, ' ')
-					  << std::string(this->chrIndex - startChrIndex + 1, '^')
-					  << " " << Foreground::BRIGHT_RED << Style::BOLD
-					  << "error: " << Style::RESET << ERROR_MSG << "\n";
-		}
-
-		exit(EXIT_FAILURE);
-	}
-
+	 * @param skipWhitespace Whether or not to skip whitespace characters.
+	 * @return true Succeeded to get the next character.
+	 * @return false Failed to get the next character.
+	 */
 	bool getChr(bool skipWhitespace) {
 		if (this->closed) {
 			return false;
@@ -169,6 +163,13 @@ class Lexer {
 		return true;
 	}
 
+	/**
+	 * @brief Un-get the current character.
+	 * @see getChr()
+
+	 * @return true Succeeded to un-get the current character.
+	 * @return false Failed to un-get the current character.
+	 */
 	bool unGetChr() {
 		if (this->closed) {
 			return false;
@@ -189,12 +190,19 @@ class Lexer {
 		return true;
 	}
 
-	bool getLine(bool nextLine) {
+	/**
+	 * @brief Get the next line.
+	 *
+	 * @param getNext Get the next line even if the EOL has not been reached.
+	 * @return true Succeeded to get the next line.
+	 * @return false Failed to get the next line.
+	 */
+	bool getLine(bool getNext) {
 		if (this->closed) {
 			return false;
 		}
 
-		if (!nextLine &&
+		if (!getNext &&
 			this->chr != '\n') { // Not reached the end of the line yet
 			return true;
 		}
@@ -215,6 +223,11 @@ class Lexer {
 		return true;
 	}
 
+	/**
+	 * @brief Returns the escaped version of the current character.
+	 *
+	 * @return char
+	 */
 	char escapeChr() {
 		switch (this->chr) {
 		case 'b':
@@ -239,6 +252,13 @@ class Lexer {
 		return '\0';
 	}
 
+	/**
+	 * @brief Checks for repetition of the current character.
+	 *
+	 * @param ifNotRepeated Identifier of token if repetition was not found.
+	 * @param ifRepeated Identifier of token if repetition was found.
+	 * @return LexerToken* The created token.
+	 */
 	LexerToken *checkForRepetition(LexerTokenIdentifier ifNotRepeated,
 								   LexerTokenIdentifier ifRepeated) {
 		bool repeated = true;
@@ -264,6 +284,13 @@ class Lexer {
 		}
 	}
 
+	/**
+	 * @brief Checks for a trailing equals.
+	 *
+	 * @param token The current token.
+	 * @return true Trailing equals was found.
+	 * @return false Trailing equals wasn't found.
+	 */
 	bool checkForEquals(LexerToken *token) {
 		bool equals = true;
 
@@ -284,6 +311,11 @@ class Lexer {
 		return equals;
 	}
 
+	/**
+	 * @brief Checks for an unexpected continuation of the current token.
+	 *
+	 * @param token
+	 */
 	void checkForContinuation(std::string token) {
 		if (this->getChr(false)) {
 			if (!isspace(this->chr)) {
@@ -295,6 +327,10 @@ class Lexer {
 		}
 	}
 
+	/**
+	 * @brief Lex a '=' token.
+	 *
+	 */
 	void lexEquals() {
 		LexerToken *token = this->checkForRepetition(Equals, Equality);
 
@@ -303,10 +339,14 @@ class Lexer {
 		this->checkForContinuation(token->value);
 	}
 
+	/**
+	 * @brief Lex a character.
+	 *
+	 */
 	void lexChr() {
 		bool includeChr = false;
 		size_t startChrIndex = this->chrIndex;
-		char chr;
+		std::string chr;
 		size_t chrLen = 0;
 
 		while (this->getChr(false)) {
@@ -315,9 +355,9 @@ class Lexer {
 			}
 
 			if (this->chr == '\'') {
-				this->tokens.emplace_back(new LexerToken(
-					Chr, this->filePath, startChrIndex, this->chrIndex,
-					this->lineNum, std::string(1, this->chr)));
+				this->tokens.emplace_back(
+					new LexerToken(Chr, this->filePath, startChrIndex,
+								   this->chrIndex, this->lineNum, chr));
 				return;
 			}
 
@@ -338,6 +378,10 @@ class Lexer {
 		this->error("unterminated char", startChrIndex);
 	}
 
+	/**
+	 * @brief Lex a string.
+	 *
+	 */
 	void lexString() {
 		bool includeChr = false;
 		size_t startChrIndex = this->chrIndex;
@@ -365,6 +409,13 @@ class Lexer {
 		this->error("unterminated string", startChrIndex);
 	}
 
+	/**
+	 * @brief Lex a float.
+	 * @see lexInteger()
+	 *
+	 * @param startChrIndex The index of the first character of the float.
+	 * @param integer The float's value (float is a C++ keyword).
+	 */
 	void lexFloat(size_t startChrIndex, std::string integer) {
 		while (this->getChr(false)) {
 			if (isspace(this->chr) ||
@@ -387,8 +438,12 @@ class Lexer {
 												 this->lineNum, integer));
 	}
 
+	/**
+	 * @brief Lex an integer. Hands control over to 'lexFloat()' if needed.
+	 * @see lexFloat()
+	 *
+	 */
 	void lexInteger() {
-		bool includeChr = false;
 		size_t startChrIndex = this->chrIndex;
 		std::string integer(1, this->chr);
 
@@ -413,6 +468,10 @@ class Lexer {
 												 this->lineNum, integer));
 	}
 
+	/**
+	 * @brief Lex a keyword or variable.
+	 *
+	 */
 	void lexKeywordOrVariable() {
 		size_t startChrIndex = this->chrIndex;
 		std::string string(1, this->chr);
@@ -435,6 +494,10 @@ class Lexer {
 			this->lineNum, string));
 	}
 
+	/**
+	 * @brief Lex '*'.
+	 *
+	 */
 	void lexMultiply() {
 		LexerToken *token = this->checkForRepetition(Multiply, Exponent);
 
@@ -448,6 +511,10 @@ class Lexer {
 		this->checkForContinuation(token->value);
 	}
 
+	/**
+	 * @brief Lex '/'.
+	 *
+	 */
 	void lexDivide() {
 		LexerToken *token = this->checkForRepetition(Divide, FloorDivide);
 
@@ -461,6 +528,10 @@ class Lexer {
 		this->checkForContinuation(token->value);
 	}
 
+	/**
+	 * @brief Lex '+'.
+	 *
+	 */
 	void lexAdd() {
 		LexerToken *token =
 			new LexerToken(Add, this->filePath, this->chrIndex, this->chrIndex,
@@ -474,6 +545,10 @@ class Lexer {
 		this->checkForContinuation(token->value);
 	}
 
+	/**
+	 * @brief Lex '-'.
+	 *
+	 */
 	void lexSubtract() {
 		LexerToken *token = new LexerToken(
 			Subtract, this->filePath, this->chrIndex, this->chrIndex,
@@ -487,6 +562,10 @@ class Lexer {
 		this->checkForContinuation(token->value);
 	}
 
+	/**
+	 * @brief Lex '%'.
+	 *
+	 */
 	void lexModulo() {
 		LexerToken *token = new LexerToken(
 			Modulo, this->filePath, this->chrIndex, this->chrIndex,
@@ -500,6 +579,10 @@ class Lexer {
 		this->checkForContinuation(token->value);
 	}
 
+	/**
+	 * @brief Lex '>='.
+	 *
+	 */
 	void lexGreaterThan() {
 		LexerToken *token = new LexerToken(
 			GreaterThan, this->filePath, this->chrIndex, this->chrIndex,
@@ -513,6 +596,10 @@ class Lexer {
 		this->checkForContinuation(token->value);
 	}
 
+	/**
+	 * @brief Lex '<='.
+	 *
+	 */
 	void lexLessThan() {
 		LexerToken *token = new LexerToken(
 			LessThan, this->filePath, this->chrIndex, this->chrIndex,
@@ -526,6 +613,10 @@ class Lexer {
 		this->checkForContinuation(token->value);
 	}
 
+	/**
+	 * @brief Lex '&&'.
+	 *
+	 */
 	void lexAnd() {
 		LexerToken *token = new LexerToken(And, this->filePath, this->chrIndex,
 										   this->chrIndex + 1, this->lineNum,
@@ -545,6 +636,10 @@ class Lexer {
 		this->tokens.emplace_back(token);
 	}
 
+	/**
+	 * @brief Lex '||'.
+	 *
+	 */
 	void lexOr() {
 		LexerToken *token = new LexerToken(Or, this->filePath, this->chrIndex,
 										   this->chrIndex + 1, this->lineNum,
@@ -564,6 +659,10 @@ class Lexer {
 		this->tokens.emplace_back(token);
 	}
 
+	/**
+	 * @brief Lex '!'.
+	 *
+	 */
 	void lexNot() {
 		LexerToken *token =
 			new LexerToken(Not, this->filePath, this->chrIndex, this->chrIndex,
@@ -577,6 +676,12 @@ class Lexer {
 		this->checkForContinuation(token->value);
 	}
 
+	/**
+	 * @brief Calls the correct function for lexing the current token.
+	 *
+	 * @return true Lexing succeeded.
+	 * @return false Lexing failed.
+	 */
 	bool lexNext() {
 		switch (this->chr) {
 		case '\'':
@@ -675,8 +780,10 @@ class Lexer {
 			} else if (isdigit(this->chr)) {
 				this->lexInteger();
 			} else {
-				std::cout << "uhmm, this is akward... -> " << this->chr;
+				this->error("unknown character", -1);
 			}
+
+			break;
 		}
 
 		return true;
@@ -685,6 +792,11 @@ class Lexer {
   public:
 	std::vector<LexerToken *> tokens;
 
+	/**
+	 * @brief Construct a new Lexer object
+	 *
+	 * @param filePath The path to the file to lex.
+	 */
 	Lexer(std::string filePath) {
 		this->file.open(this->filePath = filePath);
 
@@ -702,6 +814,57 @@ class Lexer {
 		this->lineNum = 0;
 	}
 
+	/**
+	 * @brief Prints an error and exits.
+	 *
+	 * @param ERROR_MSG The error message.
+	 * @param startChrIndex The start char index of erroneous token.
+	 */
+	void error(std::string ERROR_MSG, size_t startChrIndex) {
+		std::cout << Foreground::BRIGHT_BLUE << Style::BOLD << "--> "
+				  << Style::RESET << this->filePath << "\n";
+
+		size_t lineNum = 0;
+		std::string line;
+
+		std::ifstream file;
+		file.open(this->filePath);
+
+		while (std::getline(file, line)) {
+			lineNum++;
+
+			if (lineNum == this->lineNum) {
+				break;
+			}
+		}
+
+		size_t length = std::to_string(this->lineNum).length() + 3;
+
+		std::cout << this->lineNum << " | " << line << "\n";
+
+		if (startChrIndex == (size_t)-1) {
+			std::cout << std::string(length + this->chrIndex, ' ') << "^ "
+					  << Foreground::BRIGHT_RED << Style::BOLD
+					  << "error: " << Style::RESET << ERROR_MSG << "\n";
+		} else {
+			std::cout << std::string(length + startChrIndex, ' ')
+					  << std::string(this->chrIndex - startChrIndex + 1, '^')
+					  << " " << Foreground::BRIGHT_RED << Style::BOLD
+					  << "error: " << Style::RESET << ERROR_MSG << "\n";
+		}
+
+		exit(EXIT_FAILURE);
+	}
+
+	/**
+	 * @brief Handles getting the next token and lexing it.
+	 * @see lexNext()
+	 *
+	 * @param mustGetToken A token must be parsed.
+	 * @param nextLine Whether the token can be on the next line.
+	 * @return true Lexing succeeded.
+	 * @return false Lexing failed.
+	 */
 	bool lex(bool mustGetToken, bool nextLine) {
 		if (mustGetToken) {
 			while (!this->getChr(true)) {

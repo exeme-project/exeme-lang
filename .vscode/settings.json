@@ -1,6 +1,8 @@
 {
     "editor.formatOnSave": true,
+    "editor.suggest.localityBonus": true,
     "[cpp]": {
         "editor.defaultFormatter": "xaver.clang-format"
     },
+    "cmake.configureOnOpen": true,
 }
