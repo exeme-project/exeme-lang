@@ -2,7 +2,7 @@
 
 ## Windows
 
-* Install [Visual Studio Code](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSFeaturesPage&passive=true&tailored=cplus&cid=2031#cplusplus) with support for C++ development. If you used the above link then it should automatically choose the required options to install.
+* Install [Visual Studio](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSFeaturesPage&passive=true&tailored=cplus&cid=2031#cplusplus) with support for C++ development. If you used the above link then it should automatically choose the required options to install.
 * Install the latest version of [Clang](https://github.com/llvm/llvm-project/releases/latest) from LLVM. Choose the binary ending with ***`-win64.exe`*** (unless your system is 32-Bit).
 
 > **Note** Make sure you select **`Add to Path`** when installing clang.
