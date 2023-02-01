@@ -24,7 +24,7 @@ class Parser {
 	Parser(std::string filePath) { this->lexer = new Lexer(filePath); }
 
 	void parse() {
-		while (this->lexer->lex()) {
+		while (this->lexer->lex(true, true)) {
 			this->parseNext();
 		}
 	}

@@ -189,13 +189,14 @@ class Lexer {
 		return true;
 	}
 
-	bool getLine(bool forceIncrement) {
+	bool getLine(bool nextLine) {
 		if (this->closed) {
 			return false;
 		}
 
-		if (!forceIncrement && this->chr != '\n') {
-			return true; // Not reached the end of the line yet
+		if (!nextLine &&
+			this->chr != '\n') { // Not reached the end of the line yet
+			return true;
 		}
 
 		this->prevChr = this->chr;
@@ -204,19 +205,12 @@ class Lexer {
 		this->chrIndex = -1;
 		this->lineNum++;
 
-		while (true) {
-			if (!this->getChr(
-					false)) { // Automatically increments 'this->chrIndex'
-				return (this->file.fail()) ? false : true;
-			}
-
-			if (isspace(this->chr)) {
-				continue;
-			} else {
-				this->unGetChr();
-				break;
-			}
+		if (!this->getChr(
+				true)) { // Read chars till non-whitespace is encountered
+			return !this->file.fail();
 		}
+
+		this->unGetChr();
 
 		return true;
 	}
@@ -315,30 +309,28 @@ class Lexer {
 		char chr;
 		size_t chrLen = 0;
 
-		while (this->getLine(false)) {
-			while (this->getChr(false)) {
-				if (chrLen > 1) {
-					this->error("multi-character char", startChrIndex);
-				}
+		while (this->getChr(false)) {
+			if (chrLen > 1) {
+				this->error("multi-character char", startChrIndex);
+			}
 
-				if (this->chr == '\'') {
-					this->tokens.emplace_back(new LexerToken(
-						Chr, this->filePath, startChrIndex, this->chrIndex,
-						this->lineNum, std::string(1, this->chr)));
-					return;
-				}
+			if (this->chr == '\'') {
+				this->tokens.emplace_back(new LexerToken(
+					Chr, this->filePath, startChrIndex, this->chrIndex,
+					this->lineNum, std::string(1, this->chr)));
+				return;
+			}
 
-				chrLen++;
+			chrLen++;
 
-				if (includeChr) {
-					chr += this->escapeChr();
-					includeChr = false;
-				} else if (this->chr != '\\') {
-					chr += this->chr;
-				} else {
-					chrLen--;
-					includeChr = true;
-				}
+			if (includeChr) {
+				chr += this->escapeChr();
+				includeChr = false;
+			} else if (this->chr != '\\') {
+				chr += this->chr;
+			} else {
+				chrLen--;
+				includeChr = true;
 			}
 		}
 
@@ -351,23 +343,21 @@ class Lexer {
 		size_t startChrIndex = this->chrIndex;
 		std::string string = "";
 
-		while (this->getLine(false)) {
-			while (this->getChr(false)) {
-				if (this->chr == '"') {
-					this->tokens.emplace_back(
-						new LexerToken(String, this->filePath, startChrIndex,
-									   this->chrIndex, this->lineNum, string));
-					return;
-				}
+		while (this->getChr(false)) {
+			if (this->chr == '"') {
+				this->tokens.emplace_back(
+					new LexerToken(String, this->filePath, startChrIndex,
+								   this->chrIndex, this->lineNum, string));
+				return;
+			}
 
-				if (includeChr) {
-					string += this->escapeChr();
-					includeChr = false;
-				} else if (this->chr == '\\') {
-					includeChr = true;
-				} else {
-					string += this->chr;
-				}
+			if (includeChr) {
+				string += this->escapeChr();
+				includeChr = false;
+			} else if (this->chr == '\\') {
+				includeChr = true;
+			} else {
+				string += this->chr;
 			}
 		}
 
@@ -376,29 +366,20 @@ class Lexer {
 	}
 
 	void lexFloat(size_t startChrIndex, std::string integer) {
-		bool end = false;
-
-		while (this->getLine(false)) {
-			while (this->getChr(false)) {
-				if (isspace(this->chr) ||
-					(this->chr != '.' && !isalpha(this->chr))) {
-					this->unGetChr();
-					end = true;
-					break;
-				}
-
-				if (this->chr == '.') {
-					this->error("too many decimal points for float", -1);
-				} else if (!isdigit(this->chr)) {
-					this->error("invalid character for integer", -1);
-				}
-
-				integer += this->chr;
-			}
-
-			if (end) {
+		while (this->getChr(false)) {
+			if (isspace(this->chr) ||
+				(this->chr != '.' && !isalpha(this->chr))) {
+				this->unGetChr();
 				break;
 			}
+
+			if (this->chr == '.') {
+				this->error("too many decimal points for float", -1);
+			} else if (!isdigit(this->chr)) {
+				this->error("invalid character for integer", -1);
+			}
+
+			integer += this->chr;
 		}
 
 		this->tokens.emplace_back(new LexerToken(Float, this->filePath,
@@ -407,31 +388,23 @@ class Lexer {
 	}
 
 	void lexInteger() {
-		bool end = false;
 		bool includeChr = false;
 		size_t startChrIndex = this->chrIndex;
 		std::string integer(1, this->chr);
 
-		while (this->getLine(false)) {
-			while (this->getChr(false)) {
-				if (isspace(this->chr) ||
-					(this->chr != '.' && !isalpha(this->chr))) {
-					this->unGetChr();
-					end = true;
-					break;
-				}
-
-				integer += this->chr;
-
-				if (this->chr == '.') {
-					return lexFloat(startChrIndex, integer);
-				} else if (!isdigit(this->chr)) {
-					this->error("invalid character for integer", -1);
-				}
+		while (this->getChr(false)) {
+			if (isspace(this->chr) ||
+				(this->chr != '.' && !isalpha(this->chr))) {
+				this->unGetChr();
+				break;
 			}
 
-			if (end) {
-				break;
+			integer += this->chr;
+
+			if (this->chr == '.') {
+				return lexFloat(startChrIndex, integer);
+			} else if (!isdigit(this->chr)) {
+				this->error("invalid character for integer", -1);
 			}
 		}
 
@@ -441,32 +414,25 @@ class Lexer {
 	}
 
 	void lexKeywordOrVariable() {
-		bool end = false;
 		size_t startChrIndex = this->chrIndex;
 		std::string string(1, this->chr);
 
-		while (this->getLine(false)) {
-			while (this->getChr(false)) {
-				if (!isalnum(this->chr)) {
-					this->unGetChr();
-					end = true;
-					break;
-				}
-
-				string += this->chr;
-			}
-
-			if (end) {
+		while (this->getChr(false)) {
+			if (!isalnum(this->chr)) {
+				this->unGetChr();
 				break;
 			}
+
+			string += this->chr;
 		}
 
 		this->tokens.emplace_back(new LexerToken(
 			(std::find(KEYWORDS_BEGIN, KEYWORDS_END, string) == KEYWORDS_END)
 				? Variable
 				: Keyword,
-			this->filePath, startChrIndex, this->chrIndex, this->lineNum,
-			string));
+			this->filePath, startChrIndex,
+			(this->chr == '\n') ? this->chrIndex - 1 : this->chrIndex,
+			this->lineNum, string));
 	}
 
 	void lexMultiply() {
@@ -736,14 +702,30 @@ class Lexer {
 		this->lineNum = 0;
 	}
 
-	bool lex() {
-		if (!this->getChr(true)) {
-			if (!this->getLine(true)) {
-				return false;
-			}
+	bool lex(bool mustGetToken, bool nextLine) {
+		if (mustGetToken) {
+			while (!this->getChr(true)) {
+				if (!this->getLine(nextLine)) {
+					return false;
+				}
 
+				if (!this->getChr(true)) {
+					continue;
+				}
+
+				if (this->lexNext()) {
+					return true;
+				}
+			}
+		} else {
 			if (!this->getChr(true)) {
-				return false;
+				if (!this->getLine(nextLine)) {
+					return false;
+				}
+
+				if (!this->getChr(true)) {
+					return false;
+				}
 			}
 		}
 
