@@ -1,6 +1,10 @@
 // Part of the Exeme language project, under the MIT license. See '/LICENSE' for
 // license information. SPDX-License-Identifier: MIT License.
 
+/**
+@file lexer/lexer.cpp
+*/
+
 #pragma once
 
 #include "../utils/console.cpp"
@@ -165,7 +169,7 @@ class Lexer {
 
 	/**
 	 * @brief Un-get the current character.
-	 * @see getChr()
+	 * @see getChr(bool skipWhitespace)
 
 	 * @return true Succeeded to un-get the current character.
 	 * @return false Failed to un-get the current character.

@@ -1,3 +1,7 @@
+/**
+@file utils/hash.cpp
+*/
+
 #pragma once
 
 #include <stdint.h>
