@@ -33,7 +33,7 @@
 
 # Custom
 .cache
-build/
+build
 src/main
 src/main.ilk
 src/main.pdb
