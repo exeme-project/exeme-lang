@@ -34,7 +34,6 @@
 # Custom
 .cache
 build/
-*doxygen/
 src/main
 src/main.ilk
 src/main.pdb
