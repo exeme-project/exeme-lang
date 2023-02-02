@@ -7,4 +7,7 @@ int main() {
 	Parser *parser = new Parser("../../src/main.exl");
 
 	parser->parse();
+
+	delete parser->lexer;
+	delete parser;
 }
