@@ -1,12 +1,18 @@
-/**
-@file utils/hash.cpp
-*/
+// Part of the Exeme language project, under the MIT license. See '/LICENSE' for
+// license information. SPDX-License-Identifier: MIT License.
 
 #pragma once
 
 #include <stdint.h>
 #include <string_view>
 
+/**
+ * Calculates a hash for a string.
+ *
+ * @param const std::string_view - The string to calculate the hash for.
+ *
+ * @return uint32_t - The calculated hash.
+ */
 constexpr uint32_t hash(const std::string_view data) noexcept {
 	uint32_t hash = 5385;
 
