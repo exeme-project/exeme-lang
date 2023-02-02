@@ -53,28 +53,75 @@ enum LexerTokenIdentifier {
 	Modulo,		 // '%'
 
 	// Relational operators
-	GreaterThan, // '>'
-	LessThan,	 // '<'
+	GreaterThan,	   // '>'
+	GreaterThanEquals, // '>='
+	LessThan,		   // '<'
+	LessThanEquals,	   // '<='
 
 	// Assignment operators
 	Equals,			   // '='
-	Equality,		   // '=='
-	NotEquals,		   // '!='
-	GreaterThanEquals, // '>='
-	LessThanEquals,	   // '<='
-	AddEquals,		   // '+='
-	SubtractEquals,	   // '-='
-	MultiplyEquals,	   // '*='
+	ExponentEquals,	   // '**='
 	DivideEquals,	   // '/='
 	FloorDivideEquals, // '//='
-	ExponentEquals,	   // '**='
-	ModuleEquals,	   // '%='
+	MultiplyEquals,	   // '*='
+	AddEquals,		   // '+='
+	SubtractEquals,	   // '-='
+	ModuloEquals,	   // '%='
 
 	// Logical operators
 	And, // '&&'
 	Or,	 // '||'
 	Not, // '!'
+
+	// Comparison operators
+	Equality,  // '=='
+	NotEquals, // '!='
 };
+
+/**
+ * Contains the names of each of the lexer token identifiers.
+ */
+std::vector<std::string> LexerTokenIdentifierNames = {
+	"keyword",
+	"variable",
+	"char",
+	"string",
+	"integer",
+	"float",
+	"open brace",
+	"open square brace",
+	"open curly brace",
+	"close brace",
+	"close sqaure brace",
+	"close curly brace",
+	"comma",
+	"period",
+	"at symbol",
+	"hashtag",
+	"exponent symbol",
+	"divide symbol",
+	"floor divide symbol",
+	"multiply symbol",
+	"add symbol",
+	"subtract symbol",
+	"modulo symbol",
+	"greater than symbol",
+	"greater than equals symbol",
+	"less than symbol",
+	"less than equals symbol",
+	"equals symbol",
+	"exponent equals symbol",
+	"divide equals symbol",
+	"floor divide equals symbol",
+	"multiply equals symbol",
+	"add equals symbol",
+	"subtract equals symbol",
+	"modulo equals symbol",
+	"and symbol",
+	"or symbol",
+	"not symbol",
+	"equality comparison symbol",
+	"not equals comparison symbol"};
 
 /**
  * Contains data relating to a lexer token.
@@ -561,7 +608,7 @@ class Lexer {
 			this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForEquals(token)) {
-			token->identifier = ModuleEquals;
+			token->identifier = ModuloEquals;
 		}
 
 		this->tokens.emplace_back(token);

@@ -8,7 +8,7 @@
 
 class Parser {
   private:
-	void parseKeywordFn(LexerToken *token) {
+	void parseKeywordFn() {
 		if (!this->lexer->lex(false, true)) {
 			this->lexer->error("expected function name", -1);
 		}
@@ -20,13 +20,17 @@ class Parser {
 				"functions are not allowed keywords as their names",
 				fnNameToken->startChrIndex);
 		} else if (fnNameToken->identifier != Variable) {
+			this->lexer->error(
+				"expected variable as function name, got '" +
+					LexerTokenIdentifierNames[fnNameToken->identifier] + "'",
+				fnNameToken->startChrIndex);
 		}
 	}
 
 	void parseKeyword(LexerToken *token) {
 		switch (hash(token->value)) {
 		case hash("fn"):
-			parseKeywordFn(token);
+			parseKeywordFn();
 		}
 	}
 
