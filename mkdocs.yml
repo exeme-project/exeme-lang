@@ -1,6 +1,6 @@
 docs_dir: "./website"
 site_name: Exeme
-repo_url: https://github.com/skifli/exeme
+repo_url: https://github.com/exeme-project/exeme-lang
 
 plugins:
   - search:

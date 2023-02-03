@@ -16,7 +16,7 @@ Everyone is welcome to be a contributor to Exeme. Contributing doesn't just mean
 The core libraries and documentation are probably the areas that are in most need of input. Any enhancements to parts of the compiler are welcome.
 
 ## Code style and syntax rules
-You can easily follow the same coding style and syntax rules by looking at the Exeme source code. It is also recommended to install **clang-format**, which can format your code using the [src/.clang-format](https://github.com/skifli/exeme/blob/main/src/.clang-format) file.
+You can easily follow the same coding style and syntax rules by looking at the Exeme source code. It is also recommended to install **clang-format**, which can format your code using the [src/.clang-format](https://github.com/exeme-project/exeme-lang/blob/main/src/.clang-format) file.
 
 ## Adding docs
 If you add new functionality, or change the way current functionality works, add or edit the docs to reflect this. This is so that users have documentation of the new changes.
