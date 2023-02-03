@@ -13,13 +13,13 @@ class Parser {
 	std::vector<Variable *> parseFnArgs(LexerToken *openBrace,
 										bool declaration) {
 		bool expectingComma = false;
+		const std::string functionType =
+			(declaration ? "parameters" : "arguments");
 
 		while (true) {
-			if (!this->lexer->lex(false, false)) {
-				this->lexer->error(
-					"unterminated function " +
-						std::string(declaration ? "parameters" : "arguments"),
-					openBrace->startChrIndex);
+			if (!this->lexer->lex(true, true)) {
+				this->lexer->error("unterminated function " + functionType,
+								   openBrace->startChrIndex);
 			}
 
 			auto funcParameter =
@@ -34,9 +34,13 @@ class Parser {
 				continue;
 			}
 		}
+
+		this->lexer->error("unterminated function " + functionType, -1);
 	}
 
 	void parseKeywordFn() {
+		this->lexer->clearTokens();
+
 		if (!this->lexer->lex(false, false)) {
 			this->lexer->error("expected function name", -1);
 		}
@@ -63,9 +67,8 @@ class Parser {
 		auto fnArgsOpenBrace =
 			this->lexer->tokens[this->lexer->tokens.size() - 1];
 
-		if (fnArgsOpenBrace->identifier !=
-			LexerTokenIdentifier::OpenCurlyBrace) {
-			this->lexer->error("expected open curly brace, got '" +
+		if (fnArgsOpenBrace->identifier != LexerTokenIdentifier::OpenBrace) {
+			this->lexer->error("expected open brace, got '" +
 								   LexerTokenIdentifierNames[static_cast<int>(
 									   fnNameToken->identifier)] +
 								   "'",

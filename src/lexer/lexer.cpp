@@ -892,6 +892,27 @@ class Lexer {
 		exit(EXIT_FAILURE);
 	}
 
+	/*
+	 * Override of delete logic.
+	 */
+	void operator delete(void *ptr) {
+		Lexer *self = static_cast<Lexer *>(ptr);
+
+		self->clearTokens();
+
+		free(ptr);
+	}
+
+	/**
+	 * Clears the tokens list.
+	 */
+	void clearTokens() {
+		for (size_t i = 0; i < this->tokens.size(); i++) {
+			delete this->tokens[0];
+			this->tokens.erase(this->tokens.begin());
+		}
+	}
+
 	/**
 	 * Handles getting the next token and lexing it.
 	 *
