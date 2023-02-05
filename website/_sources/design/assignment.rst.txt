@@ -22,7 +22,7 @@ same operation *in-place*.
 
 .. code::
 
-   i += 1 # Same as `a = a + 1`
+   i += 1 # Same as `i = i + 1`
 
 ********
  Syntax
@@ -39,15 +39,17 @@ The syntax ``x $= y`` is intended to be a shortened form of ``x = x $
 y``, except in the following cicrumstances:
 
 -  A type may be able to provide a more efficient implementation for the
-   compound assignment than for the uncombined assignment.
--  A type may not be able to provide the longer form at all, for example
-   if it does not have additional resources that are not avilable.
+   compound assignment than for the uncombined assignment, or
+
+-  A type may not be able to provide the longer form at all - for
+   example, it may not have access at that time to additional resources
+   that are required.
 
 ****************
  Built-in types
 ****************
 
-Integers, floats, etc support simple assignment with ``=``. The
+Integers, floats, etc, support simple assignment with ``=``. The
 right-hand operand is implicitly converted into the type of the
 left-hand operand, and replaces the value of the original operand. For
 example:

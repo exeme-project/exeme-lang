@@ -246,7 +246,7 @@
 <p>For each <a class="reference internal" href="expressions/arithmetic.html"><span class="doc">arithmetic</span></a> operator <code class="docutils literal notranslate"><span class="pre">$</span></code>, a
 corresponding compund assignment <code class="docutils literal notranslate"><span class="pre">$=</span></code> is provided, that performs the
 same operation <em>in-place</em>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span> <span class="c1"># Same as `a = a + 1`</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span> <span class="c1"># Same as `i = i + 1`</span>
 </pre></div>
 </div>
 </section>
@@ -260,14 +260,15 @@ same operation <em>in-place</em>.</p>
 <span class="pre">y</span></code>, except in the following cicrumstances:</p>
 <ul class="simple">
 <li><p>A type may be able to provide a more efficient implementation for the
-compound assignment than for the uncombined assignment.</p></li>
-<li><p>A type may not be able to provide the longer form at all, for example
-if it does not have additional resources that are not avilable.</p></li>
+compound assignment than for the uncombined assignment, or</p></li>
+<li><p>A type may not be able to provide the longer form at all - for
+example, it may not have access at that time to additional resources
+that are required.</p></li>
 </ul>
 </section>
 <section id="built-in-types">
 <h2>Built-in types<a class="headerlink" href="#built-in-types" title="Permalink to this heading">#</a></h2>
-<p>Integers, floats, etc support simple assignment with <code class="docutils literal notranslate"><span class="pre">=</span></code>. The
+<p>Integers, floats, etc, support simple assignment with <code class="docutils literal notranslate"><span class="pre">=</span></code>. The
 right-hand operand is implicitly converted into the type of the
 left-hand operand, and replaces the value of the original operand. For
 example:</p>

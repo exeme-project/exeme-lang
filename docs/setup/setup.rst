@@ -13,12 +13,12 @@
 -  Install `Visual Studio
    <https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSFeaturesPage&passive=true&tailored=cplus&cid=2031#cplusplus>`__
    with support for C++ development. If you used the above link then it
-   should automatically choose the required options to install.
+   should automatically choose the required options to install, and
 
 -  Install the latest version of `Clang
    <https://github.com/llvm/llvm-project/releases/latest>`__ from LLVM.
-   Choose the binary ending with **``-win64.exe``** (unless your system
-   is 32-Bit).
+   Choose the binary ending with ``-win64.exe`` (unless your system is
+   32-Bit).
 
 .. note::
 
@@ -29,16 +29,16 @@
 *******
 
 -  Install the latest XCode (from the App Store or the `Xcode website
-   <https://developer.apple.com/xcode/>`__).
+   <https://developer.apple.com/xcode/>`__),
 
--  Install XCode command-line tools ``xcode-select --install``.
+-  Install XCode command-line tools ``xcode-select --install``,
 
--  Install `Homebrew <https://brew.sh/>`__.
+-  Install `Homebrew <https://brew.sh/>`__,
 
--  Install LLVM through Homebrew with: ``brew install llvm``.
+-  Install LLVM through Homebrew with: ``brew install llvm``,
 
 -  Run ``echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >>
-   ~/.zshrc_profile`` to add LLVM to your PATH.
+   ~/.zshrc_profile`` to add LLVM to your PATH, and
 
 -  Run ``source ~/.bash_profile`` or ``source ~/.zshrc`` to update your
    PATH variable in the current terminal session, depending on your
@@ -67,4 +67,4 @@ Install clang and llvm (using your distro's package manager).
 FreeBSD
 =======
 
-For FreeBSD: ``pkg install bash git llvm``.
+``pkg install bash git llvm``.

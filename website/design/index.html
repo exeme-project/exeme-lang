@@ -321,7 +321,7 @@ end of lines, etc), and have to start with <code class="docutils literal notrans
 <li><p>The <code class="docutils literal notranslate"><span class="pre">fn</span></code> keyword introducer,</p></li>
 <li><p>The function’s name,</p></li>
 <li><p>A parameters list in round parenthesis <code class="docutils literal notranslate"><span class="pre">(</span></code>…<code class="docutils literal notranslate"><span class="pre">)</span></code>,</p></li>
-<li><p>An optional <code class="docutils literal notranslate"><span class="pre">-&gt;</span></code> followed by return type(s),</p></li>
+<li><p>An optional <code class="docutils literal notranslate"><span class="pre">-&gt;</span></code> followed by return type(s), and</p></li>
 <li><p>A body inside curly braces <code class="docutils literal notranslate"><span class="pre">{</span></code>…<code class="docutils literal notranslate"><span class="pre">}</span></code>.</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fn</span> <span class="n">isPrime</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">i32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="p">{</span>
@@ -419,21 +419,23 @@ are completely ignored by the compiler.</p>
 <h2>Build modes<a class="headerlink" href="#build-modes" title="Permalink to this heading">#</a></h2>
 <p>The behavoior of the Exeme compiler, and the performance of the
 resultant executable depends on the <em>build mode</em>:</p>
-<ul class="simple">
-<li><p>In a <strong>development build</strong>, the priority is diagnosing problems, so
-build times are the fastest.</p></li>
-<li><p>In a <strong>performance build</strong>, the priority is a highly optimised
-binary, with faster execution times.</p></li>
-</ul>
+<section id="development-build">
+<h3>Development build<a class="headerlink" href="#development-build" title="Permalink to this heading">#</a></h3>
+<p>The priority is diagnosing problems, so build times are the fastest.</p>
+</section>
+<section id="performance-build">
+<h3>Performance build<a class="headerlink" href="#performance-build" title="Permalink to this heading">#</a></h3>
+<p>The priority is a highly optimised binary, with faster execution times.</p>
+</section>
 </section>
 <section id="primitive-types">
 <h2>Primitive types<a class="headerlink" href="#primitive-types" title="Permalink to this heading">#</a></h2>
 <p>Primitive types fall into the following categories:</p>
 <ul class="simple">
-<li><p>The boolean type <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p>Signed and unsigned integer types (e.g., <code class="docutils literal notranslate"><span class="pre">i32</span></code>, <code class="docutils literal notranslate"><span class="pre">ui32</span></code>)</p></li>
-<li><p>Floating-point types (e.g, <code class="docutils literal notranslate"><span class="pre">f32</span></code>, <code class="docutils literal notranslate"><span class="pre">f64</span></code>)</p></li>
-<li><p>String types</p></li>
+<li><p>The boolean type <code class="docutils literal notranslate"><span class="pre">bool</span></code>,</p></li>
+<li><p>Signed and unsigned integer types (e.g., <code class="docutils literal notranslate"><span class="pre">i32</span></code>, <code class="docutils literal notranslate"><span class="pre">ui32</span></code>),</p></li>
+<li><p>Floating-point types (e.g, <code class="docutils literal notranslate"><span class="pre">f32</span></code>, <code class="docutils literal notranslate"><span class="pre">f64</span></code>), and</p></li>
+<li><p>String types.</p></li>
 </ul>
 <p>These types are available by default in any Exeme code due to the
 <a class="reference external" href="index">prelude</a>.</p>
@@ -546,7 +548,11 @@ For example, <code class="docutils literal notranslate"><span class="pre">i32</s
 </li>
 <li><a class="reference internal" href="#code">Code</a></li>
 <li><a class="reference internal" href="#id1">Comments</a></li>
-<li><a class="reference internal" href="#build-modes">Build modes</a></li>
+<li><a class="reference internal" href="#build-modes">Build modes</a><ul>
+<li><a class="reference internal" href="#development-build">Development build</a></li>
+<li><a class="reference internal" href="#performance-build">Performance build</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#primitive-types">Primitive types</a><ul>
 <li><a class="reference internal" href="#bool"><code class="docutils literal notranslate"><span class="pre">bool</span></code></a></li>
 <li><a class="reference internal" href="#integer-types">Integer types</a><ul>

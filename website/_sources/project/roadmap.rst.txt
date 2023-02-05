@@ -18,13 +18,13 @@ quality language.
 Some goals that might show up in this time frame:
 
 -  Production-ready toolchain, including sufficient Exeme standard
-   library support.
+   library support,
 
--  Self-hosted package manager (like **go get**).
+-  Self-hosted package manager (like **go get**),
 
 -  Expand the design of the standard library to include, at least
    directionally, critical and complex areas. For example:
-   concurrency/parallelism.
+   concurrency/parallelism, and
 
 -  Migration tooling sufficient to use with real-world libraries and
    systems.
@@ -36,14 +36,14 @@ We need concrete milestones that have to be reached, for us to gain
 confidence from potential users and communities. This is expected to
 include a set of requirements across:
 
--  Necessary language features
--  Nice-to-have features
+-  Necessary language features,
+-  Nice-to-have features,
 -  Features that can be omitted without harming credible evaluation of
-   Exeme
--  Implementation coverage of those features in the toolchain
--  Quality of implementation in the toolchain
+   Exeme,
+-  Implementation coverage of those features in the toolchain,
+-  Quality of implementation in the toolchain, and
 -  Necessary documentation - not just online, but commented in the
-   implementations
+   implementations.
 
 A toolchain that can build an Exeme program
 ===========================================
@@ -61,6 +61,6 @@ A major milestone will be the first production-ready version of Exeme.
 Goals in this time frame will encompass the broader ecosystem of the
 language:
 
--  Package management
--  Teaching / training material
--  Etc
+-  Package management,
+-  Teaching / training material,
+-  Etc.

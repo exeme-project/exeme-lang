@@ -106,7 +106,7 @@ A :doc:`function declaration <index>` consists of:
 -  The ``fn`` keyword introducer,
 -  The function's name,
 -  A parameters list in round parenthesis ``(``\ …\ ``)``,
--  An optional ``->`` followed by return type(s),
+-  An optional ``->`` followed by return type(s), and
 -  A body inside curly braces ``{``\ …\ ``}``.
 
 .. code::
@@ -226,10 +226,15 @@ are completely ignored by the compiler.
 The behavoior of the Exeme compiler, and the performance of the
 resultant executable depends on the *build mode*:
 
--  In a **development build**, the priority is diagnosing problems, so
-   build times are the fastest.
--  In a **performance build**, the priority is a highly optimised
-   binary, with faster execution times.
+Development build
+=================
+
+The priority is diagnosing problems, so build times are the fastest.
+
+Performance build
+=================
+
+The priority is a highly optimised binary, with faster execution times.
 
 *****************
  Primitive types
@@ -237,10 +242,10 @@ resultant executable depends on the *build mode*:
 
 Primitive types fall into the following categories:
 
--  The boolean type ``bool``
--  Signed and unsigned integer types (e.g., ``i32``, ``ui32``)
--  Floating-point types (e.g, ``f32``, ``f64``)
--  String types
+-  The boolean type ``bool``,
+-  Signed and unsigned integer types (e.g., ``i32``, ``ui32``),
+-  Floating-point types (e.g, ``f32``, ``f64``), and
+-  String types.
 
 These types are available by default in any Exeme code due to the
 `prelude <index>`_.

@@ -7,8 +7,8 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="setup/setup.html" />
 <meta property="og:site_name" content="Exeme" />
-<meta property="og:description" content="Windows: Install Visual Studio with support for C++ development. If you used the above link then it should automatically choose the required options to install., Install the latest version of Clang..." />
-<meta name="description" content="Windows: Install Visual Studio with support for C++ development. If you used the above link then it should automatically choose the required options to install., Install the latest version of Clang..." />
+<meta property="og:description" content="Windows: Install Visual Studio with support for C++ development. If you used the above link then it should automatically choose the required options to install, and, Install the latest version of C..." />
+<meta name="description" content="Windows: Install Visual Studio with support for C++ development. If you used the above link then it should automatically choose the required options to install, and, Install the latest version of C..." />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="Setup" href="index.html" />
 
     <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
@@ -242,10 +242,10 @@
 <ul class="simple">
 <li><p>Install <a class="reference external" href="https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&amp;channel=Release&amp;version=VS2022&amp;source=VSFeaturesPage&amp;passive=true&amp;tailored=cplus&amp;cid=2031#cplusplus">Visual Studio</a>
 with support for C++ development. If you used the above link then it
-should automatically choose the required options to install.</p></li>
+should automatically choose the required options to install, and</p></li>
 <li><p>Install the latest version of <a class="reference external" href="https://github.com/llvm/llvm-project/releases/latest">Clang</a> from LLVM.
-Choose the binary ending with <strong>``-win64.exe``</strong> (unless your system
-is 32-Bit).</p></li>
+Choose the binary ending with <code class="docutils literal notranslate"><span class="pre">-win64.exe</span></code> (unless your system is
+32-Bit).</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -255,12 +255,12 @@ is 32-Bit).</p></li>
 <section id="macos">
 <h2>macOS<a class="headerlink" href="#macos" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Install the latest XCode (from the App Store or the <a class="reference external" href="https://developer.apple.com/xcode/">Xcode website</a>).</p></li>
-<li><p>Install XCode command-line tools <code class="docutils literal notranslate"><span class="pre">xcode-select</span> <span class="pre">--install</span></code>.</p></li>
-<li><p>Install <a class="reference external" href="https://brew.sh/">Homebrew</a>.</p></li>
-<li><p>Install LLVM through Homebrew with: <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">llvm</span></code>.</p></li>
+<li><p>Install the latest XCode (from the App Store or the <a class="reference external" href="https://developer.apple.com/xcode/">Xcode website</a>),</p></li>
+<li><p>Install XCode command-line tools <code class="docutils literal notranslate"><span class="pre">xcode-select</span> <span class="pre">--install</span></code>,</p></li>
+<li><p>Install <a class="reference external" href="https://brew.sh/">Homebrew</a>,</p></li>
+<li><p>Install LLVM through Homebrew with: <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">llvm</span></code>,</p></li>
 <li><p>Run <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">'export</span> <span class="pre">PATH=&quot;/usr/local/opt/llvm/bin:$PATH&quot;'</span> <span class="pre">&gt;&gt;</span>
-<span class="pre">~/.zshrc_profile</span></code> to add LLVM to your PATH.</p></li>
+<span class="pre">~/.zshrc_profile</span></code> to add LLVM to your PATH, and</p></li>
 <li><p>Run <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">~/.bash_profile</span></code> or <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">~/.zshrc</span></code> to update your
 PATH variable in the current terminal session, depending on your
 shell.</p></li>
@@ -285,7 +285,7 @@ environmental variable.</p>
 </section>
 <section id="freebsd">
 <h3>FreeBSD<a class="headerlink" href="#freebsd" title="Permalink to this heading">#</a></h3>
-<p>For FreeBSD: <code class="docutils literal notranslate"><span class="pre">pkg</span> <span class="pre">install</span> <span class="pre">bash</span> <span class="pre">git</span> <span class="pre">llvm</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pkg</span> <span class="pre">install</span> <span class="pre">bash</span> <span class="pre">git</span> <span class="pre">llvm</span></code>.</p>
 </section>
 </section>
 </section>
