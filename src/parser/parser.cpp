@@ -33,6 +33,10 @@ class Parser {
 				expectingComma = false;
 				continue;
 			}
+
+			// parser variable declaration
+			// check for default parameter value
+			// set 'expectingComma' to true
 		}
 
 		this->lexer->error("unterminated function " + functionType, -1);
@@ -89,7 +93,6 @@ class Parser {
 		std::cout
 			<< "identifier: "
 			<< LexerTokenIdentifierNames[static_cast<int>(token->identifier)]
-			<< "\nfilePath: " << token->filePath
 			<< "\nstartChrIndex: " << token->startChrIndex
 			<< "\nchrIndex: " << token->chrIndex
 			<< "\nlineNum: " << token->lineNum << "\nvalue: " << token->value
