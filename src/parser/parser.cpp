@@ -3,18 +3,42 @@
 
 #pragma once
 
+#include <type_traits>
+#include <variant>
+#include <vector>
+
 #include "../lexer/lexer.cpp"
 #include "../utils/hash.cpp"
-#include "../utils/variables.cpp"
-#include <type_traits>
+
+enum class ParserTokenIdentifiers { FN_DEF };
+
+struct ParserTokens {
+	struct FN_DEF {
+		bool unnamedArgs;
+
+		FN_DEF(bool unnamedArgs) { this->unnamedArgs = unnamedArgs; }
+	};
+};
+
+struct ParserToken {
+	std::variant<ParserTokens::FN_DEF *> data;
+
+	ParserToken(std::variant<ParserTokens::FN_DEF *> data) {
+		this->data = data;
+	}
+};
 
 class Parser {
   private:
-	std::vector<Variable *> parseFnArgs(LexerToken *openBrace,
-										bool declaration) {
+	struct ParserToken *token;
+
+	ParserToken *parseFnArgs(const std::string fnName, LexerToken *openBrace,
+							 bool declaration) {
 		bool expectingComma = false;
 		const std::string functionType =
 			(declaration ? "parameters" : "arguments");
+
+		auto token = new ParserToken(new ParserTokens::FN_DEF(false));
 
 		while (true) {
 			if (!this->lexer->lex(true, true)) {
@@ -25,7 +49,7 @@ class Parser {
 			auto funcParameter =
 				this->lexer->tokens[this->lexer->tokens.size() - 1];
 
-			if (funcParameter->identifier == LexerTokenIdentifier::Comma) {
+			if (funcParameter->identifier == LexerTokenIdentifiers::Comma) {
 				if (!expectingComma) {
 					this->lexer->error("unexpected comma", -1);
 				}
@@ -51,13 +75,13 @@ class Parser {
 
 		auto fnNameToken = this->lexer->tokens[this->lexer->tokens.size() - 1];
 
-		if (fnNameToken->identifier == LexerTokenIdentifier::Keyword) {
+		if (fnNameToken->identifier == LexerTokenIdentifiers::Keyword) {
 			this->lexer->error(
 				"functions are not allowed keywords as their names",
 				fnNameToken->startChrIndex);
-		} else if (fnNameToken->identifier != LexerTokenIdentifier::Variable) {
+		} else if (fnNameToken->identifier != LexerTokenIdentifiers::Variable) {
 			this->lexer->error("expected variable (as function name), got '" +
-								   LexerTokenIdentifierNames[static_cast<int>(
+								   LexerTokenIdentifiersNames[static_cast<int>(
 									   fnNameToken->identifier)] +
 								   "'",
 							   fnNameToken->startChrIndex);
@@ -71,15 +95,16 @@ class Parser {
 		auto fnArgsOpenBrace =
 			this->lexer->tokens[this->lexer->tokens.size() - 1];
 
-		if (fnArgsOpenBrace->identifier != LexerTokenIdentifier::OpenBrace) {
+		if (fnArgsOpenBrace->identifier != LexerTokenIdentifiers::OpenBrace) {
 			this->lexer->error("expected open brace, got '" +
-								   LexerTokenIdentifierNames[static_cast<int>(
+								   LexerTokenIdentifiersNames[static_cast<int>(
 									   fnNameToken->identifier)] +
 								   "'",
 							   fnArgsOpenBrace->startChrIndex);
 		}
 
-		auto fnArgs = this->parseFnArgs(fnArgsOpenBrace, true);
+		auto fnArgs =
+			this->parseFnArgs(fnNameToken->value, fnArgsOpenBrace, true);
 	}
 
 	void parseKeyword(LexerToken *token) {
@@ -92,14 +117,14 @@ class Parser {
 	void parseNext(LexerToken *token) {
 		std::cout
 			<< "identifier: "
-			<< LexerTokenIdentifierNames[static_cast<int>(token->identifier)]
+			<< LexerTokenIdentifiersNames[static_cast<int>(token->identifier)]
 			<< "\nstartChrIndex: " << token->startChrIndex
 			<< "\nchrIndex: " << token->chrIndex
 			<< "\nlineNum: " << token->lineNum << "\nvalue: " << token->value
 			<< "\n\n";
 
 		switch (token->identifier) {
-		case LexerTokenIdentifier::Keyword:
+		case LexerTokenIdentifiers::Keyword:
 			parseKeyword(token);
 			break;
 		default:
@@ -110,7 +135,10 @@ class Parser {
   public:
 	Lexer *lexer;
 
-	Parser(std::string filePath) { this->lexer = new Lexer(filePath); }
+	Parser(std::string filePath) {
+		this->lexer = new Lexer(filePath);
+		this->token = NULL;
+	}
 
 	void parse() {
 		while (this->lexer->lex(true, true)) {

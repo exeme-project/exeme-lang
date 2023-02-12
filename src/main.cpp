@@ -3,6 +3,8 @@
 
 #include "parser/parser.cpp"
 
+#pragma pack(1)
+
 int main() {
 	Parser *parser = new Parser("../../src/main.exl");
 
