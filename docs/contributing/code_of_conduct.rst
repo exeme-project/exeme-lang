@@ -32,9 +32,9 @@ for communication. It applies to all your communication and conduct in
 these spaces, including things you say, emails, chats, slides, videos,
 posters, and signs you display in these spaces.
 
-Our standards for acceptable behaviour should be upheld by all community
+Our standards for acceptable behavior should be upheld by all community
 members, regardless of their status. Everyone is encouraged to speak up
-in response to any behaviour they believe is inappropriate, threatening,
+in response to any behavior they believe is inappropriate, threatening,
 offensive or harmful.
 
 *******************
@@ -60,7 +60,7 @@ community so that we can maintain a friendly atmosphere. This is
 especially important as many of the tools we use to communicate on the
 Internet are low fidelity and make it difficult to understand each
 other. As we learn to work together effectively as a group, be patient,
-recognise that we are all on a learning journey, and remain supportive.
+recognize that we are all on a learning journey, and remain supportive.
 
 Be considerate
 ==============
@@ -74,9 +74,9 @@ other people in their primary language.
 Be kind
 =======
 
-We will not all agree, but disagreement does not excuse bad behaviour or
+We will not all agree, but disagreement does not excuse bad behavior or
 hurtful words. We may all feel frustrated now and again, but we cannot
-allow this to become personalised. It's important to remember that a
+allow this to become personalized. It's important to remember that a
 community where people are under threat is not a productive community.
 Members of our community should be kind to other members as well as to
 people outside the Exeme community.
@@ -85,7 +85,7 @@ Be careful in the words that we choose
 ======================================
 
 Do not use insults or put-downs. It is not acceptable to engage in
-harassment or other exclusionary behaviour. This includes, but is not
+harassment or other exclusionary behavior. This includes, but is not
 limited to:
 
 -  Using or threatening to use violent language.
@@ -95,7 +95,7 @@ limited to:
    without their permission ('doxing').
 -  Personal abuse, especially the use of racist or sexist language.
 -  Unwelcome sexual attention.
--  Advocacy or encouragement of any of the above behaviour.
+-  Advocacy or encouragement of any of the above behavior.
 -  In general, if someone asks you to stop, stop. It is considered
    harassment to persist after being asked to stop.
 

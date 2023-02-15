@@ -39,11 +39,11 @@ The community and project needs a code of conduct.
 Our intention is for the Exeme community to be a welcoming and
 respectful place. Regardless of a community member's status, we need to
 have consistent expectations for how they should behave. These
-expectations of behaviour need to be clearly stated, both to set the
+expectations of behavior need to be clearly stated, both to set the
 expectations for people who join us, but also to help us reinforce our
 standards. It is also important that we are accountable to these
 expectations and have effective community moderation mechanisms in
-place. When behaviour does step out of line, we need to have tools and
+place. When behavior does step out of line, we need to have tools and
 policies in place for how we will identify and manage it.
 
 An open process for Exeme changes.
@@ -60,7 +60,7 @@ for all decisions made regarding the language.
 Being inclusive is different from including everyone
 ----------------------------------------------------
 
-We want to avoid excluding, or maginializing members of the community.
+We want to avoid excluding, or marginalizing members of the community.
 However, we expect to inevitably make choices that benefit some Exeme
 community members more than others. Justification will be provided for
 these decisions, but achieving Exeme's goals (namely that of a healthy

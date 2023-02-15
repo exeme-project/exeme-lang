@@ -59,7 +59,7 @@ Here is a simple function showing some Exeme code:
 The example starts with an :doc:`import declaration <index>`. Exeme
 imports are akin to `C++ modules
 <https://en.cppreference.com/w/cpp/language/modules>`_ rather than
-`source file inclusing during preprocessing
+`source file inclusion during preprocessing
 <https://en.cppreference.com/w/cpp/preprocessor/include>`_. The
 ``import`` declaration imports the ``io`` library from the ``std``
 package (see :doc:`what are files, libraries, and packages <index>`). It
@@ -82,7 +82,7 @@ conflicts.
 In the next line, a familiar declaration to C++ developers can be found
 - :doc:`using <index>`. ``using`` introduces a name that is defined
 elsewhere into the scope where the using-declaration appears. This
-allows us to use the ``out`` function in the ``io`` namespace in the
+allows us to use the ``out`` function from the ``io`` namespace in the
 global namespace.
 
 Comments
@@ -98,8 +98,8 @@ end of lines, etc), and have to start with ``#``.
        for _, d = range(2, n) { # '_' is the index, but it is not needed.
            if n % d == 0 { # Can be divided without a remainder.
 
-Funtion declaration
-===================
+Function declaration
+====================
 
 A :doc:`function declaration <index>` consists of:
 
@@ -134,7 +134,7 @@ types <index>`.
 Variable declaration
 ====================
 
-A :doc:`variable decleration <index>` has 2 parts:
+A :doc:`variable declaration <index>` has 2 parts:
 
 -  The name (optionally followed by ``:`` and the data type, declared in
    the same way as a parameter in a function signature), and
@@ -144,7 +144,7 @@ A :doc:`variable decleration <index>` has 2 parts:
 
    i: i32 = 1
 
-Exeme has short variable decleration, which means the compile can guess
+Exeme has short variable declaration, which means the compile can guess
 the value of your variable. This means the code can be shortened to:
 
 .. code::
@@ -169,7 +169,7 @@ statement <assignment>`:
 Constant variable declaration
 -----------------------------
 
-Constatants are declared by subscripting the ``const`` type with the
+Constants are declared by subscripting the ``const`` type with the
 variable's type. Constants are effectively a container for their inner
 data type that do not allow overwriting of the inner value.
 
@@ -193,7 +193,7 @@ C++:
    }
 
 Every code block in curly braces defines a scope. Names are visible from
-their decleration until the end of the scope they were declared into
+their declaration until the end of the scope they were declared into
 (unless they are a :doc:`global variable <index>`). In this example,
 ``d`` is only defined until the end of the for loop.
 
@@ -223,8 +223,8 @@ are completely ignored by the compiler.
  Build modes
 *************
 
-The behavoior of the Exeme compiler, and the performance of the
-resultant executable depends on the *build mode*:
+The behavior of the Exeme compiler, and the performance of the resultant
+executable depends on the *build mode*:
 
 Development build
 =================
@@ -234,7 +234,7 @@ The priority is diagnosing problems, so build times are the fastest.
 Performance build
 =================
 
-The priority is a highly optimised binary, with faster execution times.
+The priority is a highly optimized binary, with faster execution times.
 
 *****************
  Primitive types

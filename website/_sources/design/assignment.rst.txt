@@ -17,7 +17,7 @@ Values can be assigned to variables using the ``=`` operator.
    i = 1 # Or i: i32 = 1
 
 For each :doc:`arithmetic <expressions/arithmetic>` operator ``$``, a
-corresponding compund assignment ``$=`` is provided, that performs the
+corresponding compound assignment ``$=`` is provided, that performs the
 same operation *in-place*.
 
 .. code::
@@ -31,12 +31,12 @@ same operation *in-place*.
 The operands of the ``=`` operator can be any :doc:`expression
 <expressions/index>`.
 
-******************************
- Compund assignment semantics
-******************************
+*******************************
+ Compound assignment semantics
+*******************************
 
 The syntax ``x $= y`` is intended to be a shortened form of ``x = x $
-y``, except in the following cicrumstances:
+y``, except in the following circumstances:
 
 -  A type may be able to provide a more efficient implementation for the
    compound assignment than for the uncombined assignment, or

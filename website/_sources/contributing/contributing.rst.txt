@@ -39,7 +39,7 @@ documentation of the new changes.
  Contributors file
 *******************
 
-Remember to add your name, GitHub proile, and email address to the
+Remember to add your name, GitHub profile, and email address to the
 official :doc:`contributors file <contributors>`.
 
 *******

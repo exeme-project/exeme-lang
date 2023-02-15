@@ -4,4 +4,12 @@
     "[cpp]": {
         "editor.defaultFormatter": "xaver.clang-format"
     },
+    "cSpell.words": [
+        "distro",
+        "ethnicities",
+        "Exeme",
+        "roadmap",
+        "skifli",
+        "toctree"
+    ],
 }
