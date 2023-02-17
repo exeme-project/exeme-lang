@@ -15,8 +15,12 @@ enum class ParserTokenIdentifiers { FN_DEF };
 struct ParserTokens {
 	struct FN_DEF {
 		bool unnamedArgs;
+		std::string fnName;
 
-		FN_DEF(bool unnamedArgs) { this->unnamedArgs = unnamedArgs; }
+		FN_DEF(bool unnamedArgs, std::string fnName) {
+			this->unnamedArgs = unnamedArgs;
+			this->fnName = fnName;
+		}
 	};
 };
 
@@ -38,7 +42,7 @@ class Parser {
 		const std::string functionType =
 			(declaration ? "parameters" : "arguments");
 
-		auto token = new ParserToken(new ParserTokens::FN_DEF(false));
+		auto token = new ParserToken(new ParserTokens::FN_DEF(false, fnName));
 
 		while (true) {
 			if (!this->lexer->lex(true, true)) {
@@ -56,6 +60,11 @@ class Parser {
 
 				expectingComma = false;
 				continue;
+			} else if (funcParameter->identifier ==
+					   LexerTokenIdentifiers::CloseBrace) {
+				// check for function return type
+
+				return token;
 			}
 
 			// parser variable declaration

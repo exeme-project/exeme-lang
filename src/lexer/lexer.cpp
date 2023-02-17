@@ -128,7 +128,12 @@ std::vector<std::string> LexerTokenIdentifiersNames = {
 	"or symbol",
 	"not symbol",
 	"equality comparison symbol",
-	"not equals comparison symbol"};
+	"not equals comparison symbol",
+	"bitwise AND",
+	"bitwise OR",
+	"bitwise XOR",
+	"bitwise left shift",
+	"bitwise right shift"};
 
 /**
  * Contains data relating to a lexer token.
