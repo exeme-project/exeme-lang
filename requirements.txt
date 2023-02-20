@@ -1,9 +1,11 @@
+# Sphinx
 sphinx
 sphinx-autobuild
 myst-parser
-
 furo
-
 sphinxext-opengraph
 sphinx-inline-tabs
 sphinx-copybutton
+
+# clang-format
+clang-format

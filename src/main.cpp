@@ -1,15 +1,15 @@
 // Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
 // license information. SPDX-License-Identifier: MIT License.
 
-#include "parser/parser.cpp"
+#include "ast/ast.cpp"
 
 #pragma pack(1)
 
 int main() {
-	Parser *parser = new Parser("../../src/main.exl");
+	Ast *ast = new Ast("../../src/main.exl");
 
-	parser->parse();
+	ast->parse();
 
-	delete parser->lexer;
-	delete parser;
+	delete ast->lexer;
+	delete ast;
 }

@@ -21,7 +21,7 @@ auto KEYWORDS_END = KEYWORDS.end();
 /**
  * Used to identify different tokens.
  */
-enum class LexerTokenIdentifiers {
+enum class LexerTokens {
 	Keyword,
 	Variable,
 
@@ -42,6 +42,7 @@ enum class LexerTokenIdentifiers {
 	Period,			  // '.'
 	At,				  // '@'
 	Hashtag,		  // '#'
+	Arrow,			  // '->'
 
 	// Operators (order is important)
 	Exponent,	 // '**'
@@ -88,72 +89,72 @@ enum class LexerTokenIdentifiers {
 /**
  * Contains the names of each of the lexer token identifiers.
  */
-std::vector<std::string> LexerTokenIdentifiersNames = {
-	"keyword",
-	"variable",
-	"char",
-	"string",
-	"integer",
-	"float",
-	"open brace",
-	"open square brace",
-	"open curly brace",
-	"close brace",
-	"close sqaure brace",
-	"close curly brace",
-	"comma",
-	"period",
-	"at symbol",
-	"hashtag",
-	"exponent symbol",
-	"divide symbol",
-	"floor divide symbol",
-	"multiply symbol",
-	"add symbol",
-	"subtract symbol",
-	"modulo symbol",
-	"greater than symbol",
-	"greater than equals symbol",
-	"less than symbol",
-	"less than equals symbol",
-	"equals symbol",
-	"exponent equals symbol",
-	"divide equals symbol",
-	"floor divide equals symbol",
-	"multiply equals symbol",
-	"add equals symbol",
-	"subtract equals symbol",
-	"modulo equals symbol",
-	"and symbol",
-	"or symbol",
-	"not symbol",
-	"equality comparison symbol",
-	"not equals comparison symbol",
-	"bitwise AND",
-	"bitwise OR",
-	"bitwise XOR",
-	"bitwise left shift",
-	"bitwise right shift"};
+std::vector<std::string> LexerTokenNames = {"keyword",
+											"variable",
+											"char",
+											"string",
+											"integer",
+											"float",
+											"open brace",
+											"open square brace",
+											"open curly brace",
+											"close brace",
+											"close sqaure brace",
+											"close curly brace",
+											"comma",
+											"period",
+											"at symbol",
+											"hashtag",
+											"arrow",
+											"exponent symbol",
+											"divide symbol",
+											"floor divide symbol",
+											"multiply symbol",
+											"add symbol",
+											"subtract symbol",
+											"modulo symbol",
+											"greater than symbol",
+											"greater than equals symbol",
+											"less than symbol",
+											"less than equals symbol",
+											"equals symbol",
+											"exponent equals symbol",
+											"divide equals symbol",
+											"floor divide equals symbol",
+											"multiply equals symbol",
+											"add equals symbol",
+											"subtract equals symbol",
+											"modulo equals symbol",
+											"and symbol",
+											"or symbol",
+											"not symbol",
+											"equality comparison symbol",
+											"not equals comparison symbol",
+											"bitwise AND",
+											"bitwise OR",
+											"bitwise XOR",
+											"bitwise left shift",
+											"bitwise right shift"};
 
 /**
  * Contains data relating to a lexer token.
  */
 struct LexerToken {
-	LexerTokenIdentifiers identifier;
+	LexerTokens identifier;
 	size_t startChrIndex, chrIndex, lineNum;
 	std::string value;
 
 	/**
 	 * Construct a new Lexer Token object.
 	 *
-	 * @param LexerTokenIdentifiers identifier    - Token identifier.
+	 * @param LexerTokens identifier    - Token identifier.
 	 * @param size_t               startChrIndex - Start char index of token.
 	 * @param size_t               chrIndex      - End char index of the token.
 	 * @param size_t               lineNum       - Line num of the token.
 	 * @param std::string          value         - Value of the token.
 	 */
-	LexerToken(LexerTokenIdentifiers identifier, size_t startChrIndex,
-			   size_t chrIndex, size_t lineNum, std::string value) {
+	LexerToken(LexerTokens identifier, size_t startChrIndex, size_t chrIndex,
+			   size_t lineNum, std::string value) {
 		this->identifier = identifier;
 		this->startChrIndex = startChrIndex;
 		this->chrIndex = chrIndex;
@@ -305,15 +306,15 @@ class Lexer {
 	/**
 	 * Checks for repetition of the current character.
 	 *
-	 * @param LexerTokenIdentifiers ifNotRepeated - Identifier of token if
+	 * @param LexerTokens ifNotRepeated - Identifier of token if
 	 * repetition was not found.
-	 * @param LexerTokenIdentifiers ifRepeated    - Identifier of token if
+	 * @param LexerTokens ifRepeated    - Identifier of token if
 	 * repetition was found.
 	 *
 	 * @return LexerToken* - The created token.
 	 */
-	LexerToken *checkForRepetition(LexerTokenIdentifiers ifNotRepeated,
-								   LexerTokenIdentifiers ifRepeated) {
+	LexerToken *checkForRepetition(LexerTokens ifNotRepeated,
+								   LexerTokens ifRepeated) {
 		bool repeated = true;
 		char chr = this->chr;
 
@@ -383,8 +384,8 @@ class Lexer {
 	 * Lex a '=' token.
 	 */
 	void lexEquals() {
-		LexerToken *token = this->checkForRepetition(
-			LexerTokenIdentifiers::Equals, LexerTokenIdentifiers::Equality);
+		LexerToken *token = this->checkForRepetition(LexerTokens::Equals,
+													 LexerTokens::Equality);
 
 		this->tokens.emplace_back(token);
 
@@ -407,7 +408,7 @@ class Lexer {
 
 			if (this->chr == '\'') {
 				this->tokens.emplace_back(
-					new LexerToken(LexerTokenIdentifiers::Chr, startChrIndex,
+					new LexerToken(LexerTokens::Chr, startChrIndex,
 								   this->chrIndex, this->lineNum, chr));
 				return;
 			}
@@ -440,7 +441,7 @@ class Lexer {
 		while (this->getChr(false)) {
 			if (this->chr == '"') {
 				this->tokens.emplace_back(
-					new LexerToken(LexerTokenIdentifiers::String, startChrIndex,
+					new LexerToken(LexerTokens::String, startChrIndex,
 								   this->chrIndex, this->lineNum, string));
 				return;
 			}
@@ -484,7 +485,7 @@ class Lexer {
 			integer += this->chr;
 		}
 
-		this->tokens.emplace_back(new LexerToken(LexerTokenIdentifiers::Float,
+		this->tokens.emplace_back(new LexerToken(LexerTokens::Float,
 												 startChrIndex, this->chrIndex,
 												 this->lineNum, integer));
 	}
@@ -512,7 +513,7 @@ class Lexer {
 			}
 		}
 
-		this->tokens.emplace_back(new LexerToken(LexerTokenIdentifiers::Integer,
+		this->tokens.emplace_back(new LexerToken(LexerTokens::Integer,
 												 startChrIndex, this->chrIndex,
 												 this->lineNum, integer));
 	}
@@ -535,8 +536,8 @@ class Lexer {
 
 		this->tokens.emplace_back(new LexerToken(
 			std::find(KEYWORDS_BEGIN, KEYWORDS_END, string) == KEYWORDS_END
-				? LexerTokenIdentifiers::Variable
-				: LexerTokenIdentifiers::Keyword,
+				? LexerTokens::Variable
+				: LexerTokens::Keyword,
 			startChrIndex,
 			this->chr == '\n' ? this->chrIndex - 1 : this->chrIndex,
 			this->lineNum, string));
@@ -546,14 +547,13 @@ class Lexer {
 	 * Lex '*'.
 	 */
 	void lexMultiply() {
-		LexerToken *token = this->checkForRepetition(
-			LexerTokenIdentifiers::Multiply, LexerTokenIdentifiers::Exponent);
+		LexerToken *token = this->checkForRepetition(LexerTokens::Multiply,
+													 LexerTokens::Exponent);
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier =
-				token->identifier == LexerTokenIdentifiers::Multiply
-					? LexerTokenIdentifiers::MultiplyEquals
-					: LexerTokenIdentifiers::ExponentEquals;
+			token->identifier = token->identifier == LexerTokens::Multiply
+									? LexerTokens::MultiplyEquals
+									: LexerTokens::ExponentEquals;
 		}
 
 		this->tokens.emplace_back(token);
@@ -564,14 +564,13 @@ class Lexer {
 	 * Lex '/'.
 	 */
 	void lexDivide() {
-		LexerToken *token = this->checkForRepetition(
-			LexerTokenIdentifiers::Divide, LexerTokenIdentifiers::FloorDivide);
+		LexerToken *token = this->checkForRepetition(LexerTokens::Divide,
+													 LexerTokens::FloorDivide);
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier =
-				token->identifier == LexerTokenIdentifiers::Divide
-					? LexerTokenIdentifiers::DivideEquals
-					: LexerTokenIdentifiers::FloorDivideEquals;
+			token->identifier = token->identifier == LexerTokens::Divide
+									? LexerTokens::DivideEquals
+									: LexerTokens::FloorDivideEquals;
 		}
 
 		this->tokens.emplace_back(token);
@@ -582,12 +581,12 @@ class Lexer {
 	 * Lex '+'.
 	 */
 	void lexAdd() {
-		LexerToken *token = new LexerToken(
-			LexerTokenIdentifiers::Add, this->chrIndex, this->chrIndex,
-			this->lineNum, std::string(1, this->chr));
+		LexerToken *token =
+			new LexerToken(LexerTokens::Add, this->chrIndex, this->chrIndex,
+						   this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = LexerTokenIdentifiers::AddEquals;
+			token->identifier = LexerTokens::AddEquals;
 		}
 
 		this->tokens.emplace_back(token);
@@ -599,11 +598,13 @@ class Lexer {
 	 */
 	void lexSubtract() {
 		LexerToken *token = new LexerToken(
-			LexerTokenIdentifiers::Subtract, this->chrIndex, this->chrIndex,
+			LexerTokens::Subtract, this->chrIndex, this->chrIndex,
 			this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = LexerTokenIdentifiers::SubtractEquals;
+			token->identifier = LexerTokens::SubtractEquals;
+		} else if (this->checkForTrailingChr(token, '>')) {
+			token->identifier = LexerTokens::Arrow;
 		}
 
 		this->tokens.emplace_back(token);
@@ -614,12 +615,12 @@ class Lexer {
 	 * Lex '%'.
 	 */
 	void lexModulo() {
-		LexerToken *token = new LexerToken(
-			LexerTokenIdentifiers::Modulo, this->chrIndex, this->chrIndex,
-			this->lineNum, std::string(1, this->chr));
+		LexerToken *token =
+			new LexerToken(LexerTokens::Modulo, this->chrIndex, this->chrIndex,
+						   this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = LexerTokenIdentifiers::ModuloEquals;
+			token->identifier = LexerTokens::ModuloEquals;
 		}
 
 		this->tokens.emplace_back(token);
@@ -631,13 +632,13 @@ class Lexer {
 	 */
 	void lexGreaterThan() {
 		LexerToken *token = new LexerToken(
-			LexerTokenIdentifiers::GreaterThan, this->chrIndex, this->chrIndex,
+			LexerTokens::GreaterThan, this->chrIndex, this->chrIndex,
 			this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = LexerTokenIdentifiers::GreaterThanEquals;
+			token->identifier = LexerTokens::GreaterThanEquals;
 		} else if (this->checkForTrailingChr(token, '>')) {
-			token->identifier = LexerTokenIdentifiers::RIGHTSHIFT;
+			token->identifier = LexerTokens::RIGHTSHIFT;
 		}
 
 		this->tokens.emplace_back(token);
@@ -649,13 +650,13 @@ class Lexer {
 	 */
 	void lexLessThan() {
 		LexerToken *token = new LexerToken(
-			LexerTokenIdentifiers::LessThan, this->chrIndex, this->chrIndex,
+			LexerTokens::LessThan, this->chrIndex, this->chrIndex,
 			this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = LexerTokenIdentifiers::LessThanEquals;
+			token->identifier = LexerTokens::LessThanEquals;
 		} else if (this->checkForTrailingChr(token, '>')) {
-			token->identifier = LexerTokenIdentifiers::LEFTSHIFT;
+			token->identifier = LexerTokens::LEFTSHIFT;
 		}
 
 		this->tokens.emplace_back(token);
@@ -666,12 +667,12 @@ class Lexer {
 	 * Lex '&'.
 	 */
 	void lexAnd() {
-		LexerToken *token = new LexerToken(
-			LexerTokenIdentifiers::AND, this->chrIndex, this->chrIndex,
-			this->lineNum, std::string(1, this->chr));
+		LexerToken *token =
+			new LexerToken(LexerTokens::AND, this->chrIndex, this->chrIndex,
+						   this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '&')) {
-			token->identifier = LexerTokenIdentifiers::And;
+			token->identifier = LexerTokens::And;
 		}
 
 		this->tokens.emplace_back(token);
@@ -682,12 +683,12 @@ class Lexer {
 	 * Lex '|'.
 	 */
 	void lexOr() {
-		LexerToken *token = new LexerToken(
-			LexerTokenIdentifiers::Or, this->chrIndex, this->chrIndex,
-			this->lineNum, std::string(1, this->chr));
+		LexerToken *token =
+			new LexerToken(LexerTokens::Or, this->chrIndex, this->chrIndex,
+						   this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '|')) {
-			token->identifier = LexerTokenIdentifiers::OR;
+			token->identifier = LexerTokens::OR;
 		}
 
 		this->tokens.emplace_back(token);
@@ -698,12 +699,12 @@ class Lexer {
 	 * Lex '!'.
 	 */
 	void lexNot() {
-		LexerToken *token = new LexerToken(
-			LexerTokenIdentifiers::Not, this->chrIndex, this->chrIndex,
-			this->lineNum, std::string(1, this->chr));
+		LexerToken *token =
+			new LexerToken(LexerTokens::Not, this->chrIndex, this->chrIndex,
+						   this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = LexerTokenIdentifiers::NotEquals;
+			token->identifier = LexerTokens::NotEquals;
 		}
 
 		this->tokens.emplace_back(token);
@@ -728,48 +729,48 @@ class Lexer {
 			break;
 		case '(':
 			this->tokens.emplace_back(
-				new LexerToken(LexerTokenIdentifiers::OpenBrace, this->chrIndex,
+				new LexerToken(LexerTokens::OpenBrace, this->chrIndex,
 							   this->chrIndex, this->lineNum, ""));
 			break;
 		case '[':
-			this->tokens.emplace_back(new LexerToken(
-				LexerTokenIdentifiers::OpenSqaureBrace, this->chrIndex,
-				this->chrIndex, this->lineNum, ""));
+			this->tokens.emplace_back(
+				new LexerToken(LexerTokens::OpenSqaureBrace, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
 			break;
 		case '{':
-			this->tokens.emplace_back(new LexerToken(
-				LexerTokenIdentifiers::OpenCurlyBrace, this->chrIndex,
-				this->chrIndex, this->lineNum, ""));
+			this->tokens.emplace_back(
+				new LexerToken(LexerTokens::OpenCurlyBrace, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
 			break;
 		case ')':
-			this->tokens.emplace_back(new LexerToken(
-				LexerTokenIdentifiers::CloseBrace, this->chrIndex,
-				this->chrIndex, this->lineNum, ""));
+			this->tokens.emplace_back(
+				new LexerToken(LexerTokens::CloseBrace, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
 			break;
 		case ']':
-			this->tokens.emplace_back(new LexerToken(
-				LexerTokenIdentifiers::CloseSquareBrace, this->chrIndex,
-				this->chrIndex, this->lineNum, ""));
+			this->tokens.emplace_back(
+				new LexerToken(LexerTokens::CloseSquareBrace, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
 			break;
 		case '}':
-			this->tokens.emplace_back(new LexerToken(
-				LexerTokenIdentifiers::CloseCurlyBrace, this->chrIndex,
-				this->chrIndex, this->lineNum, ""));
+			this->tokens.emplace_back(
+				new LexerToken(LexerTokens::CloseCurlyBrace, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
 			break;
 		case ',':
 			this->tokens.emplace_back(
-				new LexerToken(LexerTokenIdentifiers::Comma, this->chrIndex,
+				new LexerToken(LexerTokens::Comma, this->chrIndex,
 							   this->chrIndex, this->lineNum, ""));
 			break;
 		case '.':
 			this->tokens.emplace_back(
-				new LexerToken(LexerTokenIdentifiers::Period, this->chrIndex,
+				new LexerToken(LexerTokens::Period, this->chrIndex,
 							   this->chrIndex, this->lineNum, ""));
 			break;
 		case '@':
 			this->tokens.emplace_back(
-				new LexerToken(LexerTokenIdentifiers::At, this->chrIndex,
-							   this->chrIndex, this->lineNum, ""));
+				new LexerToken(LexerTokens::At, this->chrIndex, this->chrIndex,
+							   this->lineNum, ""));
 			break;
 		case '#':
 			while (this->getChr(false)) { // Skip to the end of the line
