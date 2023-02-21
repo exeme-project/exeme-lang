@@ -84,57 +84,63 @@ enum class LexerTokens {
 	XOR,		// '^'
 	LEFTSHIFT,	// '<<'
 	RIGHTSHIFT, // '>>'
+
+	// Misc
+	EOL,
 };
 
 /**
  * Contains the names of each of the lexer token identifiers.
  */
-std::vector<std::string> LexerTokenNames = {"keyword",
-											"variable",
-											"char",
-											"string",
-											"integer",
-											"float",
-											"open brace",
-											"open square brace",
-											"open curly brace",
-											"close brace",
-											"close sqaure brace",
-											"close curly brace",
-											"comma",
-											"period",
-											"at symbol",
-											"hashtag",
-											"arrow",
-											"exponent symbol",
-											"divide symbol",
-											"floor divide symbol",
-											"multiply symbol",
-											"add symbol",
-											"subtract symbol",
-											"modulo symbol",
-											"greater than symbol",
-											"greater than equals symbol",
-											"less than symbol",
-											"less than equals symbol",
-											"equals symbol",
-											"exponent equals symbol",
-											"divide equals symbol",
-											"floor divide equals symbol",
-											"multiply equals symbol",
-											"add equals symbol",
-											"subtract equals symbol",
-											"modulo equals symbol",
-											"and symbol",
-											"or symbol",
-											"not symbol",
-											"equality comparison symbol",
-											"not equals comparison symbol",
-											"bitwise AND",
-											"bitwise OR",
-											"bitwise XOR",
-											"bitwise left shift",
-											"bitwise right shift"};
+std::vector<std::string> LexerTokenNames = {
+	"keyword",
+	"variable",
+	"char",
+	"string",
+	"integer",
+	"float",
+	"open brace",
+	"open square brace",
+	"open curly brace",
+	"close brace",
+	"close sqaure brace",
+	"close curly brace",
+	"comma",
+	"period",
+	"at symbol",
+	"hashtag",
+	"arrow",
+	"exponent symbol",
+	"divide symbol",
+	"floor divide symbol",
+	"multiply symbol",
+	"add symbol",
+	"subtract symbol",
+	"modulo symbol",
+	"greater than symbol",
+	"greater than equals symbol",
+	"less than symbol",
+	"less than equals symbol",
+	"equals symbol",
+	"exponent equals symbol",
+	"divide equals symbol",
+	"floor divide equals symbol",
+	"multiply equals symbol",
+	"add equals symbol",
+	"subtract equals symbol",
+	"modulo equals symbol",
+	"and symbol",
+	"or symbol",
+	"not symbol",
+	"equality comparison symbol",
+	"not equals comparison symbol",
+	"bitwise AND",
+	"bitwise OR",
+	"bitwise XOR",
+	"bitwise left shift",
+	"bitwise right shift",
+	"end of line",
+};
 
 /**
  * Contains data relating to a lexer token.
@@ -877,7 +883,8 @@ class Lexer {
 
 		std::cout << this->lineNum << " | " << line << "\n";
 
-		if (startChrIndex == static_cast<size_t>(-1)) {
+		if (startChrIndex == static_cast<size_t>(-1) ||
+			startChrIndex == this->chrIndex) {
 			std::cout << std::string(length + this->chrIndex, ' ') << "^ "
 					  << Foreground::BRIGHT_RED << Style::BOLD
 					  << "error: " << Style::RESET << ERROR_MSG << "\n";

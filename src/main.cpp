@@ -6,10 +6,11 @@
 #pragma pack(1)
 
 int main() {
-	Ast *ast = new Ast("../../src/main.exl");
+	Ast *ast = new Ast("../src/main.exl");
 
 	ast->parse();
 
+	ast->lexer->clearTokens();
 	delete ast->lexer;
 	delete ast;
 }
