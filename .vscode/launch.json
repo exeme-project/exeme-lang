@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "clang++ build and debug active file",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/Debug/exeme.exe",
+            "cwd": "${workspaceFolder}/build/Debug",
+            "preLaunchTask": "clang++ build active file"
+        }
+    ]
+}
