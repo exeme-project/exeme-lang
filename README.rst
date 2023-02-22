@@ -15,8 +15,8 @@ An introduction to Exeme can be found on the `website
  Example Code
 **************
 
-For those of you who like example code, here is a prime number checker
-written in Exeme. This code is analyzed in the `Design Specification
+This is a Prime Number checker written in Exeme. This code is analyzed
+in the `Design Specification
 <https://exeme-project.github.io/exeme-lang/design/index.html#the-basics>`_.
 
 .. code::

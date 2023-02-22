@@ -9,7 +9,7 @@
 This directory contains project-related documentation for Exeme.
 
 ***********************************************************
- :doc:`Issues with improving C++ <cpp_improvement_issues>`
+ :doc:`Issues with Improving C++ <cpp_improvement_issues>`
 ***********************************************************
 
 Why we believe improvement of C++ is difficult.
