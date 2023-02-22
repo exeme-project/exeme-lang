@@ -2,12 +2,20 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "clang++ build and debug active file",
+            "name": "[WINDOWS] clang++ debug",
             "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/build/Debug/exeme.exe",
             "cwd": "${workspaceFolder}/build/Debug",
-            "preLaunchTask": "clang++ build active file"
-        }
+            "preLaunchTask": "[WINDOWS] clang++ build"
+        },
+        {
+            "name": "[LINUX] clang++ debug",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/exeme",
+            "cwd": "${workspaceFolder}/build/",
+            "preLaunchTask": "[LINUX] clang++ build"
+        },
     ]
 }
