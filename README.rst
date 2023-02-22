@@ -11,6 +11,35 @@
 An introduction to Exeme can be found on the `website
 <https://exeme-project.github.io/exeme-lang/>`__.
 
+**************
+ Example Code
+**************
+
+For those of you who like example code, here is a prime number checker
+written in Exeme. This code is analyzed in the `Design Specification
+<https://exeme-project.github.io/exeme-lang/design/index.html#the-basics>`_.
+
+.. code::
+
+   import "std.io"
+
+   using io::out
+
+   # Returns whether `n` itself is prime.
+   fn isPrime(n: i32) -> bool {
+       for _, d = range(2, n) { # '_' is the index, but it is not needed
+           if (n % d == 0) { # Can be divided without a remainder
+               return false
+           }
+       }
+
+       return true
+   }
+
+   fn main() {
+       out(isPrime(100))
+   }
+
 .. |Licensed under the MIT License| image:: https://img.shields.io/badge/License-MIT-blue.svg
    :target: https://github.com/exeme-project/exeme-lang/blob/master/LICENSE
 

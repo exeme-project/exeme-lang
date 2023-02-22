@@ -41,7 +41,7 @@ Here is a simple function showing some Exeme code:
    # Returns whether `n` itself is prime.
    fn isPrime(n: i32) -> bool {
        for _, d = range(2, n) { # '_' is the index, but it is not needed
-           if n % d == 0 { # Can be divided without a remainder
+           if (n % d == 0) { # Can be divided without a remainder
                return false
            }
        }
@@ -96,7 +96,7 @@ end of lines, etc), and have to start with ``#``.
    # Returns whether `n` itself is prime.
    ...
        for _, d = range(2, n) { # '_' is the index, but it is not needed.
-           if n % d == 0 { # Can be divided without a remainder.
+           if (n % d == 0) { # Can be divided without a remainder.
 
 Function declaration
 ====================

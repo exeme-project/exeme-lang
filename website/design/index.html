@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 <meta property="og:title" content="Design" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="design/index.html" />
@@ -266,7 +266,7 @@ descriptions.</p>
 <span class="c1"># Returns whether `n` itself is prime.</span>
 <span class="n">fn</span> <span class="n">isPrime</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">i32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="p">{</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># &#39;_&#39; is the index, but it is not needed</span>
-        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1"># Can be divided without a remainder</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># Can be divided without a remainder</span>
             <span class="k">return</span> <span class="n">false</span>
         <span class="p">}</span>
     <span class="p">}</span>
@@ -312,7 +312,7 @@ end of lines, etc), and have to start with <code class="docutils literal notrans
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Returns whether `n` itself is prime.</span>
 <span class="o">...</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># &#39;_&#39; is the index, but it is not needed.</span>
-        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1"># Can be divided without a remainder.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># Can be divided without a remainder.</span>
 </pre></div>
 </div>
 </section>
