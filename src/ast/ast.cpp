@@ -15,13 +15,19 @@
 struct AstToken;
 
 struct AstTokens {
-	enum class Identifiers { FN_DEF, Equals };
+	enum class Identifiers { Variable, Fn_Def, Equals };
 
-	struct FN_DEF {
+	struct Variable {
+		std::string name;
+
+		Variable(std::string name) { this->name = name; }
+	};
+
+	struct Fn_Def {
 		std::string fnName;
 		LexerToken *returnType;
 
-		FN_DEF(std::string fnName, LexerToken *returnType) {
+		Fn_Def(std::string fnName, LexerToken *returnType) {
 			this->fnName = fnName;
 			this->returnType = returnType;
 		}
@@ -38,18 +44,25 @@ struct AstTokens {
 	};
 };
 
-static std::vector<std::string> AstTokenNames = {"function definition"};
+static std::vector<std::string> AstTokenNames = {
+	"variable", "function definition", "assignment"};
 
 struct AstToken {
 	AstTokens::Identifiers identifier;
 	union {
-		AstTokens::FN_DEF *FN_DEF;
+		AstTokens::Variable *Variable;
+		AstTokens::Fn_Def *Fn_Def;
 		AstTokens::Equals *Equals;
 	};
 
-	AstToken(AstTokens::Identifiers identifier, AstTokens::FN_DEF *FN_DEF) {
+	AstToken(AstTokens::Identifiers identifier, AstTokens::Variable *Variable) {
 		this->identifier = identifier;
-		this->FN_DEF = FN_DEF;
+		this->Variable = Variable;
+	}
+
+	AstToken(AstTokens::Identifiers identifier, AstTokens::Fn_Def *Fn_Def) {
+		this->identifier = identifier;
+		this->Fn_Def = Fn_Def;
 	}
 
 	AstToken(AstTokens::Identifiers identifier, AstTokens::Equals *Equals) {
@@ -60,12 +73,25 @@ struct AstToken {
 
 class Ast {
   private:
+	AstToken *convertToken(LexerToken *token) {
+		switch (token->identifier) {
+		case LexerTokens::Variable:
+			return new AstToken(AstTokens::Identifiers::Variable,
+								new AstTokens::Variable(token->value));
+		default:
+			std::cout << "NotImplemented: Cannot convert '"
+					  << LexerTokenNames[static_cast<size_t>(token->identifier)]
+					  << "' to an 'AstToken*' yet.";
+			return nullptr;
+		}
+	}
+
 	AstToken *parseFnDecl(const std::string fnName) {
 		bool expectingComma = false;
 
 		auto fnToken =
-			new AstToken(AstTokens::Identifiers::FN_DEF,
-						 new AstTokens::FN_DEF(
+			new AstToken(AstTokens::Identifiers::Fn_Def,
+						 new AstTokens::Fn_Def(
 							 fnName,
 							 nullptr)); // TODO: null variable, not 'nullptr'.
 
@@ -105,7 +131,7 @@ class Ast {
 							token->startChrIndex);
 					}
 
-					fnToken->FN_DEF->returnType = token;
+					fnToken->Fn_Def->returnType = token;
 
 					if (!this->lexer->lex(false, false)) {
 						this->lexer->error(
@@ -229,29 +255,31 @@ class Ast {
 		}
 	}
 
-	void parseEquals() {
-		auto tokensSize = this->lexer->tokens.size();
-
-		if (tokensSize < 2) {
-			this->lexer->error(
-				"missing first operand for '" +
-					LexerTokenNames[static_cast<size_t>(LexerTokens::Equals)] +
-					"'",
-				0);
-		}
-
+	void parseAssignment() {
 		auto token = new AstToken(AstTokens::Identifiers::Equals,
 								  new AstTokens::Equals(nullptr, nullptr));
 
 		if (this->token == nullptr) {
-			// TODO: Convert 'this->token' to an 'AstToken*' type. Implement a
-			// function for this that calls the token's respective converter.
+			auto tokensSize = this->lexer->tokens.size();
+
+			if (tokensSize < 2) { // 2 because of assignment operator token.
+				this->lexer->error("missing first operand for '" +
+									   LexerTokenNames[static_cast<size_t>(
+										   LexerTokens::EqualTo)] +
+									   "'",
+								   0);
+			}
+
+			token->Equals->op1 =
+				this->convertToken(this->lexer->tokens[tokensSize - 2]);
 		} else {
 			token->Equals->op1 = this->token;
 			this->token = nullptr;
 		}
 
 		// TODO: Get the second operand of the assignment operator.
+
+		this->token = token;
 	}
 
 	void parseToken(LexerToken *token) {
@@ -259,8 +287,8 @@ class Ast {
 		case LexerTokens::Keyword:
 			parseKeyword(token);
 			break;
-		case LexerTokens::Equals:
-			parseEquals();
+		case LexerTokens::Assignment:
+			parseAssignment();
 			break;
 		default:
 			break;

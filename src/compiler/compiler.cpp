@@ -9,11 +9,12 @@ class Compiler {
   private:
 	void compileNext(struct AstToken *token) {
 		if (token != nullptr) {
-			std::cout << AstTokenNames[static_cast<size_t>(token->identifier)]
-					  << "\n\n";
+			std::cout << "Compiler received token '"
+					  << AstTokenNames[static_cast<size_t>(token->identifier)]
+					  << "'\n\n";
 		} else {
-			std::cout
-				<< "Got token, but its parsing is not implemented yet\n\n";
+			std::cout << "NotImplemented: Parsing of the received token is not "
+						 "implemented yet\n\n";
 		}
 	}
 

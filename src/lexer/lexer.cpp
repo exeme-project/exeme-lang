@@ -27,11 +27,65 @@ enum class LexerTokens {
 	Keyword,
 	Variable,
 
-	// Data types
 	Chr,
 	String,
 	Integer,
 	Float,
+
+	// Arithmetic operators
+	Modulo, // '%'
+
+	Exponent,		// '**'
+	Division,		// '/'
+	FloorDivision,	// '//'
+	Multiplication, // '*'
+	Addition,		// '+'
+	Subtraction,	// '-'
+
+	// Comparison / relational operators
+	EqualTo,			// '=='
+	NotEqualTo,			// '!='
+	GreaterThan,		// '>'
+	LessThan,			// '<'
+	GreaterThanOrEqual, // '>='
+	LessThanOrEqual,	// '<='
+
+	// Logical operators
+	LogicalAnd, // '&&'
+	LogicalOr,	// '||'
+	LogicalNot, // '!'
+
+	// Bitwise operators
+	BitwiseAND,		   // '&'
+	BitwiseOR,		   // '|'
+	BitwiseXOR,		   // '^'
+	BitwiseNOT,		   // '~'
+	BitwiseLeftShift,  // '<<'
+	BitwiseRightShift, // '>>'
+
+	// Assignment operators
+	Assignment,		  // '='
+	ModuloAssignment, // '%='
+
+	ExponentAssignment,		  // '**='
+	DivisionAssignment,		  // '/='
+	FloorDivisionAssignment,  // '//='
+	MultiplicationAssignment, // '*='
+	AdditionAssignment,		  // '+='
+	SubtractionAssignment,	  // '-='
+
+	BitwiseANDAssignment,		 // '&='
+	BitwiseORAssignment,		 // '|='
+	BitwiseXORAssignment,		 // '^='
+	BitwiseNotAssignment,		 // '~='
+	BitwiseLeftShiftAssignment,	 // '<<='
+	BitwiseRightShiftAssignment, // '>>='
+
+	// Member and pointer operators
+	Dot,	   // '.'
+	Comma,	   // ','
+	Arrow,	   // '->'
+	AddressOf, // '@'
 
 	// Syntactic constructs
 	OpenBrace,		  // '('
@@ -40,52 +94,6 @@ enum class LexerTokens {
 	CloseBrace,		  // ')'
 	CloseSquareBrace, // ']'
 	CloseCurlyBrace,  // '}'
-	Comma,			  // ','
-	Period,			  // '.'
-	At,				  // '@'
-	Hashtag,		  // '#'
-	Arrow,			  // '->'
-
-	// Operators (order is important)
-	Exponent,	 // '**'
-	Divide,		 // '/'
-	FloorDivide, // '//'
-	Multiply,	 // '*'
-	Add,		 // '+'
-	Subtract,	 // '-'
-	Modulo,		 // '%'
-
-	// Relational operators
-	GreaterThan,	   // '>'
-	GreaterThanEquals, // '>='
-	LessThan,		   // '<'
-	LessThanEquals,	   // '<='
-
-	// Assignment operators
-	Equals,			   // '='
-	ExponentEquals,	   // '**='
-	DivideEquals,	   // '/='
-	FloorDivideEquals, // '//='
-	MultiplyEquals,	   // '*='
-	AddEquals,		   // '+='
-	SubtractEquals,	   // '-='
-	ModuloEquals,	   // '%='
-
-	// Logical operators
-	And, // '&&'
-	Or,	 // '||'
-	Not, // '!'
-
-	// Comparison operators
-	Equality,  // '=='
-	NotEquals, // '!='
-
-	// Bitwise operators
-	AND,		// '&'
-	OR,			// '|'
-	XOR,		// '^'
-	LEFTSHIFT,	// '<<'
-	RIGHTSHIFT, // '>>'
 };
 
 /**
@@ -98,47 +106,52 @@ static std::vector<std::string> LexerTokenNames = {
 	"string",
 	"integer",
 	"float",
+	"modulo operator",
+	"exponent operator",
+	"division operator",
+	"floor division operator",
+	"multiplication operator",
+	"addition operator",
+	"subtraction operator",
+	"equal to operator",
+	"not equal to operator",
+	"greater then operator",
+	"less than operator",
+	"greater than or equal operator",
+	"less than or equal operator",
+	"logical and operator",
+	"logical or operator",
+	"logical not operator",
+	"bitwise AND operator",
+	"bitwise OR operator",
+	"bitwise XOR operator",
+	"bitwise NOT operator",
+	"bitwise left shift",
+	"bitwise right shift",
+	"assignment operator",
+	"modulo assignment operator",
+	"exponent assignment operator",
+	"divison assignment operator",
+	"floor division assignment operator",
+	"multiplication assignment operator",
+	"addition assignment operator",
+	"subtraction assignment operator",
+	"bitwise AND assignment operator",
+	"bitwise OR assignment operator",
+	"bitwise XOR assignment operator",
+	"bitwise NOT assignment operator",
+	"bitwise left shift assignment operator",
+	"bitwise right shift assignment operator",
+	"dot operator",
+	"comma operator",
+	"arrow operator",
+	"address of operator",
 	"open brace",
 	"open square brace",
 	"open curly brace",
 	"close brace",
 	"close sqaure brace",
 	"close curly brace",
-	"comma",
-	"period",
-	"at symbol",
-	"hashtag",
-	"arrow",
-	"exponent operator",
-	"divide operator",
-	"floor divide operator",
-	"multiply operator",
-	"add operator",
-	"subtract operator",
-	"modulo operator",
-	"greater than symbol",
-	"greater than equals symbol",
-	"less than symbol",
-	"less than equals symbol",
-	"assignment operator",
-	"exponent equals operator",
-	"divide equals operator",
-	"floor divide equals operator",
-	"multiply equals operator",
-	"add equals operator",
-	"subtract equals operator",
-	"modulo equals operator",
-	"and symbol",
-	"or symbol",
-	"not symbol",
-	"equality comparison symbol",
-	"not equals comparison symbol",
-	"bitwise AND",
-	"bitwise OR",
-	"bitwise XOR",
-	"bitwise left shift",
-	"bitwise right shift",
-	"end of line",
 };
 
 /**
@@ -388,8 +401,8 @@ class Lexer {
 	 * Lex a '=' token.
 	 */
 	void lexEquals() {
-		LexerToken *token = this->checkForRepetition(LexerTokens::Equals,
-													 LexerTokens::Equality);
+		LexerToken *token = this->checkForRepetition(LexerTokens::Assignment,
+													 LexerTokens::EqualTo);
 
 		this->tokens.emplace_back(token);
 
@@ -548,16 +561,32 @@ class Lexer {
 	}
 
 	/**
-	 * Lex '*'.
+	 * Lex '%'.
 	 */
-	void lexMultiply() {
-		LexerToken *token = this->checkForRepetition(LexerTokens::Multiply,
-													 LexerTokens::Exponent);
+	void lexModulo() {
+		LexerToken *token =
+			new LexerToken(LexerTokens::Modulo, this->chrIndex, this->chrIndex,
+						   this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = token->identifier == LexerTokens::Multiply
-									? LexerTokens::MultiplyEquals
-									: LexerTokens::ExponentEquals;
+			token->identifier = LexerTokens::ModuloAssignment;
+		}
+
+		this->tokens.emplace_back(token);
+		this->checkForContinuation(token->value);
+	}
+
+	/**
+	 * Lex '*'.
+	 */
+	void lexMultiplication() {
+		LexerToken *token = this->checkForRepetition(
+			LexerTokens::Multiplication, LexerTokens::Exponent);
+
+		if (this->checkForTrailingChr(token, '=')) {
+			token->identifier = token->identifier == LexerTokens::Multiplication
+									? LexerTokens::MultiplicationAssignment
+									: LexerTokens::ExponentAssignment;
 		}
 
 		this->tokens.emplace_back(token);
@@ -567,14 +596,14 @@ class Lexer {
 	/**
 	 * Lex '/'.
 	 */
-	void lexDivide() {
-		LexerToken *token = this->checkForRepetition(LexerTokens::Divide,
-													 LexerTokens::FloorDivide);
+	void lexDivision() {
+		LexerToken *token = this->checkForRepetition(
+			LexerTokens::Division, LexerTokens::FloorDivision);
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = token->identifier == LexerTokens::Divide
-									? LexerTokens::DivideEquals
-									: LexerTokens::FloorDivideEquals;
+			token->identifier = token->identifier == LexerTokens::Division
+									? LexerTokens::DivisionAssignment
+									: LexerTokens::FloorDivisionAssignment;
 		}
 
 		this->tokens.emplace_back(token);
@@ -584,13 +613,13 @@ class Lexer {
 	/**
 	 * Lex '+'.
 	 */
-	void lexAdd() {
-		LexerToken *token =
-			new LexerToken(LexerTokens::Add, this->chrIndex, this->chrIndex,
-						   this->lineNum, std::string(1, this->chr));
+	void lexAddition() {
+		LexerToken *token = new LexerToken(
+			LexerTokens::Addition, this->chrIndex, this->chrIndex,
+			this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = LexerTokens::AddEquals;
+			token->identifier = LexerTokens::AdditionAssignment;
 		}
 
 		this->tokens.emplace_back(token);
@@ -600,31 +629,15 @@ class Lexer {
 	/**
 	 * Lex '-'.
 	 */
-	void lexSubtract() {
+	void lexSubtraction() {
 		LexerToken *token = new LexerToken(
-			LexerTokens::Subtract, this->chrIndex, this->chrIndex,
+			LexerTokens::Subtraction, this->chrIndex, this->chrIndex,
 			this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = LexerTokens::SubtractEquals;
+			token->identifier = LexerTokens::SubtractionAssignment;
 		} else if (this->checkForTrailingChr(token, '>')) {
 			token->identifier = LexerTokens::Arrow;
-		}
-
-		this->tokens.emplace_back(token);
-		this->checkForContinuation(token->value);
-	}
-
-	/**
-	 * Lex '%'.
-	 */
-	void lexModulo() {
-		LexerToken *token =
-			new LexerToken(LexerTokens::Modulo, this->chrIndex, this->chrIndex,
-						   this->lineNum, std::string(1, this->chr));
-
-		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = LexerTokens::ModuloEquals;
 		}
 
 		this->tokens.emplace_back(token);
@@ -635,14 +648,14 @@ class Lexer {
 	 * Lex '>'.
 	 */
 	void lexGreaterThan() {
-		LexerToken *token = new LexerToken(
-			LexerTokens::GreaterThan, this->chrIndex, this->chrIndex,
-			this->lineNum, std::string(1, this->chr));
+		LexerToken *token = this->checkForRepetition(
+			LexerTokens::GreaterThan, LexerTokens::BitwiseRightShift);
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = LexerTokens::GreaterThanEquals;
-		} else if (this->checkForTrailingChr(token, '>')) {
-			token->identifier = LexerTokens::RIGHTSHIFT;
+			token->identifier =
+				(token->identifier == LexerTokens::GreaterThan
+					 ? LexerTokens::GreaterThanOrEqual
+					 : LexerTokens::BitwiseRightShiftAssignment);
 		}
 
 		this->tokens.emplace_back(token);
@@ -653,46 +666,13 @@ class Lexer {
 	 * Lex '<'.
 	 */
 	void lexLessThan() {
-		LexerToken *token = new LexerToken(
-			LexerTokens::LessThan, this->chrIndex, this->chrIndex,
-			this->lineNum, std::string(1, this->chr));
+		LexerToken *token = this->checkForRepetition(
+			LexerTokens::LessThan, LexerTokens::BitwiseLeftShift);
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = LexerTokens::LessThanEquals;
-		} else if (this->checkForTrailingChr(token, '>')) {
-			token->identifier = LexerTokens::LEFTSHIFT;
-		}
-
-		this->tokens.emplace_back(token);
-		this->checkForContinuation(token->value);
-	}
-
-	/**
-	 * Lex '&'.
-	 */
-	void lexAnd() {
-		LexerToken *token =
-			new LexerToken(LexerTokens::AND, this->chrIndex, this->chrIndex,
-						   this->lineNum, std::string(1, this->chr));
-
-		if (this->checkForTrailingChr(token, '&')) {
-			token->identifier = LexerTokens::And;
-		}
-
-		this->tokens.emplace_back(token);
-		this->checkForContinuation(token->value);
-	}
-
-	/**
-	 * Lex '|'.
-	 */
-	void lexOr() {
-		LexerToken *token =
-			new LexerToken(LexerTokens::Or, this->chrIndex, this->chrIndex,
-						   this->lineNum, std::string(1, this->chr));
-
-		if (this->checkForTrailingChr(token, '|')) {
-			token->identifier = LexerTokens::OR;
+			token->identifier = (token->identifier == LexerTokens::LessThan
+									 ? LexerTokens::LessThanOrEqual
+									 : LexerTokens::BitwiseLeftShiftAssignment);
 		}
 
 		this->tokens.emplace_back(token);
@@ -702,13 +682,79 @@ class Lexer {
 	/**
 	 * Lex '!'.
 	 */
-	void lexNot() {
-		LexerToken *token =
-			new LexerToken(LexerTokens::Not, this->chrIndex, this->chrIndex,
-						   this->lineNum, std::string(1, this->chr));
+	void lexLogicalNot() {
+		LexerToken *token = new LexerToken(
+			LexerTokens::LogicalNot, this->chrIndex, this->chrIndex,
+			this->lineNum, std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
-			token->identifier = LexerTokens::NotEquals;
+			token->identifier = LexerTokens::NotEqualTo;
+		}
+
+		this->tokens.emplace_back(token);
+		this->checkForContinuation(token->value);
+	}
+
+	/**
+	 * Lex '&'.
+	 */
+	void lexBitwiseAND() {
+		LexerToken *token = this->checkForRepetition(LexerTokens::BitwiseAND,
+													 LexerTokens::LogicalAnd);
+
+		if (token->identifier == LexerTokens::BitwiseAND) {
+			if (this->checkForTrailingChr(token, '=')) {
+				token->identifier = LexerTokens::BitwiseANDAssignment;
+			}
+		}
+
+		this->tokens.emplace_back(token);
+		this->checkForContinuation(token->value);
+	}
+
+	/**
+	 * Lex '|'.
+	 */
+	void lexBitwiseOR() {
+		LexerToken *token = this->checkForRepetition(LexerTokens::BitwiseOR,
+													 LexerTokens::LogicalOr);
+
+		if (token->identifier == LexerTokens::BitwiseAND) {
+			if (this->checkForTrailingChr(token, '=')) {
+				token->identifier = LexerTokens::BitwiseORAssignment;
+			}
+		}
+
+		this->tokens.emplace_back(token);
+		this->checkForContinuation(token->value);
+	}
+
+	/**
+	 * Lex '^'.
+	 */
+	void lexBitwiseXOR() {
+		LexerToken *token = new LexerToken(
+			LexerTokens::BitwiseXOR, this->chrIndex, this->chrIndex,
+			this->lineNum, std::string(1, this->chr));
+
+		if (this->checkForTrailingChr(token, '=')) {
+			token->identifier = LexerTokens::BitwiseXORAssignment;
+		}
+
+		this->tokens.emplace_back(token);
+		this->checkForContinuation(token->value);
+	}
+
+	/**
+	 * Lex '~'.
+	 */
+	void lexBitwiseNOT() {
+		LexerToken *token = new LexerToken(
+			LexerTokens::BitwiseNOT, this->chrIndex, this->chrIndex,
+			this->lineNum, std::string(1, this->chr));
+
+		if (this->checkForTrailingChr(token, '=')) {
+			token->identifier = LexerTokens::BitwiseNotAssignment;
 		}
 
 		this->tokens.emplace_back(token);
@@ -761,40 +807,40 @@ class Lexer {
 				new LexerToken(LexerTokens::CloseCurlyBrace, this->chrIndex,
 							   this->chrIndex, this->lineNum, ""));
 			break;
+		case '.':
+			this->tokens.emplace_back(
+				new LexerToken(LexerTokens::Dot, this->chrIndex, this->chrIndex,
+							   this->lineNum, ""));
+			break;
 		case ',':
 			this->tokens.emplace_back(
 				new LexerToken(LexerTokens::Comma, this->chrIndex,
 							   this->chrIndex, this->lineNum, ""));
 			break;
-		case '.':
-			this->tokens.emplace_back(
-				new LexerToken(LexerTokens::Period, this->chrIndex,
-							   this->chrIndex, this->lineNum, ""));
-			break;
 		case '@':
 			this->tokens.emplace_back(
-				new LexerToken(LexerTokens::At, this->chrIndex, this->chrIndex,
-							   this->lineNum, ""));
+				new LexerToken(LexerTokens::AddressOf, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
 			break;
 		case '#':
 			while (this->getChr(false)) { // Skip to the end of the line
 			}
 
 			return false;
-		case '*':
-			this->lexMultiply();
-			break;
-		case '/':
-			this->lexDivide();
-			break;
-		case '+':
-			this->lexAdd();
-			break;
-		case '-':
-			this->lexSubtract();
-			break;
 		case '%':
 			this->lexModulo();
+			break;
+		case '*':
+			this->lexMultiplication();
+			break;
+		case '/':
+			this->lexDivision();
+			break;
+		case '+':
+			this->lexAddition();
+			break;
+		case '-':
+			this->lexSubtraction();
 			break;
 		case '>':
 			this->lexGreaterThan();
@@ -802,14 +848,20 @@ class Lexer {
 		case '<':
 			this->lexLessThan();
 			break;
+		case '!':
+			this->lexLogicalNot();
+			break;
 		case '&':
-			this->lexAnd();
+			this->lexBitwiseAND();
 			break;
 		case '|':
-			this->lexOr();
+			this->lexBitwiseOR();
 			break;
-		case '!':
-			this->lexNot();
+		case '^':
+			this->lexBitwiseXOR();
+			break;
+		case '~':
+			this->lexBitwiseNOT();
 			break;
 		default:
 			if (isalpha(this->chr)) {
