@@ -3,6 +3,10 @@
 
 #pragma once
 
+#include <cstddef>
+
+#define DEBUG 0
+
 #if defined(_WIN32) || defined(_WIN64)
 #define OS 1
 #elif defined(__linux__)
@@ -15,4 +19,4 @@
 #define OS 0
 #endif
 
-const auto negative_index = static_cast<size_t>(-1);
+const auto negativeIndex = static_cast<size_t>(-1);

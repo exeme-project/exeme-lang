@@ -12,8 +12,10 @@
 #include "../utils/globals.cpp"
 #include "../utils/hash.cpp"
 
+struct AstToken;
+
 struct AstTokens {
-	enum class Identifiers { FN_DEF };
+	enum class Identifiers { FN_DEF, Equals };
 
 	struct FN_DEF {
 		std::string fnName;
@@ -24,6 +26,16 @@ struct AstTokens {
 			this->returnType = returnType;
 		}
 	};
+
+	struct Equals {
+		AstToken *op1;
+		AstToken *op2;
+
+		Equals(AstToken *op1, AstToken *op2) {
+			this->op1 = op1;
+			this->op2 = op2;
+		}
+	};
 };
 
 static std::vector<std::string> AstTokenNames = {"function definition"};
@@ -32,11 +44,17 @@ struct AstToken {
 	AstTokens::Identifiers identifier;
 	union {
 		AstTokens::FN_DEF *FN_DEF;
+		AstTokens::Equals *Equals;
 	};
 
 	AstToken(AstTokens::Identifiers identifier, AstTokens::FN_DEF *FN_DEF) {
 		this->identifier = identifier;
 		this->FN_DEF = FN_DEF;
+	}
+
+	AstToken(AstTokens::Identifiers identifier, AstTokens::Equals *Equals) {
+		this->identifier = identifier;
+		this->Equals = Equals;
 	}
 };
 
@@ -60,7 +78,7 @@ class Ast {
 										   LexerTokenNames[static_cast<size_t>(
 											   LexerTokens::OpenCurlyBrace)] +
 										   "' (as start of function body)",
-									   negative_index);
+									   negativeIndex);
 				}
 
 				auto token =
@@ -69,7 +87,7 @@ class Ast {
 				if (token->identifier == LexerTokens::Arrow) {
 					if (!this->lexer->lex(false, false)) {
 						this->lexer->error("expected function return type",
-										   negative_index);
+										   negativeIndex);
 					}
 
 					auto token =
@@ -95,7 +113,7 @@ class Ast {
 								LexerTokenNames[static_cast<size_t>(
 									LexerTokens::OpenCurlyBrace)] +
 								"' (as start of function body)",
-							negative_index);
+							negativeIndex);
 					}
 
 					token = this->lexer->tokens[this->lexer->tokens.size() - 1];
@@ -123,6 +141,7 @@ class Ast {
 						token->startChrIndex);
 				}
 
+				this->lexer->clearTokens();
 				return fnToken;
 			} else if (token->identifier == LexerTokens::Comma) {
 				if (!expectingComma) {
@@ -130,7 +149,7 @@ class Ast {
 										   LexerTokenNames[static_cast<size_t>(
 											   LexerTokens::Comma)] +
 										   "'",
-									   negative_index);
+									   negativeIndex);
 				}
 
 				expectingComma = false;
@@ -149,14 +168,14 @@ class Ast {
 			// TODO: Parser parameter / argument.
 		}
 
-		this->lexer->error("unterminated function declaration", negative_index);
+		this->lexer->error("unterminated function declaration", negativeIndex);
 	}
 
 	void parseKeywordFn() {
 		this->lexer->clearTokens();
 
 		if (!this->lexer->lex(false, false)) {
-			this->lexer->error("expected function name", negative_index);
+			this->lexer->error("expected function name", negativeIndex);
 		}
 
 		auto fnNameToken = this->lexer->tokens[this->lexer->tokens.size() - 1];
@@ -183,7 +202,7 @@ class Ast {
 								   LexerTokenNames[static_cast<size_t>(
 									   LexerTokens::OpenBrace)] +
 								   "to start function arguments",
-							   negative_index);
+							   negativeIndex);
 		}
 
 		auto fnArgsOpenBrace =
@@ -210,6 +229,27 @@ class Ast {
 		}
 	}
 
+	void parseEquals() {
+		if (this->token == nullptr) {
+			// Initialize token from lexer token.
+		} else {
+			// Initialize token from 'this->token';
+		}
+	}
+
+	void parseToken(LexerToken *token) {
+		switch (token->identifier) {
+		case LexerTokens::Keyword:
+			parseKeyword(token);
+			break;
+		case LexerTokens::Equals:
+			parseEquals();
+			break;
+		default:
+			break;
+		}
+	}
+
   public:
 	Lexer *lexer;
 	struct AstToken *token;
@@ -220,23 +260,25 @@ class Ast {
 	}
 
 	bool parse() {
-		if (!this->lexer->tokens.empty()) {
-			this->lexer->tokens.clear();
+		if (!this->lexer->lex(false, false)) { // New line
+			if (DEBUG == 1) {
+				if (!this->lexer->tokens.empty()) {
+					auto token =
+						this->lexer->tokens[this->lexer->tokens.size() - 1];
+
+					this->lexer->lineNum = token->lineNum;
+					this->lexer->chrIndex = token->chrIndex;
+					this->lexer->error("token has no effect",
+									   token->startChrIndex);
+				}
+			}
+
+			if (!this->lexer->lex(true, true)) {
+				return false;
+			}
 		}
 
-		if (!this->lexer->lex(true, true)) {
-			return false;
-		}
-
-		auto token = this->lexer->tokens[this->lexer->tokens.size() - 1];
-
-		switch (token->identifier) {
-		case LexerTokens::Keyword:
-			parseKeyword(token);
-			break;
-		default:
-			break;
-		}
+		this->parseToken(this->lexer->tokens[this->lexer->tokens.size() - 1]);
 
 		return true;
 	}

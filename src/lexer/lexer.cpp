@@ -175,7 +175,6 @@ class Lexer {
   private:
 	bool closed;
 	char chr, prevChr;
-	size_t chrIndex, lineNum;
 	std::string filePath;
 	std::ifstream file;
 
@@ -267,7 +266,7 @@ class Lexer {
 		this->prevChr = this->chr;
 		this->chr = '\0';
 
-		this->chrIndex = static_cast<size_t>(negative_index);
+		this->chrIndex = static_cast<size_t>(negativeIndex);
 		this->lineNum++;
 
 		if (!this->getChr(
@@ -378,7 +377,7 @@ class Lexer {
 		if (this->getChr(false)) {
 			if (!isspace(this->chr)) {
 				this->error("unexpected continuation of token '" + token + "'",
-							negative_index);
+							negativeIndex);
 			}
 
 			this->unGetChr();
@@ -482,10 +481,9 @@ class Lexer {
 			}
 
 			if (this->chr == '.') {
-				this->error("too many decimal points for float",
-							negative_index);
+				this->error("too many decimal points for float", negativeIndex);
 			} else if (!isdigit(this->chr)) {
-				this->error("invalid character for integer", negative_index);
+				this->error("invalid character for integer", negativeIndex);
 			}
 
 			integer += this->chr;
@@ -515,7 +513,7 @@ class Lexer {
 			if (this->chr == '.') {
 				return lexFloat(startChrIndex, integer);
 			} else if (!isdigit(this->chr)) {
-				this->error("invalid character for integer", negative_index);
+				this->error("invalid character for integer", negativeIndex);
 			}
 		}
 
@@ -819,7 +817,7 @@ class Lexer {
 			} else if (isdigit(this->chr)) {
 				this->lexInteger();
 			} else {
-				this->error("unknown character", negative_index);
+				this->error("unknown character", negativeIndex);
 			}
 
 			break;
@@ -829,6 +827,7 @@ class Lexer {
 	}
 
   public:
+	size_t chrIndex, lineNum;
 	std::vector<LexerToken *> tokens;
 
 	/**
@@ -882,7 +881,7 @@ class Lexer {
 
 		std::cout << this->lineNum << " | " << line << "\n";
 
-		if (startChrIndex == static_cast<size_t>(negative_index) ||
+		if (startChrIndex == static_cast<size_t>(negativeIndex) ||
 			startChrIndex == this->chrIndex) {
 			std::cout << std::string(length + this->chrIndex, ' ') << "^ "
 					  << Foreground::BRIGHT_RED << Style::BOLD
