@@ -230,11 +230,28 @@ class Ast {
 	}
 
 	void parseEquals() {
-		if (this->token == nullptr) {
-			// Initialize token from lexer token.
-		} else {
-			// Initialize token from 'this->token';
+		auto tokensSize = this->lexer->tokens.size();
+
+		if (tokensSize < 2) {
+			this->lexer->error(
+				"missing first operand for '" +
+					LexerTokenNames[static_cast<size_t>(LexerTokens::Equals)] +
+					"'",
+				0);
 		}
+
+		auto token = new AstToken(AstTokens::Identifiers::Equals,
+								  new AstTokens::Equals(nullptr, nullptr));
+
+		if (this->token == nullptr) {
+			// TODO: Convert 'this->token' to an 'AstToken*' type. Implement a
+			// function for this that calls the token's respective converter.
+		} else {
+			token->Equals->op1 = this->token;
+			this->token = nullptr;
+		}
+
+		// TODO: Get the second operand of the assignment operator.
 	}
 
 	void parseToken(LexerToken *token) {
@@ -261,7 +278,7 @@ class Ast {
 
 	bool parse() {
 		if (!this->lexer->lex(false, false)) { // New line
-			if (DEBUG == 1) {
+			if (TESTING == 0) {
 				if (!this->lexer->tokens.empty()) {
 					auto token =
 						this->lexer->tokens[this->lexer->tokens.size() - 1];

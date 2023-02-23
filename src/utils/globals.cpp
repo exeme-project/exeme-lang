@@ -5,7 +5,7 @@
 
 #include <cstddef>
 
-#define DEBUG 0
+#define TESTING 1
 
 #if defined(_WIN32) || defined(_WIN64)
 #define OS 1
