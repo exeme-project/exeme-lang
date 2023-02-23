@@ -3,7 +3,7 @@
    <!-- Part of the Exeme language project, under the MIT license. See '/LICENSE' for license information. SPDX-License-Identifier: MIT License. -->
 
 ###########################
- Issues with improving C++
+ Issues with Improving C++
 ###########################
 
 C++ is the dominant programming language for performance critical

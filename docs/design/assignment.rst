@@ -32,7 +32,7 @@ The operands of the ``=`` operator can be any :doc:`expression
 <expressions/index>`.
 
 *******************************
- Compound assignment semantics
+ Compound Assignment Semantics
 *******************************
 
 The syntax ``x $= y`` is intended to be a shortened form of ``x = x $
@@ -46,7 +46,7 @@ y``, except in the following circumstances:
    that are required.
 
 ****************
- Built-in types
+ Built-in Types
 ****************
 
 Integers, floats, etc, support simple assignment with ``=``. The

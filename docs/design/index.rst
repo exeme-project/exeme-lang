@@ -20,7 +20,7 @@ provide a detailed and comprehensive justification for design decisions.
 See the linked pages for more detailed justifications.
 
 ************
- The basics
+ The Basics
 ************
 
 Here is a simple function showing some Exeme code:
@@ -41,7 +41,7 @@ Here is a simple function showing some Exeme code:
    # Returns whether `n` itself is prime.
    fn isPrime(n: i32) -> bool {
        for _, d = range(2, n) { # '_' is the index, but it is not needed
-           if n % d == 0 { # Can be divided without a remainder
+           if (n % d == 0) { # Can be divided without a remainder
                return false
            }
        }
@@ -96,9 +96,9 @@ end of lines, etc), and have to start with ``#``.
    # Returns whether `n` itself is prime.
    ...
        for _, d = range(2, n) { # '_' is the index, but it is not needed.
-           if n % d == 0 { # Can be divided without a remainder.
+           if (n % d == 0) { # Can be divided without a remainder.
 
-Function declaration
+Function Declaration
 ====================
 
 A :doc:`function declaration <index>` consists of:
@@ -131,7 +131,7 @@ Here ``i32`` refers to a signed :doc:`integer type <index>`, with
 :doc:`floating-point types <index>` such as ``f32``, and :doc:`string
 types <index>`.
 
-Variable declaration
+Variable Declaration
 ====================
 
 A :doc:`variable declaration <index>` has 2 parts:
@@ -166,7 +166,7 @@ statement <assignment>`:
    i += 1
    i -= 1
 
-Constant variable declaration
+Constant Variable Declaration
 -----------------------------
 
 Constants are declared by subscripting the ``const`` type with the
@@ -177,7 +177,7 @@ data type that do not allow overwriting of the inner value.
 
    i: const[i32] = 1
 
-Control flow statements
+Control Flow Statements
 =======================
 
 These statements (including ``if``, ``while``, ``for``, ``break``, and
@@ -187,7 +187,7 @@ C++:
 .. code::
 
    for _, d = range(2, n) {
-       if n % d == 0 {
+       if (n % d == 0) {
            ...
        }
    }
@@ -220,24 +220,24 @@ are completely ignored by the compiler.
    # Can be divided without a remainder
 
 *************
- Build modes
+ Build Modes
 *************
 
 The behavior of the Exeme compiler, and the performance of the resultant
 executable depends on the *build mode*:
 
-Development build
+Development Build
 =================
 
 The priority is diagnosing problems, so build times are the fastest.
 
-Performance build
+Performance Build
 =================
 
 The priority is a highly optimized binary, with faster execution times.
 
 *****************
- Primitive types
+ Primitive Types
 *****************
 
 Primitive types fall into the following categories:
@@ -259,7 +259,7 @@ The type ``bool`` is a boolean with two possible values - ``true`` or
 type. The arguments in :doc:`control-flow statements <index>` (such as
 :doc:`if <index>` and :doc:`while <index>`) take ``bool`` values.
 
-Integer types
+Integer Types
 =============
 
 .. note::
@@ -267,13 +267,13 @@ Integer types
    ``X`` has to be a positive multiple of 8. ``0`` is neither positive
    nor negative, and so is not valid.
 
-Signed integer types
+Signed Integer Types
 --------------------
 
 The signed-integer type with bit width ``X`` may be written as ``iX``.
 For example, ``i32`` is a signed 32-Bit integer.
 
-Unsigned integer types
+Unsigned Integer Types
 ----------------------
 
 The unsigned-integer type with bit width ``X`` may be written as

@@ -18,7 +18,7 @@ priorities helps the community to evaluate and use the language
 effectively.
 
 ***************
- Project goals
+ Project Goals
 ***************
 
 Community
@@ -33,8 +33,8 @@ working on Exeme in many different situations - volunteering, studying,
 teaching or as a hobby. There are a number of key ingredients that are
 needed to achieve this.
 
-The community and project needs a code of conduct.
---------------------------------------------------
+The community and project needs a code of conduct
+-------------------------------------------------
 
 Our intention is for the Exeme community to be a welcoming and
 respectful place. Regardless of a community member's status, we need to
@@ -46,8 +46,8 @@ expectations and have effective community moderation mechanisms in
 place. When behavior does step out of line, we need to have tools and
 policies in place for how we will identify and manage it.
 
-An open process for Exeme changes.
-----------------------------------
+An open process for Exeme changes
+---------------------------------
 
 The Community needs to be able to get involved effectively in developing
 the language, while keeping the process efficient. In other words, we
@@ -76,7 +76,7 @@ language. This includes not only a compiler and standard library, but
 also a broad range of other tools that enable developers to be more
 productive.
 
-Reference implementation
+Reference Implementation
 ------------------------
 
 We will provide a reference implementation. This allows the language to

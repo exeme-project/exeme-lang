@@ -54,7 +54,7 @@ forwards compatability.
    the language's goals.
 
 ****************
- Project status
+ Project Status
 ****************
 
 Exeme is **not** ready for use - it is a work in progress, and there is
@@ -67,7 +67,7 @@ contributing, we would love help with completing the compiler.
    the expected progress of the Exeme programming language.
 
 *********
- Join us
+ Join Us
 *********
 
 Exeme is committed to maintaining a welcoming and inclusive environment

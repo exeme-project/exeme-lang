@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 <meta property="og:title" content="Design" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="design/index.html" />
@@ -186,7 +186,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../project/index.html">Project</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../project/cpp_improvement_issues.html">Issues with improving C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../project/cpp_improvement_issues.html">Issues with Improving C++</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../project/goals.html">Goals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../project/roadmap.html">Roadmap</a></li>
 </ul>
@@ -250,7 +250,7 @@ provide a detailed and comprehensive justification for design decisions.
 See the linked pages for more detailed justifications.</p>
 </section>
 <section id="the-basics">
-<h2>The basics<a class="headerlink" href="#the-basics" title="Permalink to this heading">#</a></h2>
+<h2>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this heading">#</a></h2>
 <p>Here is a simple function showing some Exeme code:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -266,7 +266,7 @@ descriptions.</p>
 <span class="c1"># Returns whether `n` itself is prime.</span>
 <span class="n">fn</span> <span class="n">isPrime</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">i32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="p">{</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># &#39;_&#39; is the index, but it is not needed</span>
-        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1"># Can be divided without a remainder</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># Can be divided without a remainder</span>
             <span class="k">return</span> <span class="n">false</span>
         <span class="p">}</span>
     <span class="p">}</span>
@@ -312,12 +312,12 @@ end of lines, etc), and have to start with <code class="docutils literal notrans
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Returns whether `n` itself is prime.</span>
 <span class="o">...</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># &#39;_&#39; is the index, but it is not needed.</span>
-        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1"># Can be divided without a remainder.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># Can be divided without a remainder.</span>
 </pre></div>
 </div>
 </section>
 <section id="function-declaration">
-<h3>Function declaration<a class="headerlink" href="#function-declaration" title="Permalink to this heading">#</a></h3>
+<h3>Function Declaration<a class="headerlink" href="#function-declaration" title="Permalink to this heading">#</a></h3>
 <p>A <a class="reference internal" href="#"><span class="doc">function declaration</span></a> consists of:</p>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">fn</span></code> keyword introducer,</p></li>
@@ -347,7 +347,7 @@ whose value(s) are returned.</p>
 types</span></a>.</p>
 </section>
 <section id="variable-declaration">
-<h3>Variable declaration<a class="headerlink" href="#variable-declaration" title="Permalink to this heading">#</a></h3>
+<h3>Variable Declaration<a class="headerlink" href="#variable-declaration" title="Permalink to this heading">#</a></h3>
 <p>A <a class="reference internal" href="#"><span class="doc">variable declaration</span></a> has 2 parts:</p>
 <ul class="simple">
 <li><p>The name (optionally followed by <code class="docutils literal notranslate"><span class="pre">:</span></code> and the data type, declared in
@@ -374,7 +374,7 @@ statement</span></a>:</p>
 </pre></div>
 </div>
 <section id="constant-variable-declaration">
-<h4>Constant variable declaration<a class="headerlink" href="#constant-variable-declaration" title="Permalink to this heading">#</a></h4>
+<h4>Constant Variable Declaration<a class="headerlink" href="#constant-variable-declaration" title="Permalink to this heading">#</a></h4>
 <p>Constants are declared by subscripting the <code class="docutils literal notranslate"><span class="pre">const</span></code> type with the
 variable’s type. Constants are effectively a container for their inner
 data type that do not allow overwriting of the inner value.</p>
@@ -384,12 +384,12 @@ data type that do not allow overwriting of the inner value.</p>
 </section>
 </section>
 <section id="control-flow-statements">
-<h3>Control flow statements<a class="headerlink" href="#control-flow-statements" title="Permalink to this heading">#</a></h3>
+<h3>Control Flow Statements<a class="headerlink" href="#control-flow-statements" title="Permalink to this heading">#</a></h3>
 <p>These statements (including <code class="docutils literal notranslate"><span class="pre">if</span></code>, <code class="docutils literal notranslate"><span class="pre">while</span></code>, <code class="docutils literal notranslate"><span class="pre">for</span></code>, <code class="docutils literal notranslate"><span class="pre">break</span></code>, and
 <code class="docutils literal notranslate"><span class="pre">continue</span></code>), change the order that statement are executed, like in
 C++:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
         <span class="o">...</span>
     <span class="p">}</span>
 <span class="p">}</span>
@@ -418,20 +418,20 @@ are completely ignored by the compiler.</p>
 </div>
 </section>
 <section id="build-modes">
-<h2>Build modes<a class="headerlink" href="#build-modes" title="Permalink to this heading">#</a></h2>
+<h2>Build Modes<a class="headerlink" href="#build-modes" title="Permalink to this heading">#</a></h2>
 <p>The behavior of the Exeme compiler, and the performance of the resultant
 executable depends on the <em>build mode</em>:</p>
 <section id="development-build">
-<h3>Development build<a class="headerlink" href="#development-build" title="Permalink to this heading">#</a></h3>
+<h3>Development Build<a class="headerlink" href="#development-build" title="Permalink to this heading">#</a></h3>
 <p>The priority is diagnosing problems, so build times are the fastest.</p>
 </section>
 <section id="performance-build">
-<h3>Performance build<a class="headerlink" href="#performance-build" title="Permalink to this heading">#</a></h3>
+<h3>Performance Build<a class="headerlink" href="#performance-build" title="Permalink to this heading">#</a></h3>
 <p>The priority is a highly optimized binary, with faster execution times.</p>
 </section>
 </section>
 <section id="primitive-types">
-<h2>Primitive types<a class="headerlink" href="#primitive-types" title="Permalink to this heading">#</a></h2>
+<h2>Primitive Types<a class="headerlink" href="#primitive-types" title="Permalink to this heading">#</a></h2>
 <p>Primitive types fall into the following categories:</p>
 <ul class="simple">
 <li><p>The boolean type <code class="docutils literal notranslate"><span class="pre">bool</span></code>,</p></li>
@@ -450,19 +450,19 @@ type. The arguments in <a class="reference internal" href="#"><span class="doc">
 <a class="reference internal" href="#"><span class="doc">if</span></a> and <a class="reference internal" href="#"><span class="doc">while</span></a>) take <code class="docutils literal notranslate"><span class="pre">bool</span></code> values.</p>
 </section>
 <section id="integer-types">
-<h3>Integer types<a class="headerlink" href="#integer-types" title="Permalink to this heading">#</a></h3>
+<h3>Integer Types<a class="headerlink" href="#integer-types" title="Permalink to this heading">#</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">X</span></code> has to be a positive multiple of 8. <code class="docutils literal notranslate"><span class="pre">0</span></code> is neither positive
 nor negative, and so is not valid.</p>
 </div>
 <section id="signed-integer-types">
-<h4>Signed integer types<a class="headerlink" href="#signed-integer-types" title="Permalink to this heading">#</a></h4>
+<h4>Signed Integer Types<a class="headerlink" href="#signed-integer-types" title="Permalink to this heading">#</a></h4>
 <p>The signed-integer type with bit width <code class="docutils literal notranslate"><span class="pre">X</span></code> may be written as <code class="docutils literal notranslate"><span class="pre">iX</span></code>.
 For example, <code class="docutils literal notranslate"><span class="pre">i32</span></code> is a signed 32-Bit integer.</p>
 </section>
 <section id="unsigned-integer-types">
-<h4>Unsigned integer types<a class="headerlink" href="#unsigned-integer-types" title="Permalink to this heading">#</a></h4>
+<h4>Unsigned Integer Types<a class="headerlink" href="#unsigned-integer-types" title="Permalink to this heading">#</a></h4>
 <p>The unsigned-integer type with bit width <code class="docutils literal notranslate"><span class="pre">X</span></code> may be written as
 <code class="docutils literal notranslate"><span class="pre">uiX</span></code>. For example, <code class="docutils literal notranslate"><span class="pre">ui32</span></code> is an unsigned 32-Bit integer.</p>
 <div class="toctree-wrapper compound">
@@ -536,30 +536,30 @@ For example, <code class="docutils literal notranslate"><span class="pre">i32</s
             <ul>
 <li><a class="reference internal" href="#">Design</a><ul>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
-<li><a class="reference internal" href="#the-basics">The basics</a><ul>
+<li><a class="reference internal" href="#the-basics">The Basics</a><ul>
 <li><a class="reference internal" href="#import-declaration"><code class="docutils literal notranslate"><span class="pre">import</span></code> declaration</a></li>
 <li><a class="reference internal" href="#using-declaration"><code class="docutils literal notranslate"><span class="pre">using</span></code> declaration</a></li>
 <li><a class="reference internal" href="#comments">Comments</a></li>
-<li><a class="reference internal" href="#function-declaration">Function declaration</a></li>
-<li><a class="reference internal" href="#variable-declaration">Variable declaration</a><ul>
-<li><a class="reference internal" href="#constant-variable-declaration">Constant variable declaration</a></li>
+<li><a class="reference internal" href="#function-declaration">Function Declaration</a></li>
+<li><a class="reference internal" href="#variable-declaration">Variable Declaration</a><ul>
+<li><a class="reference internal" href="#constant-variable-declaration">Constant Variable Declaration</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#control-flow-statements">Control flow statements</a></li>
+<li><a class="reference internal" href="#control-flow-statements">Control Flow Statements</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#code">Code</a></li>
 <li><a class="reference internal" href="#id1">Comments</a></li>
-<li><a class="reference internal" href="#build-modes">Build modes</a><ul>
-<li><a class="reference internal" href="#development-build">Development build</a></li>
-<li><a class="reference internal" href="#performance-build">Performance build</a></li>
+<li><a class="reference internal" href="#build-modes">Build Modes</a><ul>
+<li><a class="reference internal" href="#development-build">Development Build</a></li>
+<li><a class="reference internal" href="#performance-build">Performance Build</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#primitive-types">Primitive types</a><ul>
+<li><a class="reference internal" href="#primitive-types">Primitive Types</a><ul>
 <li><a class="reference internal" href="#bool"><code class="docutils literal notranslate"><span class="pre">bool</span></code></a></li>
-<li><a class="reference internal" href="#integer-types">Integer types</a><ul>
-<li><a class="reference internal" href="#signed-integer-types">Signed integer types</a></li>
-<li><a class="reference internal" href="#unsigned-integer-types">Unsigned integer types</a></li>
+<li><a class="reference internal" href="#integer-types">Integer Types</a><ul>
+<li><a class="reference internal" href="#signed-integer-types">Signed Integer Types</a></li>
+<li><a class="reference internal" href="#unsigned-integer-types">Unsigned Integer Types</a></li>
 </ul>
 </li>
 </ul>
