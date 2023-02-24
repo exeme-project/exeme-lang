@@ -44,7 +44,7 @@ enum class LexerTokens {
 	Addition,		// '+'
 	Subtraction,	// '-'
 
-	// Comparison / relational operators
+	// Comparison / Relational operators
 	EqualTo,			// '=='
 	NotEqualTo,			// '!='
 	GreaterThan,		// '>'
@@ -83,7 +83,7 @@ enum class LexerTokens {
 	BitwiseLeftShiftAssignment,	 // '<<='
 	BitwiseRightShiftAssignment, // '>>='
 
-	// Member and pointer operators
+	// Member / Pointer operators
 	Dot,	   // '.'
 	Arrow,	   // '->'
 	AddressOf, // '@'
@@ -291,7 +291,8 @@ class Lexer {
 				return false;
 			}
 
-			if (skipWhitespace) { // Keep going till we encounter non whitespace
+			if (skipWhitespace) { // Keep going till we encounter a character
+								  // that is not whitespace
 				if (!isspace(this->chr)) { // Not whitespace
 					break;
 				}
