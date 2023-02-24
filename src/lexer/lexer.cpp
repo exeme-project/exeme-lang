@@ -17,8 +17,9 @@
 #include "../utils/globals.cpp"
 
 static std::vector<std::string> KEYWORDS = {
-	"break", "catch", "class", "continue", "elif",	 "else", "finally",
-	"fn",	 "for",	  "if",	   "import",   "return", "try",	 "while"};
+	"break", "catch",  "class",	  "continue", "elif",
+	"else",	 "except", "finally", "fn",		  "for",
+	"if",	 "import", "return",  "try",	  "while"};
 static auto KEYWORDS_BEGIN = KEYWORDS.begin();
 static auto KEYWORDS_END = KEYWORDS.end();
 
@@ -105,7 +106,7 @@ enum class LexerTokens {
 /**
  * Used to identify the precedence of different tokens.
  */
-static std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
+std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
 	{LexerTokens::ScopeResolution, 1},
 
 	{LexerTokens::OpenBrace, 2},
@@ -168,7 +169,7 @@ static std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
 /**
  * Contains the names of each of the lexer token identifiers.
  */
-static std::vector<std::string> LexerTokenNames = {
+std::vector<std::string> LexerTokenNames = {
 	"keyword",
 	"variable",
 	"char",

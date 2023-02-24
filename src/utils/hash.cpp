@@ -9,7 +9,7 @@
 /**
  * Calculates a hash for a string.
  *
- * @param const std::string_view - The string to calculate the hash for.
+ * @param data - The string to calculate the hash for.
  *
  * @return uint32_t - The calculated hash.
  */
@@ -17,7 +17,7 @@ constexpr uint32_t hash(const std::string_view data) noexcept {
 	uint32_t hash = 5385;
 
 	for (const auto &e : data) {
-		hash = ((hash << 5) + hash) + e;
+		hash = ((hash << 5) + hash) + static_cast<uint32_t>(e);
 	}
 
 	return hash;
