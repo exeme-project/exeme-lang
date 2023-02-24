@@ -10,6 +10,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "../utils/console.cpp"
@@ -108,11 +109,17 @@ static std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
 	{LexerTokens::ScopeResolution, 1},
 
 	{LexerTokens::OpenBrace, 2},
+	{LexerTokens::OpenSqaureBrace, 2},
+	{LexerTokens::OpenCurlyBrace, 2},
 	{LexerTokens::CloseBrace, 2},
+	{LexerTokens::CloseSquareBrace, 2},
+	{LexerTokens::CloseCurlyBrace, 2},
 	{LexerTokens::Dot, 2},
 	{LexerTokens::Arrow, 2},
+	{LexerTokens::Slice, 2},
 
 	{LexerTokens::AddressOf, 3},
+	{LexerTokens::Exponent, 3},
 
 	{LexerTokens::Multiplication, 4},
 	{LexerTokens::Division, 4},
@@ -128,10 +135,10 @@ static std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
 	{LexerTokens::BitwiseLeftShift, 9},
 	{LexerTokens::BitwiseRightShift, 9},
 
-	{LexerTokens::LessThan, 6},
-	{LexerTokens::LessThanOrEqual, 6},
 	{LexerTokens::GreaterThan, 6},
+	{LexerTokens::LessThan, 6},
 	{LexerTokens::GreaterThanOrEqual, 6},
+	{LexerTokens::LessThanOrEqual, 6},
 
 	{LexerTokens::EqualTo, 7},
 	{LexerTokens::NotEqualTo, 7},
@@ -144,8 +151,8 @@ static std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
 	{LexerTokens::ModuloAssignment, 9},
 	{LexerTokens::ExponentAssignment, 9},
 	{LexerTokens::DivisionAssignment, 9},
-	{LexerTokens::FloorDivision, 9},
-	{LexerTokens::Multiplication, 9},
+	{LexerTokens::FloorDivisionAssignment, 9},
+	{LexerTokens::MultiplicationAssignment, 9},
 	{LexerTokens::AdditionAssignment, 9},
 	{LexerTokens::SubtractionAssignment, 9},
 	{LexerTokens::BitwiseANDAssignment, 9},
@@ -154,7 +161,9 @@ static std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
 	{LexerTokens::BitwiseNotAssignment, 9},
 	{LexerTokens::BitwiseLeftShiftAssignment, 9},
 	{LexerTokens::BitwiseRightShiftAssignment, 9},
-}; // TODO: Missing 3 (53 - 10)?
+
+	{LexerTokens::Comma, 10},
+}; // 53 - 6 (Keyword -> Float) = 47
 
 /**
  * Contains the names of each of the lexer token identifiers.
@@ -203,7 +212,6 @@ static std::vector<std::string> LexerTokenNames = {
 	"bitwise left shift assignment operator",
 	"bitwise right shift assignment operator",
 	"dot operator",
-	"comma operator",
 	"arrow operator",
 	"address of operator",
 	"open brace",
@@ -212,7 +220,9 @@ static std::vector<std::string> LexerTokenNames = {
 	"close brace",
 	"close sqaure brace",
 	"close curly brace",
-};
+	"comma",
+	"slice operator",
+	"scope resolution operator"};
 
 /**
  * Contains data relating to a lexer token.
@@ -342,13 +352,6 @@ class Lexer {
 		this->chrIndex = static_cast<size_t>(negativeIndex);
 		this->lineNum++;
 
-		if (!this->getChr(
-				true)) { // Read chars till non-whitespace is encountered
-			return !this->file.fail();
-		}
-
-		this->unGetChr();
-
 		return true;
 	}
 
@@ -448,7 +451,7 @@ class Lexer {
 	 */
 	void checkForContinuation(std::string token) {
 		if (this->getChr(false)) {
-			if (!isspace(this->chr) && !isalpha(this->chr)) {
+			if (!isspace(this->chr) && !isalnum(this->chr)) {
 				this->error("unexpected continuation of token '" + token + "'",
 							negativeIndex);
 			}
@@ -825,8 +828,8 @@ class Lexer {
 	 * Lex ':'.
 	 */
 	void lexColon() {
-		auto token = this->checkForRepetition(LexerTokens::ScopeResolution,
-											  LexerTokens::Slice);
+		auto token = this->checkForRepetition(LexerTokens::Slice,
+											  LexerTokens::ScopeResolution);
 
 		this->tokens.emplace_back(token);
 		this->checkForContinuation(token->value);
@@ -938,7 +941,7 @@ class Lexer {
 			this->lexColon();
 			break;
 		default:
-			if (isalpha(this->chr)) {
+			if (isalpha(this->chr) || this->chr == '_') {
 				this->lexKeywordOrVariable();
 			} else if (isdigit(this->chr)) {
 				this->lexInteger();
@@ -1042,13 +1045,11 @@ class Lexer {
 	 */
 	bool lex(bool mustGetToken, bool nextLine) {
 		if (mustGetToken) {
-			while (!this->getChr(true)) {
-				if (!nextLine || !this->getLine(nextLine)) {
-					return false;
-				}
-
-				if (!this->getChr(true)) {
-					continue;
+			while (true) {
+				while (!this->getChr(true)) {
+					if (!this->getLine(nextLine)) {
+						return false;
+					}
 				}
 
 				if (this->lexNext()) {
@@ -1056,12 +1057,8 @@ class Lexer {
 				}
 			}
 		} else {
-			if (!this->getChr(true)) {
+			while (!this->getChr(true)) {
 				if (!this->getLine(nextLine)) {
-					return false;
-				}
-
-				if (!this->getChr(true)) {
 					return false;
 				}
 			}
