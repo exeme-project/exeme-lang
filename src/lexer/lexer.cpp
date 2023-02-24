@@ -4,6 +4,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cctype>
 #include <cstddef>
 #include <fstream>
 #include <iostream>
@@ -83,7 +84,6 @@ enum class LexerTokens {
 
 	// Member and pointer operators
 	Dot,	   // '.'
-	Comma,	   // ','
 	Arrow,	   // '->'
 	AddressOf, // '@'
 
@@ -94,7 +94,67 @@ enum class LexerTokens {
 	CloseBrace,		  // ')'
 	CloseSquareBrace, // ']'
 	CloseCurlyBrace,  // '}'
+
+	// Other operators
+	Comma,			 // ','
+	Slice,			 // ':'
+	ScopeResolution, // '::'
 };
+
+/**
+ * Used to identify the precedence of different tokens.
+ */
+static std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
+	{LexerTokens::ScopeResolution, 1},
+
+	{LexerTokens::OpenBrace, 2},
+	{LexerTokens::CloseBrace, 2},
+	{LexerTokens::Dot, 2},
+	{LexerTokens::Arrow, 2},
+
+	{LexerTokens::AddressOf, 3},
+
+	{LexerTokens::Multiplication, 4},
+	{LexerTokens::Division, 4},
+	{LexerTokens::FloorDivision, 4},
+	{LexerTokens::Modulo, 4},
+
+	{LexerTokens::Addition, 5},
+	{LexerTokens::Subtraction, 5},
+	{LexerTokens::BitwiseAND, 5},
+	{LexerTokens::BitwiseOR, 5},
+	{LexerTokens::BitwiseXOR, 5},
+	{LexerTokens::BitwiseNOT, 5},
+	{LexerTokens::BitwiseLeftShift, 9},
+	{LexerTokens::BitwiseRightShift, 9},
+
+	{LexerTokens::LessThan, 6},
+	{LexerTokens::LessThanOrEqual, 6},
+	{LexerTokens::GreaterThan, 6},
+	{LexerTokens::GreaterThanOrEqual, 6},
+
+	{LexerTokens::EqualTo, 7},
+	{LexerTokens::NotEqualTo, 7},
+
+	{LexerTokens::LogicalAnd, 8},
+	{LexerTokens::LogicalOr, 8},
+	{LexerTokens::LogicalNot, 8},
+
+	{LexerTokens::Assignment, 9},
+	{LexerTokens::ModuloAssignment, 9},
+	{LexerTokens::ExponentAssignment, 9},
+	{LexerTokens::DivisionAssignment, 9},
+	{LexerTokens::FloorDivision, 9},
+	{LexerTokens::Multiplication, 9},
+	{LexerTokens::AdditionAssignment, 9},
+	{LexerTokens::SubtractionAssignment, 9},
+	{LexerTokens::BitwiseANDAssignment, 9},
+	{LexerTokens::BitwiseORAssignment, 9},
+	{LexerTokens::BitwiseXORAssignment, 9},
+	{LexerTokens::BitwiseNotAssignment, 9},
+	{LexerTokens::BitwiseLeftShiftAssignment, 9},
+	{LexerTokens::BitwiseRightShiftAssignment, 9},
+}; // TODO: Missing 3 (53 - 10)?
 
 /**
  * Contains the names of each of the lexer token identifiers.
@@ -388,7 +448,7 @@ class Lexer {
 	 */
 	void checkForContinuation(std::string token) {
 		if (this->getChr(false)) {
-			if (!isspace(this->chr)) {
+			if (!isspace(this->chr) && !isalpha(this->chr)) {
 				this->error("unexpected continuation of token '" + token + "'",
 							negativeIndex);
 			}
@@ -614,9 +674,9 @@ class Lexer {
 	 * Lex '+'.
 	 */
 	void lexAddition() {
-		LexerToken *token = new LexerToken(
-			LexerTokens::Addition, this->chrIndex, this->chrIndex,
-			this->lineNum, std::string(1, this->chr));
+		auto token = new LexerToken(LexerTokens::Addition, this->chrIndex,
+									this->chrIndex, this->lineNum,
+									std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
 			token->identifier = LexerTokens::AdditionAssignment;
@@ -630,9 +690,9 @@ class Lexer {
 	 * Lex '-'.
 	 */
 	void lexSubtraction() {
-		LexerToken *token = new LexerToken(
-			LexerTokens::Subtraction, this->chrIndex, this->chrIndex,
-			this->lineNum, std::string(1, this->chr));
+		auto token = new LexerToken(LexerTokens::Subtraction, this->chrIndex,
+									this->chrIndex, this->lineNum,
+									std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
 			token->identifier = LexerTokens::SubtractionAssignment;
@@ -683,9 +743,9 @@ class Lexer {
 	 * Lex '!'.
 	 */
 	void lexLogicalNot() {
-		LexerToken *token = new LexerToken(
-			LexerTokens::LogicalNot, this->chrIndex, this->chrIndex,
-			this->lineNum, std::string(1, this->chr));
+		auto token = new LexerToken(LexerTokens::LogicalNot, this->chrIndex,
+									this->chrIndex, this->lineNum,
+									std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
 			token->identifier = LexerTokens::NotEqualTo;
@@ -733,9 +793,9 @@ class Lexer {
 	 * Lex '^'.
 	 */
 	void lexBitwiseXOR() {
-		LexerToken *token = new LexerToken(
-			LexerTokens::BitwiseXOR, this->chrIndex, this->chrIndex,
-			this->lineNum, std::string(1, this->chr));
+		auto token = new LexerToken(LexerTokens::BitwiseXOR, this->chrIndex,
+									this->chrIndex, this->lineNum,
+									std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
 			token->identifier = LexerTokens::BitwiseXORAssignment;
@@ -749,13 +809,24 @@ class Lexer {
 	 * Lex '~'.
 	 */
 	void lexBitwiseNOT() {
-		LexerToken *token = new LexerToken(
-			LexerTokens::BitwiseNOT, this->chrIndex, this->chrIndex,
-			this->lineNum, std::string(1, this->chr));
+		auto token = new LexerToken(LexerTokens::BitwiseNOT, this->chrIndex,
+									this->chrIndex, this->lineNum,
+									std::string(1, this->chr));
 
 		if (this->checkForTrailingChr(token, '=')) {
 			token->identifier = LexerTokens::BitwiseNotAssignment;
 		}
+
+		this->tokens.emplace_back(token);
+		this->checkForContinuation(token->value);
+	}
+
+	/**
+	 * Lex ':'.
+	 */
+	void lexColon() {
+		auto token = this->checkForRepetition(LexerTokens::ScopeResolution,
+											  LexerTokens::Slice);
 
 		this->tokens.emplace_back(token);
 		this->checkForContinuation(token->value);
@@ -812,11 +883,6 @@ class Lexer {
 				new LexerToken(LexerTokens::Dot, this->chrIndex, this->chrIndex,
 							   this->lineNum, ""));
 			break;
-		case ',':
-			this->tokens.emplace_back(
-				new LexerToken(LexerTokens::Comma, this->chrIndex,
-							   this->chrIndex, this->lineNum, ""));
-			break;
 		case '@':
 			this->tokens.emplace_back(
 				new LexerToken(LexerTokens::AddressOf, this->chrIndex,
@@ -862,6 +928,14 @@ class Lexer {
 			break;
 		case '~':
 			this->lexBitwiseNOT();
+			break;
+		case ',':
+			this->tokens.emplace_back(
+				new LexerToken(LexerTokens::Comma, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
+			break;
+		case ':':
+			this->lexColon();
 			break;
 		default:
 			if (isalpha(this->chr)) {
