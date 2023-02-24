@@ -2,3 +2,5 @@ https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html
 https://llvm.org/docs/LangRef.html#abstract
 
 https://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B#Operator_precedence
+
+https://www.quora.com/What-are-the-parts-of-the-compiler/answer/Ken-Gregg

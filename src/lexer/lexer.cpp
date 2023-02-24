@@ -164,7 +164,7 @@ std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
 	{LexerTokens::BitwiseRightShiftAssignment, 9},
 
 	{LexerTokens::Comma, 10},
-}; // 53 - 6 (Keyword -> Float) = 47
+}; // 53 - 6 (Keyword to Float) = 47
 
 /**
  * Contains the names of each of the lexer token identifiers.
@@ -784,7 +784,7 @@ class Lexer {
 		LexerToken *token = this->checkForRepetition(LexerTokens::BitwiseOR,
 													 LexerTokens::LogicalOr);
 
-		if (token->identifier == LexerTokens::BitwiseAND) {
+		if (token->identifier == LexerTokens::BitwiseOR) {
 			if (this->checkForTrailingChr(token, '=')) {
 				token->identifier = LexerTokens::BitwiseORAssignment;
 			}
