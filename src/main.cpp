@@ -6,8 +6,8 @@
 #pragma pack(1)
 
 int main() {
-	auto parser = new Parser(OS == 1 ? "../../src/programs/complex.exl"
-									 : "../src/programs/complex.exl");
+	auto parser = new Parser(OS == 1 ? "../../src/programs/main.exl"
+									 : "../src/programs/main.exl");
 
 	while (parser->parse()) {
 	}

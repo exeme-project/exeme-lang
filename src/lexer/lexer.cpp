@@ -333,17 +333,17 @@ class Lexer {
 	/**
 	 * Get the next line.
 	 *
-	 * @param getNext - Get the next line even if the EOL has not been
+	 * @param getNextLine - Get the next line even if the EOL has not been
 	 * reached.
 	 *
 	 * @return bool - Whether the next line was got successfully.
 	 */
-	bool getLine(bool getNext) {
+	bool getLine(bool getNextLine) {
 		if (this->closed) {
 			return false;
 		}
 
-		if (!getNext &&
+		if (!getNextLine &&
 			this->chr != '\n') { // Not reached the end of the line yet
 			return true;
 		}
@@ -370,6 +370,8 @@ class Lexer {
 			return '\f';
 		case 'n':
 			return '\n';
+		case 'r':
+			return '\r';
 		case 't':
 			return '\t';
 		case 'v':
@@ -838,7 +840,7 @@ class Lexer {
 	}
 
 	/**
-	 * Calls the correct function for lexing the current token.
+	 * Calls the correct function for lexing the current character.
 	 *
 	 * @return bool - Whether lexing succeeded.
 	 */
@@ -1038,15 +1040,15 @@ class Lexer {
 	}
 
 	/**
-	 * Handles getting the next token and lexing it.
+	 * Handles getting the next character and lexing it.
 	 *
-	 * @param mustGetToken - Whether a token must be parsed.
-	 * @param nextLine     - Whether the token can be on the next line.
+	 * @param mustLexChar - Whether a character must be lexed.
+	 * @param nextLine    - Whether the character can be on the next line.
 	 *
 	 * @return bool - Whether lexing succeeded.
 	 */
-	bool lex(bool mustGetToken, bool nextLine) {
-		if (mustGetToken) {
+	bool lex(bool mustLexChar, bool nextLine) {
+		if (mustLexChar) {
 			while (true) {
 				while (!this->getChr(true)) {
 					if (!this->getLine(nextLine)) {
