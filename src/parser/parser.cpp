@@ -15,7 +15,12 @@ class Parser {
 	Lexer *lexer;
 
 	/**
-	 * Parses the current import.
+	 * Parses the current keyword 'fn'.
+	 */
+	void parseKeywordFn() {}
+
+	/**
+	 * Parses the current keyword 'import'.
 	 */
 	void parseKeywordImport() {
 		if (!this->lexer->lex(false, false)) {
@@ -34,6 +39,8 @@ class Parser {
 					"'",
 				import->startChrIndex);
 		}
+
+		auto importPath = import->value;
 	}
 
 	/**
@@ -43,6 +50,9 @@ class Parser {
 	 */
 	void parseKeyword(LexerToken *token) {
 		switch (hash(token->value)) {
+		case hash("fn"):
+			this->parseKeywordFn();
+			break;
 		case hash("import"):
 			this->parseKeywordImport();
 			break;
