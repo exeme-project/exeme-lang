@@ -1,4 +1,5 @@
 {
+    "cmake.generator": "Visual Studio 17 2022",
     "editor.formatOnSave": true,
     "editor.suggest.localityBonus": true,
     "[cpp]": {
