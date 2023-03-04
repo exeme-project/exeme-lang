@@ -1,5 +1,8 @@
 {
     "cmake.generator": "Visual Studio 17 2022",
+    "editor.fontFamily": "Fira Code",
+    "editor.fontLigatures": true,
+    "editor.fontSize": 13,
     "editor.formatOnSave": true,
     "editor.suggest.localityBonus": true,
     "[cpp]": {
