@@ -1,11 +1,13 @@
 {
     "recommendations": [
-        "xaver.clang-format",
+        "gruntfuggly.todo-tree",
+        "lextudio.restructuredtext",
         "llvm-vs-code-extensions.vscode-clangd",
         "ms-vscode.cmake-tools",
-        "vadimcn.vscode-lldb",
-        "lextudio.restructuredtext",
+        "pkief.material-icon-theme",
         "trond-snekvik.simple-rst",
-        "gruntfuggly.todo-tree",
+        "vadimcn.vscode-lldb",
+        "xaver.clang-format",
+        "zhuangtongfa.material-theme",
     ]
 }
