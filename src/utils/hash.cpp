@@ -13,7 +13,7 @@
  *
  * @return uint32_t - The calculated hash.
  */
-constexpr uint32_t hash(const std::string data) noexcept {
+constexpr uint32_t hash(const std::basic_string_view<char> data) noexcept {
 	uint32_t hash = 5385;
 
 	for (const auto &e : data) {

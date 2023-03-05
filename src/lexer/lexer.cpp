@@ -101,6 +101,9 @@ enum class LexerTokens {
 	Comma,			 // ','
 	Slice,			 // ':'
 	ScopeResolution, // '::'
+
+	// Misc
+	Comment,
 };
 
 /**
@@ -223,15 +226,17 @@ std::vector<std::string> LexerTokenNames = {
 	"close curly brace",
 	"comma",
 	"slice operator",
-	"scope resolution operator"};
+	"scope resolution operator",
+	"comment",
+};
 
 /**
  * Contains data relating to a lexer token.
  */
 struct LexerToken {
 	LexerTokens identifier;
-	size_t startChrIndex, chrIndex, lineNum;
-	std::string value;
+	const size_t startChrIndex, chrIndex, lineNum;
+	const std::string value;
 
 	/**
 	 * Construct a new Lexer Token object.
@@ -242,14 +247,11 @@ struct LexerToken {
 	 * @param lineNum       - Line num of the token.
 	 * @param value         - Value of the token.
 	 */
-	LexerToken(LexerTokens identifier, size_t startChrIndex, size_t chrIndex,
-			   size_t lineNum, std::string value) {
-		this->identifier = identifier;
-		this->startChrIndex = startChrIndex;
-		this->chrIndex = chrIndex;
-		this->lineNum = lineNum;
-		this->value = value;
-	}
+	LexerToken(LexerTokens identifier, const size_t startChrIndex,
+			   const size_t chrIndex, const size_t lineNum,
+			   const std::string value)
+		: identifier(identifier), startChrIndex(startChrIndex),
+		  chrIndex(chrIndex), lineNum(lineNum), value(value) {}
 };
 
 /**
@@ -259,8 +261,10 @@ class Lexer {
   private:
 	bool closed;
 	char chr, prevChr;
-	std::string filePath;
+	size_t unGetTokens;
 	std::ifstream file;
+	std::string filePath;
+	std::vector<LexerToken *> tokens;
 
 	/**
 	 * Get the next character.
@@ -428,7 +432,7 @@ class Lexer {
 	 *
 	 * @return bool - Whether the trailing character was found.
 	 */
-	bool checkForTrailingChr(LexerToken *token, char chr) {
+	bool checkForTrailingChr(LexerToken **token, char chr) {
 		bool found = true;
 
 		if (this->getChr(false)) {
@@ -441,8 +445,13 @@ class Lexer {
 		}
 
 		if (found) {
-			token->chrIndex++;
-			token->value += std::string(1, chr);
+			auto newToken =
+				new LexerToken((*token)->identifier, (*token)->startChrIndex,
+							   (*token)->chrIndex + 1, (*token)->lineNum,
+							   (*token)->value + std::string(1, chr));
+
+			delete *token;
+			*token = newToken;
 		}
 
 		return found;
@@ -635,7 +644,7 @@ class Lexer {
 			new LexerToken(LexerTokens::Modulo, this->chrIndex, this->chrIndex,
 						   this->lineNum, std::string(1, this->chr));
 
-		if (this->checkForTrailingChr(token, '=')) {
+		if (this->checkForTrailingChr(&token, '=')) {
 			token->identifier = LexerTokens::ModuloAssignment;
 		}
 
@@ -650,7 +659,7 @@ class Lexer {
 		LexerToken *token = this->checkForRepetition(
 			LexerTokens::Multiplication, LexerTokens::Exponent);
 
-		if (this->checkForTrailingChr(token, '=')) {
+		if (this->checkForTrailingChr(&token, '=')) {
 			token->identifier = token->identifier == LexerTokens::Multiplication
 									? LexerTokens::MultiplicationAssignment
 									: LexerTokens::ExponentAssignment;
@@ -667,7 +676,7 @@ class Lexer {
 		LexerToken *token = this->checkForRepetition(
 			LexerTokens::Division, LexerTokens::FloorDivision);
 
-		if (this->checkForTrailingChr(token, '=')) {
+		if (this->checkForTrailingChr(&token, '=')) {
 			token->identifier = token->identifier == LexerTokens::Division
 									? LexerTokens::DivisionAssignment
 									: LexerTokens::FloorDivisionAssignment;
@@ -685,7 +694,7 @@ class Lexer {
 									this->chrIndex, this->lineNum,
 									std::string(1, this->chr));
 
-		if (this->checkForTrailingChr(token, '=')) {
+		if (this->checkForTrailingChr(&token, '=')) {
 			token->identifier = LexerTokens::AdditionAssignment;
 		}
 
@@ -701,9 +710,9 @@ class Lexer {
 									this->chrIndex, this->lineNum,
 									std::string(1, this->chr));
 
-		if (this->checkForTrailingChr(token, '=')) {
+		if (this->checkForTrailingChr(&token, '=')) {
 			token->identifier = LexerTokens::SubtractionAssignment;
-		} else if (this->checkForTrailingChr(token, '>')) {
+		} else if (this->checkForTrailingChr(&token, '>')) {
 			token->identifier = LexerTokens::Arrow;
 		}
 
@@ -718,7 +727,7 @@ class Lexer {
 		LexerToken *token = this->checkForRepetition(
 			LexerTokens::GreaterThan, LexerTokens::BitwiseRightShift);
 
-		if (this->checkForTrailingChr(token, '=')) {
+		if (this->checkForTrailingChr(&token, '=')) {
 			token->identifier =
 				(token->identifier == LexerTokens::GreaterThan
 					 ? LexerTokens::GreaterThanOrEqual
@@ -736,7 +745,7 @@ class Lexer {
 		LexerToken *token = this->checkForRepetition(
 			LexerTokens::LessThan, LexerTokens::BitwiseLeftShift);
 
-		if (this->checkForTrailingChr(token, '=')) {
+		if (this->checkForTrailingChr(&token, '=')) {
 			token->identifier = (token->identifier == LexerTokens::LessThan
 									 ? LexerTokens::LessThanOrEqual
 									 : LexerTokens::BitwiseLeftShiftAssignment);
@@ -754,7 +763,7 @@ class Lexer {
 									this->chrIndex, this->lineNum,
 									std::string(1, this->chr));
 
-		if (this->checkForTrailingChr(token, '=')) {
+		if (this->checkForTrailingChr(&token, '=')) {
 			token->identifier = LexerTokens::NotEqualTo;
 		}
 
@@ -770,7 +779,7 @@ class Lexer {
 													 LexerTokens::LogicalAnd);
 
 		if (token->identifier == LexerTokens::BitwiseAND) {
-			if (this->checkForTrailingChr(token, '=')) {
+			if (this->checkForTrailingChr(&token, '=')) {
 				token->identifier = LexerTokens::BitwiseANDAssignment;
 			}
 		}
@@ -787,7 +796,7 @@ class Lexer {
 													 LexerTokens::LogicalOr);
 
 		if (token->identifier == LexerTokens::BitwiseOR) {
-			if (this->checkForTrailingChr(token, '=')) {
+			if (this->checkForTrailingChr(&token, '=')) {
 				token->identifier = LexerTokens::BitwiseORAssignment;
 			}
 		}
@@ -804,7 +813,7 @@ class Lexer {
 									this->chrIndex, this->lineNum,
 									std::string(1, this->chr));
 
-		if (this->checkForTrailingChr(token, '=')) {
+		if (this->checkForTrailingChr(&token, '=')) {
 			token->identifier = LexerTokens::BitwiseXORAssignment;
 		}
 
@@ -820,7 +829,7 @@ class Lexer {
 									this->chrIndex, this->lineNum,
 									std::string(1, this->chr));
 
-		if (this->checkForTrailingChr(token, '=')) {
+		if (this->checkForTrailingChr(&token, '=')) {
 			token->identifier = LexerTokens::BitwiseNotAssignment;
 		}
 
@@ -899,7 +908,10 @@ class Lexer {
 			while (this->getChr(false)) { // Skip to the end of the line
 			}
 
-			return false;
+			this->tokens.emplace_back(
+				new LexerToken(LexerTokens::Comment, this->chrIndex,
+							   this->chrIndex, this->lineNum, ""));
+			break;
 		case '%':
 			this->lexModulo();
 			break;
@@ -961,7 +973,6 @@ class Lexer {
 
   public:
 	size_t chrIndex, lineNum;
-	std::vector<LexerToken *> tokens;
 
 	/**
 	 * Construct a new Lexer object
@@ -983,6 +994,7 @@ class Lexer {
 
 		this->chrIndex = 0;
 		this->lineNum = 0;
+		this->unGetTokens = 0;
 	}
 
 	/**
@@ -1069,5 +1081,23 @@ class Lexer {
 		}
 
 		return this->lexNext();
+	}
+
+	/**
+	 * Un-lexes the last token. Actually just increments an internal counter
+	 * used for tracking un-lexes.
+	 */
+	void unLex() { this->unGetTokens++; }
+
+	/**
+	 * Gets the last token. Respects un-lexes.
+	 */
+	LexerToken *getToken() {
+		if (this->unGetTokens > 0) {
+			return this
+				->tokens[this->tokens.size() - 1 - (this->unGetTokens--)];
+		}
+
+		return this->tokens[this->tokens.size() - 1];
 	}
 };
