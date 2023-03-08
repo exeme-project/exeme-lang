@@ -17,7 +17,9 @@ class Parser {
 	/**
 	 * Parses the current function.
 	 */
-	void parseFn(const std::string fnName) {}
+	void parseFn(const std::string fnName) {
+		// TODO: Parse function
+	}
 
 	/**
 	 * Parses the current keyword 'fn'.
@@ -42,6 +44,8 @@ class Parser {
 		}
 
 		this->parseFn(fnName->value);
+
+		// TODO: Add function definition to parser token.
 	}
 
 	/**
@@ -66,6 +70,8 @@ class Parser {
 		}
 
 		auto importPath = import->value;
+
+		// TODO: Import module
 	}
 
 	/**
@@ -81,6 +87,7 @@ class Parser {
 		}
 
 		while (this->lexer->lex(false, false)) {
+			// TODO: Parse tokens
 		}
 	}
 
@@ -109,13 +116,6 @@ class Parser {
 	 * @param token The current lexer token.
 	 */
 	void parseNext(LexerToken *token) {
-		std::cout << "identifier: "
-				  << LexerTokenNames[static_cast<size_t>(token->identifier)]
-				  << "\nstartChrIndex: " << token->startChrIndex
-				  << "\nchrIndex: " << token->chrIndex
-				  << "\nlineNum: " << token->lineNum
-				  << "\nvalue: " << token->value << "\n\n";
-
 		switch (token->identifier) {
 		case LexerTokens::Chr:
 		case LexerTokens::Comment:
