@@ -1,4 +1,7 @@
 {
+    "[cpp]": {
+        "editor.defaultFormatter": "xaver.clang-format"
+    },
     "editor.fontFamily": "Fira Code",
     "editor.fontLigatures": true,
     "editor.fontSize": 13,
