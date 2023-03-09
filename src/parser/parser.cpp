@@ -3,9 +3,46 @@
 
 #pragma once
 
+#include <variant>
+
 #include "../lexer/lexer.cpp"
 #include "../utils/globals.cpp"
 #include "../utils/hash.cpp"
+
+/**
+ * Contains the identifiers of parser tokens and their corresponding parser
+ * token.
+ */
+struct ParserTokens {
+	/**
+	 * Used to identify different parser tokens.
+	 */
+	enum class Identifiers { Function };
+
+	struct Function {
+		const std::string fnName;
+
+		Function(const std::string fnName) : fnName(fnName) {}
+	};
+};
+
+/**
+ * Type used to represent a parser token's value. It is a pre-defined type to
+ * reduce typing.
+ */
+using ParserTokenType = const std::variant<ParserTokens::Function *>;
+
+/**
+ * Represents a parser token.
+ */
+struct ParserToken {
+	const ParserTokens::Identifiers IDENTIFIER;
+	ParserTokenType VALUE;
+
+	ParserToken(const ParserTokens::Identifiers IDENTIFIER,
+				ParserTokenType VALUE)
+		: IDENTIFIER(IDENTIFIER), VALUE(VALUE) {}
+};
 
 /**
  * The Parser class. Handles logic for parsing a stream of lexer tokens.
@@ -18,14 +55,40 @@ class Parser {
 	 * Parses the current function.
 	 */
 	void parseFn(const std::string fnName) {
-		// TODO: Parse function
+		auto token = new ParserToken(ParserTokens::Identifiers::Function,
+									 new ParserTokens::Function(fnName));
+
+		if (!this->lexer->lex(true, false)) {
+			this->lexer->error("expected '" +
+								   LexerTokenNames[static_cast<size_t>(
+									   LexerTokens::OpenBrace)] +
+								   "'",
+							   negativeIndex);
+		}
+
+		auto openBrace = this->lexer->getToken();
+
+		if (openBrace->identifier != LexerTokens::OpenBrace) {
+			this->lexer->error("expected '" +
+								   LexerTokenNames[static_cast<size_t>(
+									   LexerTokens::OpenBrace)] +
+								   "' after function name, got '" +
+								   LexerTokenNames[static_cast<size_t>(
+									   openBrace->identifier)] +
+								   "'",
+							   negativeIndex);
+		}
+
+		// TODO: Parse function args.
+
+		this->lexer->clearTokens();
 	}
 
 	/**
 	 * Parses the current keyword 'fn'.
 	 */
 	void parseKeywordFn() {
-		if (!this->lexer->lex(false, false)) {
+		if (!this->lexer->lex(true, false)) {
 			this->lexer->error("expected function name after 'fn' keyword",
 							   negativeIndex);
 		}
@@ -52,7 +115,7 @@ class Parser {
 	 * Parses the current keyword 'import'.
 	 */
 	void parseKeywordImport() {
-		if (!this->lexer->lex(false, false)) {
+		if (!this->lexer->lex(true, false)) {
 			this->lexer->error("expected import after 'import' keyword",
 							   negativeIndex);
 		}
@@ -80,13 +143,13 @@ class Parser {
 	void parseKeywordUsing() {
 		this->lexer->clearTokens();
 
-		if (!this->lexer->lex(false, false)) {
+		if (!this->lexer->lex(true, false)) {
 			this->lexer->error("expected namespace / variable in namespace "
 							   "after 'using' keyword",
 							   negativeIndex);
 		}
 
-		while (this->lexer->lex(false, false)) {
+		while (this->lexer->lex(true, false)) {
 			// TODO: Parse tokens
 		}
 	}
@@ -116,6 +179,13 @@ class Parser {
 	 * @param token The current lexer token.
 	 */
 	void parseNext(LexerToken *token) {
+		std::cout << "identifier: "
+				  << LexerTokenNames[static_cast<size_t>(token->identifier)]
+				  << "\nstartChrIndex: " << token->startChrIndex
+				  << "\nchrIndex: " << token->chrIndex
+				  << "\nlineNum: " << token->lineNum
+				  << "\nvalue: " << token->value << "\n\n";
+
 		switch (token->identifier) {
 		case LexerTokens::Chr:
 		case LexerTokens::Comment:

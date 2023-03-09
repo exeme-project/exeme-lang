@@ -24,7 +24,7 @@ static auto KEYWORDS_BEGIN = KEYWORDS.begin();
 static auto KEYWORDS_END = KEYWORDS.end();
 
 /**
- * Used to identify different tokens.
+ * Used to identify different lexer tokens.
  */
 enum class LexerTokens {
 	Keyword,
@@ -231,7 +231,7 @@ std::vector<std::string> LexerTokenNames = {
 };
 
 /**
- * Contains data relating to a lexer token.
+ * Represents a lexer token.
  */
 struct LexerToken {
 	LexerTokens identifier;
@@ -1063,7 +1063,9 @@ class Lexer {
 		if (mustLexChar) {
 			while (true) {
 				while (!this->getChr(true)) {
-					if (!this->getLine(nextLine)) {
+					if (!nextLine) {
+						return false;
+					} else if (!this->getLine(nextLine)) {
 						return false;
 					}
 				}
