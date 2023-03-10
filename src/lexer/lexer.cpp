@@ -441,8 +441,9 @@ class Lexer {
 				new const LexerToken(LexerTokens::EqualTo, this->chrIndex - 1,
 									 this->chrIndex, this->lineNum, "==");
 		} else {
-			token = new const LexerToken(LexerTokens::EqualTo, this->chrIndex,
-										 this->chrIndex, this->lineNum, "=");
+			token =
+				new const LexerToken(LexerTokens::Assignment, this->chrIndex,
+									 this->chrIndex, this->lineNum, "=");
 		}
 
 		this->tokens.emplace_back(token);

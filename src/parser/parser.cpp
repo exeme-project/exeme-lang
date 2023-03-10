@@ -80,7 +80,7 @@ class Parser {
 		while (this->lexer->lex(true, false)) {
 		}
 
-		this->lexer->error("untermined function", negativeIndex);
+		this->lexer->error("unterminated function", negativeIndex);
 	}
 
 	/**
