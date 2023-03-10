@@ -27,21 +27,17 @@ struct ParserTokens {
 };
 
 /**
- * Type used to represent a parser token's value. It is a pre-defined type to
- * reduce typing.
- */
-using ParserTokenType = const std::variant<ParserTokens::Function *>;
-
-/**
  * Represents a parser token.
  */
 struct ParserToken {
 	const ParserTokens::Identifiers IDENTIFIER;
-	ParserTokenType VALUE;
+	union {
+		const ParserTokens::Function *Function;
+	};
 
 	ParserToken(const ParserTokens::Identifiers IDENTIFIER,
-				ParserTokenType VALUE)
-		: IDENTIFIER(IDENTIFIER), VALUE(VALUE) {}
+				ParserTokens::Function *Function)
+		: IDENTIFIER(IDENTIFIER), Function(Function) {}
 };
 
 /**
@@ -79,9 +75,12 @@ class Parser {
 							   negativeIndex);
 		}
 
-		// TODO: Parse function args.
-
 		this->lexer->clearTokens();
+
+		while (this->lexer->lex(true, false)) {
+		}
+
+		this->lexer->error("untermined function", negativeIndex);
 	}
 
 	/**
@@ -159,7 +158,7 @@ class Parser {
 	 *
 	 * @param token The current lexer token.
 	 */
-	void parseKeyword(LexerToken *token) {
+	void parseKeyword(const LexerToken *token) {
 		switch (hash(token->value)) {
 		case hash("fn"):
 			this->parseKeywordFn();
@@ -178,7 +177,7 @@ class Parser {
 	 *
 	 * @param token The current lexer token.
 	 */
-	void parseNext(LexerToken *token) {
+	void parseNext(const LexerToken *token) {
 		std::cout << "identifier: "
 				  << LexerTokenNames[static_cast<size_t>(token->identifier)]
 				  << "\nstartChrIndex: " << token->startChrIndex
