@@ -401,11 +401,14 @@ class Lexer {
 
 		if (this->getChr(false)) {
 			if (this->chr != chr) {
-				this->unGetChr(); // Only if a match is not found.
 				found = false;
 			}
 		} else {
 			found = false;
+		}
+
+		if (!found) {
+			this->unGetChr(); // Only if a match is not found.
 		}
 
 		return found;
