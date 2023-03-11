@@ -36,8 +36,7 @@ enum class LexerTokens {
 	Float,
 
 	// Arithmetic operators
-	Modulo, // '%'
-
+	Modulo,			// '%'
 	Exponent,		// '**'
 	Division,		// '/'
 	FloorDivision,	// '//'
@@ -67,9 +66,9 @@ enum class LexerTokens {
 	BitwiseRightShift, // '>>'
 
 	// Assignment operators
-	Assignment,		  // '='
-	ModuloAssignment, // '%='
+	Assignment, // '='
 
+	ModuloAssignment,		  // '%='
 	ExponentAssignment,		  // '**='
 	DivisionAssignment,		  // '/='
 	FloorDivisionAssignment,  // '//='
