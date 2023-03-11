@@ -4,6 +4,7 @@
         "lextudio.restructuredtext",
         "llvm-vs-code-extensions.vscode-clangd",
         "ms-vscode.cmake-tools",
+        "ms-vscode-remote.remote-containers",
         "pkief.material-icon-theme",
         "trond-snekvik.simple-rst",
         "vadimcn.vscode-lldb",

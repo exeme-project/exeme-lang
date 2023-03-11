@@ -104,6 +104,7 @@ enum class LexerTokens {
 
 	// Misc
 	Comment,
+	Null,
 };
 
 /**
@@ -228,6 +229,7 @@ std::vector<std::string> LexerTokenNames = {
 	"slice operator",
 	"scope resolution operator",
 	"comment",
+	"null (you shouldn't see this)",
 };
 
 /**
@@ -388,7 +390,9 @@ class Lexer {
 			return '\\';
 		}
 
-		this->error("invalid escape sequence", this->chrIndex - 1);
+		this->error("invalid escape sequence",
+					new const LexerToken(LexerTokens::Null, this->chrIndex - 1,
+										 this->chrIndex, this->lineNum, ""));
 	}
 
 	/**
@@ -423,7 +427,7 @@ class Lexer {
 		if (this->getChr(false)) {
 			if (!isspace(this->chr) && !isalnum(this->chr)) {
 				this->error("unexpected continuation of token '" + token + "'",
-							negativeIndex);
+							nullptr);
 			}
 
 			this->unGetChr();
@@ -462,7 +466,10 @@ class Lexer {
 
 		while (this->getChr(false)) {
 			if (chrLen > 1) {
-				this->error("multi-character char", startChrIndex);
+				this->error("multi-character char",
+							new const LexerToken(LexerTokens::Null,
+												 startChrIndex, this->chrIndex,
+												 this->lineNum, ""));
 			}
 
 			if (this->chr == '\'') {
@@ -486,7 +493,9 @@ class Lexer {
 		}
 
 		this->unGetChr();
-		this->error("unterminated char", startChrIndex);
+		this->error("unterminated char",
+					new const LexerToken(LexerTokens::Null, startChrIndex,
+										 this->chrIndex, this->lineNum, ""));
 	}
 
 	/**
@@ -516,7 +525,9 @@ class Lexer {
 		}
 
 		this->unGetChr();
-		this->error("unterminated string", startChrIndex);
+		this->error("unterminated string",
+					new const LexerToken(LexerTokens::Null, startChrIndex,
+										 this->chrIndex, this->lineNum, ""));
 	}
 
 	/**
@@ -536,9 +547,9 @@ class Lexer {
 			}
 
 			if (this->chr == '.') {
-				this->error("too many decimal points for float", negativeIndex);
+				this->error("too many decimal points for float", nullptr);
 			} else if (!isdigit(this->chr)) {
-				this->error("invalid character for integer", negativeIndex);
+				this->error("invalid character for integer", nullptr);
 			}
 
 			integer += this->chr;
@@ -568,7 +579,7 @@ class Lexer {
 			if (this->chr == '.') {
 				return lexFloat(startChrIndex, integer);
 			} else if (!isdigit(this->chr)) {
-				this->error("invalid character for integer", negativeIndex);
+				this->error("invalid character for integer", nullptr);
 			}
 		}
 
@@ -903,7 +914,7 @@ class Lexer {
 	/**
 	 * Lex ':'.
 	 */
-	void lexColon() {
+	void lexSlice() {
 		const LexerToken *token = nullptr;
 
 		if (this->checkForTrailingChr(':')) {
@@ -1024,7 +1035,7 @@ class Lexer {
 									 this->chrIndex, this->lineNum, ""));
 			break;
 		case ':':
-			this->lexColon();
+			this->lexSlice();
 			break;
 		default:
 			if (isalpha(this->chr) || this->chr == '_') {
@@ -1032,7 +1043,7 @@ class Lexer {
 			} else if (isdigit(this->chr)) {
 				this->lexInteger();
 			} else {
-				this->error("unknown character", negativeIndex);
+				this->error("unknown character", nullptr);
 			}
 
 			break;
@@ -1074,7 +1085,7 @@ class Lexer {
 	 * @param startChrIndex - The start char index of erroneous
 	 * token.
 	 */
-	[[noreturn]] void error(std::string ERROR_MSG, size_t startChrIndex) {
+	[[noreturn]] void error(std::string ERROR_MSG, const LexerToken *token) {
 		std::cout << Foreground::BRIGHT_BLUE << Style::BOLD << "--> "
 				  << Style::RESET << this->filePath << "\n";
 
@@ -1096,14 +1107,17 @@ class Lexer {
 
 		std::cout << this->lineNum << " | " << line << "\n";
 
-		if (startChrIndex == static_cast<size_t>(negativeIndex) ||
-			startChrIndex == this->chrIndex) {
+		if (token == nullptr) {
 			std::cout << std::string(length + this->chrIndex, ' ') << "^ "
 					  << Foreground::BRIGHT_RED << Style::BOLD
 					  << "error: " << Style::RESET << ERROR_MSG << "\n";
 		} else {
-			std::cout << std::string(length + startChrIndex, ' ')
-					  << std::string(this->chrIndex - startChrIndex + 1, '^')
+			this->lineNum = token->lineNum;
+			this->chrIndex = token->chrIndex;
+
+			std::cout << std::string(length + token->startChrIndex, ' ')
+					  << std::string(this->chrIndex - token->startChrIndex + 1,
+									 '^')
 					  << " " << Foreground::BRIGHT_RED << Style::BOLD
 					  << "error: " << Style::RESET << ERROR_MSG << "\n";
 		}

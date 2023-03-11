@@ -48,6 +48,11 @@ class Parser {
 	Lexer *lexer;
 
 	/**
+	 * Parses the current variable declaration.
+	 */
+	void parseVariableDeclaration(bool valueRequired) {}
+
+	/**
 	 * Parses the current function.
 	 */
 	void parseFn(const std::string fnName) {
@@ -59,7 +64,7 @@ class Parser {
 								   LexerTokenNames[static_cast<size_t>(
 									   LexerTokens::OpenBrace)] +
 								   "'",
-							   negativeIndex);
+							   nullptr);
 		}
 
 		auto openBrace = this->lexer->getToken();
@@ -72,15 +77,43 @@ class Parser {
 								   LexerTokenNames[static_cast<size_t>(
 									   openBrace->identifier)] +
 								   "'",
-							   negativeIndex);
+							   nullptr);
 		}
 
 		this->lexer->clearTokens();
 
+		bool expectingComma = false;
+
 		while (this->lexer->lex(true, false)) {
+			if (expectingComma) {
+				if (!this->lexer->lex(true, false)) {
+					this->lexer->error("expected '" +
+										   LexerTokenNames[static_cast<size_t>(
+											   LexerTokens::Comma)] +
+										   "'",
+									   nullptr);
+				}
+
+				auto comma = this->lexer->getToken();
+
+				if (comma->identifier != LexerTokens::Comma) {
+					this->lexer->error("expected '" +
+										   LexerTokenNames[static_cast<size_t>(
+											   LexerTokens::Comma)] +
+										   "', got '" +
+										   LexerTokenNames[static_cast<size_t>(
+											   comma->identifier)] +
+										   "'",
+									   comma);
+				}
+
+				expectingComma = false;
+			}
+
+			this->parseVariableDeclaration(false);
 		}
 
-		this->lexer->error("unterminated function", negativeIndex);
+		this->lexer->error("unterminated function", nullptr);
 	}
 
 	/**
@@ -89,7 +122,7 @@ class Parser {
 	void parseKeywordFn() {
 		if (!this->lexer->lex(true, false)) {
 			this->lexer->error("expected function name after 'fn' keyword",
-							   negativeIndex);
+							   nullptr);
 		}
 
 		auto fnName = this->lexer->getToken();
@@ -102,7 +135,7 @@ class Parser {
 					"' after 'fn' keyword, got '" +
 					LexerTokenNames[static_cast<size_t>(fnName->identifier)] +
 					"'",
-				negativeIndex);
+				nullptr);
 		}
 
 		this->parseFn(fnName->value);
@@ -116,7 +149,7 @@ class Parser {
 	void parseKeywordImport() {
 		if (!this->lexer->lex(true, false)) {
 			this->lexer->error("expected import after 'import' keyword",
-							   negativeIndex);
+							   nullptr);
 		}
 
 		auto import = this->lexer->getToken();
@@ -128,7 +161,7 @@ class Parser {
 					"' after 'import' keyword, got '" +
 					LexerTokenNames[static_cast<size_t>(import->identifier)] +
 					"'",
-				import->startChrIndex);
+				import);
 		}
 
 		auto importPath = import->value;
@@ -145,7 +178,7 @@ class Parser {
 		if (!this->lexer->lex(true, false)) {
 			this->lexer->error("expected namespace / variable in namespace "
 							   "after 'using' keyword",
-							   negativeIndex);
+							   nullptr);
 		}
 
 		while (this->lexer->lex(true, false)) {

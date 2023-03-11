@@ -1,4 +1,8 @@
 {
+    "cmake.preferredGenerators": [
+        "Ninja",
+        "Visual Studio 17 2022",
+    ],
     "[cpp]": {
         "editor.defaultFormatter": "xaver.clang-format"
     },
