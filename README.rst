@@ -6,7 +6,7 @@
  Exeme Programming Language
 ############################
 
-|Licensed under the MIT License| |PR's Welcome| |Website Status|
+|Licensed under the MIT License| |PR's Welcome| |Website Status| |Visitor Count|
 
 An introduction to Exeme can be found on the `website
 <https://exeme-project.github.io/exeme-lang/>`__.
@@ -48,3 +48,5 @@ in the `Design Specification
 
 .. |Website Status| image:: https://img.shields.io/website?down_message=offline&up_message=online&url=https%3A%2F%2Fexeme-project.github.io%2Fexeme-lang
    :target: https://exeme-project.github.io/exeme-lang
+
+.. |Visitor Count| image:: https://visitor-badge.glitch.me/badge?page_id=exeme-project.exeme-lang
