@@ -127,11 +127,11 @@ class Parser {
 
 		auto fnName = this->lexer->getToken();
 
-		if (fnName->identifier != LexerTokens::Variable) {
+		if (fnName->identifier != LexerTokens::Identifier) {
 			this->lexer->error(
 				"expected '" +
 					LexerTokenNames[static_cast<size_t>(
-						LexerTokens::Variable)] +
+						LexerTokens::Identifier)] +
 					"' after 'fn' keyword, got '" +
 					LexerTokenNames[static_cast<size_t>(fnName->identifier)] +
 					"'",
@@ -176,7 +176,7 @@ class Parser {
 		this->lexer->clearTokens();
 
 		if (!this->lexer->lex(true, false)) {
-			this->lexer->error("expected namespace / variable in namespace "
+			this->lexer->error("expected namespace / identifier in namespace "
 							   "after 'using' keyword",
 							   nullptr);
 		}
@@ -223,7 +223,7 @@ class Parser {
 		case LexerTokens::Comment:
 		case LexerTokens::Float:
 		case LexerTokens::String:
-		case LexerTokens::Variable:
+		case LexerTokens::Identifier:
 			break;
 		case LexerTokens::Keyword:
 			this->parseKeyword(token);

@@ -28,7 +28,7 @@ static auto KEYWORDS_END = KEYWORDS.end();
  */
 enum class LexerTokens {
 	Keyword,
-	Variable,
+	Identifier,
 
 	Chr,
 	String,
@@ -175,7 +175,7 @@ std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
  */
 std::vector<std::string> LexerTokenNames = {
 	"keyword",
-	"variable",
+	"identifier",
 	"char",
 	"string",
 	"integer",
@@ -589,9 +589,9 @@ class Lexer {
 	}
 
 	/**
-	 * Lex a keyword or variable.
+	 * Lex a keyword or identifier.
 	 */
-	void lexKeywordOrVariable() {
+	void lexKeywordOrIdentifier() {
 		size_t startChrIndex = this->chrIndex;
 		std::string string(1, this->chr);
 
@@ -606,7 +606,7 @@ class Lexer {
 
 		this->tokens.emplace_back(new const LexerToken(
 			std::find(KEYWORDS_BEGIN, KEYWORDS_END, string) == KEYWORDS_END
-				? LexerTokens::Variable
+				? LexerTokens::Identifier
 				: LexerTokens::Keyword,
 			startChrIndex,
 			this->chr == '\n' ? this->chrIndex - 1 : this->chrIndex,
@@ -1039,7 +1039,7 @@ class Lexer {
 			break;
 		default:
 			if (isalpha(this->chr) || this->chr == '_') {
-				this->lexKeywordOrVariable();
+				this->lexKeywordOrIdentifier();
 			} else if (isdigit(this->chr)) {
 				this->lexInteger();
 			} else {
