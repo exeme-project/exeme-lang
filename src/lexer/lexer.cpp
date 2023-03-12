@@ -27,6 +27,8 @@ static auto KEYWORDS_END = KEYWORDS.end();
  * Used to identify different lexer tokens.
  */
 enum class LexerTokens {
+	None,
+
 	Keyword,
 	Identifier,
 
@@ -103,7 +105,6 @@ enum class LexerTokens {
 
 	// Misc
 	Comment,
-	Null,
 };
 
 /**
@@ -167,12 +168,13 @@ std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
 	{LexerTokens::BitwiseRightShiftAssignment, 9},
 
 	{LexerTokens::Comma, 10},
-}; // 53 - 6 (Keyword to Float) = 47
+}; // 54 - 7 (None to Float) = 47
 
 /**
  * Contains the names of each of the lexer token identifiers.
  */
 std::vector<std::string> LexerTokenNames = {
+	"",
 	"keyword",
 	"identifier",
 	"char",
@@ -228,7 +230,6 @@ std::vector<std::string> LexerTokenNames = {
 	"slice operator",
 	"scope resolution operator",
 	"comment",
-	"null (you shouldn't see this)",
 };
 
 /**
@@ -390,7 +391,7 @@ class Lexer {
 		}
 
 		this->error("invalid escape sequence",
-					new const LexerToken(LexerTokens::Null, this->chrIndex - 1,
+					new const LexerToken(LexerTokens::None, this->chrIndex - 1,
 										 this->chrIndex, this->lineNum, ""));
 	}
 
@@ -466,7 +467,7 @@ class Lexer {
 		while (this->getChr(false)) {
 			if (chrLen > 1) {
 				this->error("multi-character char",
-							new const LexerToken(LexerTokens::Null,
+							new const LexerToken(LexerTokens::None,
 												 startChrIndex, this->chrIndex,
 												 this->lineNum, ""));
 			}
@@ -493,7 +494,7 @@ class Lexer {
 
 		this->unGetChr();
 		this->error("unterminated char",
-					new const LexerToken(LexerTokens::Null, startChrIndex,
+					new const LexerToken(LexerTokens::None, startChrIndex,
 										 this->chrIndex, this->lineNum, ""));
 	}
 
@@ -525,7 +526,7 @@ class Lexer {
 
 		this->unGetChr();
 		this->error("unterminated string",
-					new const LexerToken(LexerTokens::Null, startChrIndex,
+					new const LexerToken(LexerTokens::None, startChrIndex,
 										 this->chrIndex, this->lineNum, ""));
 	}
 
