@@ -15,6 +15,5 @@
     "git.confirmSync": false,
     "git.autofetch": true,
     "workbench.colorTheme": "One Dark Pro Darker",
-    "workbench.iconTheme": "material-icon-theme",
-    "esbonio.sphinx.confDir": ""
+    "workbench.iconTheme": "material-icon-theme"
 }
