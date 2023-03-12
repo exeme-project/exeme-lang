@@ -79,7 +79,7 @@ enum class LexerTokens {
 	BitwiseANDAssignment,		 // '&='
 	BitwiseORAssignment,		 // '|='
 	BitwiseXORAssignment,		 // '^='
-	BitwiseNotAssignment,		 // '~='
+	BitwiseNOTAssignment,		 // '~='
 	BitwiseLeftShiftAssignment,	 // '<<='
 	BitwiseRightShiftAssignment, // '>>='
 
@@ -162,7 +162,7 @@ std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
 	{LexerTokens::BitwiseANDAssignment, 9},
 	{LexerTokens::BitwiseORAssignment, 9},
 	{LexerTokens::BitwiseXORAssignment, 9},
-	{LexerTokens::BitwiseNotAssignment, 9},
+	{LexerTokens::BitwiseNOTAssignment, 9},
 	{LexerTokens::BitwiseLeftShiftAssignment, 9},
 	{LexerTokens::BitwiseRightShiftAssignment, 9},
 
@@ -898,7 +898,7 @@ class Lexer {
 		const LexerToken *token = nullptr;
 
 		if (this->checkForTrailingChr('=')) {
-			token = new LexerToken(LexerTokens::BitwiseNotAssignment,
+			token = new LexerToken(LexerTokens::BitwiseNOTAssignment,
 								   this->chrIndex, this->chrIndex,
 								   this->lineNum, "~=");
 		} else {
