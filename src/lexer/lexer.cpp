@@ -88,7 +88,7 @@ enum class LexerTokens {
 	// Member / Pointer operators
 	Dot,	   // '.'
 	Arrow,	   // '->'
-	AddressOf, // '@'
+	At, // '@'
 
 	// Syntactic constructs
 	OpenBrace,		  // '('
@@ -123,7 +123,7 @@ std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
 	{LexerTokens::Arrow, 2},
 	{LexerTokens::Slice, 2},
 
-	{LexerTokens::AddressOf, 3},
+	{LexerTokens::At, 3},
 	{LexerTokens::Exponent, 3},
 
 	{LexerTokens::Multiplication, 4},
@@ -1023,7 +1023,7 @@ class Lexer {
 			break;
 		case '@':
 			this->tokens.emplace_back(
-				new const LexerToken(LexerTokens::AddressOf, this->chrIndex,
+				new const LexerToken(LexerTokens::At, this->chrIndex,
 									 this->chrIndex, this->lineNum, ""));
 			break;
 		case '#':
