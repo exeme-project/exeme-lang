@@ -613,6 +613,47 @@ class Lexer {
 			this->lineNum, string));
 	}
 
+	/*
+	 * Lex '#='.
+	 */
+	void lexMultiLineComment() {
+		bool end;
+
+		while (this->getLine(false)) {
+			end = false;
+
+			while (this->getChr(true)) {
+				if (end) {
+					if (this->chr == '#') {
+						return;
+					}
+
+					end = false;
+				} else if (this->chr == '=') {
+					end = true;
+				}
+			}
+		}
+	}
+
+	/*
+	 * Lex '#'.
+	 */
+	void lexSingleLineComment() {
+		if (this->getChr(false)) {
+			if (this->chr == '=') {
+				this->lexMultiLineComment();
+			} else {
+				while (this->getChr(true)) {
+				}
+			}
+		}
+
+		this->tokens.emplace_back(
+			new const LexerToken(LexerTokens::Comment, this->chrIndex,
+								 this->chrIndex, this->lineNum, ""));
+	}
+
 	/**
 	 * Lex '%'.
 	 */
@@ -986,12 +1027,7 @@ class Lexer {
 									 this->chrIndex, this->lineNum, ""));
 			break;
 		case '#':
-			while (this->getChr(false)) { // Skip to the end of the line
-			}
-
-			this->tokens.emplace_back(
-				new const LexerToken(LexerTokens::Comment, this->chrIndex,
-									 this->chrIndex, this->lineNum, ""));
+			this->lexSingleLineComment();
 			break;
 		case '%':
 			this->lexModulo();

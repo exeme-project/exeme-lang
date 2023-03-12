@@ -53,3 +53,9 @@
 ,
 :
 ::
+
+# Comment
+
+#= A
+multi-line
+comment =#
