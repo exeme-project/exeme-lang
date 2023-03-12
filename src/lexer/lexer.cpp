@@ -100,7 +100,7 @@ enum class LexerTokens {
 
 	// Other operators
 	Comma,			 // ','
-	Slice,			 // ':'
+	Colon,			 // ':'
 	ScopeResolution, // '::'
 
 	// Misc
@@ -121,7 +121,7 @@ std::unordered_map<LexerTokens, size_t> LexerTokenPrecedences = {
 	{LexerTokens::CloseCurlyBrace, 2},
 	{LexerTokens::Dot, 2},
 	{LexerTokens::Arrow, 2},
-	{LexerTokens::Slice, 2},
+	{LexerTokens::Colon, 2},
 
 	{LexerTokens::At, 3},
 	{LexerTokens::Exponent, 3},
@@ -955,14 +955,14 @@ class Lexer {
 	/**
 	 * Lex ':'.
 	 */
-	void lexSlice() {
+	void lexColon() {
 		const LexerToken *token = nullptr;
 
 		if (this->checkForTrailingChr(':')) {
 			token = new LexerToken(LexerTokens::ScopeResolution, this->chrIndex,
 								   this->chrIndex, this->lineNum, "::");
 		} else {
-			token = new LexerToken(LexerTokens::Slice, this->chrIndex,
+			token = new LexerToken(LexerTokens::Colon, this->chrIndex,
 								   this->chrIndex, this->lineNum, ":");
 		}
 
@@ -1071,7 +1071,7 @@ class Lexer {
 									 this->chrIndex, this->lineNum, ""));
 			break;
 		case ':':
-			this->lexSlice();
+			this->lexColon();
 			break;
 		default:
 			if (isalpha(this->chr) || this->chr == '_') {
