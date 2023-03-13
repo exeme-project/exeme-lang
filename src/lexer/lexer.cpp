@@ -86,9 +86,9 @@ enum class LexerTokens {
 	BitwiseRightShiftAssignment, // '>>='
 
 	// Member / Pointer operators
-	Dot,	   // '.'
-	Arrow,	   // '->'
-	At, // '@'
+	Dot,   // '.'
+	Arrow, // '->'
+	At,	   // '@'
 
 	// Syntactic constructs
 	OpenBrace,		  // '('
@@ -506,28 +506,25 @@ class Lexer {
 		size_t startChrIndex = this->chrIndex;
 		std::string string = "";
 
-		while (this->getChr(false)) {
-			if (this->chr == '"') {
-				this->tokens.emplace_back(new const LexerToken(
-					LexerTokens::String, startChrIndex, this->chrIndex,
-					this->lineNum, string));
-				return;
-			}
+		while (this->getLine(false)) {
+			while (this->getChr(false)) {
+				if (this->chr == '"') {
+					this->tokens.emplace_back(new const LexerToken(
+						LexerTokens::String, startChrIndex, this->chrIndex,
+						this->lineNum, string));
+					return;
+				}
 
-			if (includeChr) {
-				string += this->escapeChr();
-				includeChr = false;
-			} else if (this->chr == '\\') {
-				includeChr = true;
-			} else {
-				string += this->chr;
+				if (includeChr) {
+					string += this->escapeChr();
+					includeChr = false;
+				} else if (this->chr == '\\') {
+					includeChr = true;
+				} else {
+					string += this->chr;
+				}
 			}
 		}
-
-		this->unGetChr();
-		this->error("unterminated string",
-					new const LexerToken(LexerTokens::None, startChrIndex,
-										 this->chrIndex, this->lineNum, ""));
 	}
 
 	/**
