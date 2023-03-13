@@ -263,7 +263,7 @@ class Lexer {
   private:
 	bool closed;
 	char chr, prevChr;
-	size_t unGetTokens;
+	size_t unGetTokens, chrIndex, lineNum;
 	std::ifstream file;
 	std::string filePath;
 	std::vector<const LexerToken *> tokens;
@@ -1089,8 +1089,6 @@ class Lexer {
 	}
 
   public:
-	size_t chrIndex, lineNum;
-
 	/**
 	 * Construct a new Lexer object
 	 *
