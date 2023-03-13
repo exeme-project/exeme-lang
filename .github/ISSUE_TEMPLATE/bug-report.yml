@@ -34,7 +34,7 @@ body:
     attributes:
       label: Actual Behaviour
       description: Describe what you actually happened.
-      placeholder: Tell us what actually happened.
+      placeholder: Tell us what actually happened (screenshots are welcome).
     validations:
       required: true
   - type: dropdown
@@ -70,7 +70,7 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://exeme-project.github.io/exeme-lang/contributing/code_of_conduct.html).
+      description: The Code of Conduct can be found [here](https://exeme-project.github.io/exeme-lang/contributing/code_of_conduct.html).
       options:
         - label: I agree to follow this project's Code of Conduct.
           required: true
