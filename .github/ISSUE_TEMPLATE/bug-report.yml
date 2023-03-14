@@ -37,25 +37,12 @@ body:
       placeholder: Tell us what actually happened (screenshots are welcome).
     validations:
       required: true
-  - type: dropdown
-    id: os
+  - type: textarea
+    id: environment-info
     attributes:
-      label: OS
-      description: What OS did the bug occur on?
-      options:
-        - macOS
-        - Linux
-        - Windows
-        - Other (specify in the additional information box)
-    validations:
-      required: true
-  - type: dropdown
-    id: exeme-version
-    attributes:
-      label: Exeme Version
-      description: What Exeme version did the bug occur on?
-      options:
-        - v1
+      label: Environment Info
+      description: What OS and Exeme version did the bug occur on?
+      placeholder: Tell us the OS and Exeme version the bug occured on.
     validations:
       required: true
   - type: textarea
