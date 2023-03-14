@@ -227,7 +227,7 @@ std::vector<std::string> LexerTokenNames = {
 	"close sqaure brace",
 	"close curly brace",
 	"comma",
-	"slice operator",
+	"colon",
 	"scope resolution operator",
 	"comment",
 };
@@ -503,7 +503,7 @@ class Lexer {
 	 */
 	void lexString() {
 		bool includeChr = false;
-		size_t startChrIndex = this->chrIndex;
+		size_t startChrIndex = this->chrIndex, startLineNum = this->lineNum;
 		std::string string = "";
 
 		while (this->getLine(false)) {
@@ -525,6 +525,12 @@ class Lexer {
 				}
 			}
 		}
+
+		this->error("unterminated string",
+					new const LexerToken(
+						LexerTokens::None,
+						this->lineNum == startLineNum ? startChrIndex : 0,
+						this->chrIndex, this->lineNum, ""));
 	}
 
 	/**
@@ -615,6 +621,7 @@ class Lexer {
 	 */
 	void lexMultiLineComment() {
 		bool end;
+		size_t startChrIndex = this->chrIndex - 1, startLineNum = this->lineNum;
 
 		while (this->getLine(false)) {
 			end = false;
@@ -631,6 +638,12 @@ class Lexer {
 				}
 			}
 		}
+
+		this->error("unterminated multi-line comment",
+					new const LexerToken(
+						LexerTokens::None,
+						this->lineNum == startLineNum ? startChrIndex : 0,
+						this->chrIndex, this->lineNum, ""));
 	}
 
 	/*

@@ -47,10 +47,17 @@ class Parser {
   private:
 	Lexer *lexer;
 
-	/**
-	 * Parses the current variable declaration.
+	/*
+	 * Parses a function's parameters.
 	 */
-	void parseVariableDeclaration(bool valueRequired) {}
+	void parseFnParameters() {
+		bool expectingComma = false;
+
+		while (this->lexer->lex(true, true)) {
+		}
+
+		this->lexer->error("unterminated function", nullptr);
+	}
 
 	/**
 	 * Parses the current function.
@@ -82,36 +89,7 @@ class Parser {
 
 		this->lexer->clearTokens();
 
-		bool expectingComma = false;
-
-		while (this->lexer->lex(true, false)) {
-			if (expectingComma) {
-				if (!this->lexer->lex(true, false)) {
-					this->lexer->error("expected '" +
-										   LexerTokenNames[static_cast<size_t>(
-											   LexerTokens::Comma)] +
-										   "'",
-									   nullptr);
-				}
-
-				auto comma = this->lexer->getToken();
-
-				if (comma->identifier != LexerTokens::Comma) {
-					this->lexer->error("expected '" +
-										   LexerTokenNames[static_cast<size_t>(
-											   LexerTokens::Comma)] +
-										   "', got '" +
-										   LexerTokenNames[static_cast<size_t>(
-											   comma->identifier)] +
-										   "'",
-									   comma);
-				}
-
-				expectingComma = false;
-			}
-
-			this->parseVariableDeclaration(false);
-		}
+		this->parseFnParameters();
 
 		this->lexer->error("unterminated function", nullptr);
 	}
