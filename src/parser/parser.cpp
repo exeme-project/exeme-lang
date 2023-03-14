@@ -17,12 +17,16 @@ struct ParserTokens {
 	/**
 	 * Used to identify different parser tokens.
 	 */
-	enum class Identifiers { Function };
+	enum class Identifiers { FunctionArg, Function };
+
+	struct FunctionArg {};
 
 	struct Function {
-		const std::string fnName;
+		const std::string name;
+		const std::vector<FunctionArg> args;
 
-		Function(const std::string fnName) : fnName(fnName) {}
+		Function(const std::string name, std::vector<FunctionArg> args)
+			: name(name), args(args) {}
 	};
 };
 
@@ -32,12 +36,16 @@ struct ParserTokens {
 struct ParserToken {
 	const ParserTokens::Identifiers IDENTIFIER;
 	union {
+		const ParserTokens::FunctionArg *FunctionArg;
 		const ParserTokens::Function *Function;
 	};
 
-	ParserToken(const ParserTokens::Identifiers IDENTIFIER,
-				ParserTokens::Function *Function)
-		: IDENTIFIER(IDENTIFIER), Function(Function) {}
+	ParserToken(ParserTokens::FunctionArg *FunctionArg)
+		: IDENTIFIER(ParserTokens::Identifiers::FunctionArg),
+		  FunctionArg(FunctionArg) {}
+
+	ParserToken(ParserTokens::Function *Function)
+		: IDENTIFIER(ParserTokens::Identifiers::Function), Function(Function) {}
 };
 
 /**
@@ -50,10 +58,46 @@ class Parser {
 	/*
 	 * Parses a function's parameters.
 	 */
-	void parseFnParameters() {
+	void parseFnParameters(ParserToken *token) {
 		bool expectingComma = false;
 
 		while (this->lexer->lex(true, true)) {
+			auto fnParamName = this->lexer->getToken();
+
+			if (expectingComma) {
+				if (fnParamName->identifier != LexerTokens::Comma) {
+					this->lexer->error("expected '" +
+										   LexerTokenNames[static_cast<size_t>(
+											   LexerTokens::Comma)] +
+										   "' after function parameter",
+									   fnParamName);
+				}
+
+				expectingComma = false;
+				continue;
+			}
+
+			if (fnParamName->identifier != LexerTokens::Identifier) {
+				this->lexer->error("expected '" +
+									   LexerTokenNames[static_cast<size_t>(
+										   LexerTokens::Identifier)] +
+									   "' as function parameter name, got '" +
+									   LexerTokenNames[static_cast<size_t>(
+										   fnParamName->identifier)] +
+									   "'",
+								   fnParamName);
+			}
+
+			if (!this->lexer->lex(true, true)) {
+				this->lexer->error(
+					"expected '" +
+						LexerTokenNames[static_cast<size_t>(
+							LexerTokens::Colon)] +
+						"' to separate function parameter name and type",
+					nullptr);
+			}
+
+			auto colon = this->lexer->getToken();
 		}
 
 		this->lexer->error("unterminated function", nullptr);
@@ -63,8 +107,8 @@ class Parser {
 	 * Parses the current function.
 	 */
 	void parseFn(const std::string fnName) {
-		auto token = new ParserToken(ParserTokens::Identifiers::Function,
-									 new ParserTokens::Function(fnName));
+		auto token = new ParserToken(new ParserTokens::Function(
+			fnName, std::vector<ParserTokens::FunctionArg>{}));
 
 		if (!this->lexer->lex(true, false)) {
 			this->lexer->error("expected '" +
@@ -84,12 +128,12 @@ class Parser {
 								   LexerTokenNames[static_cast<size_t>(
 									   openBrace->identifier)] +
 								   "'",
-							   nullptr);
+							   openBrace);
 		}
 
 		this->lexer->clearTokens();
 
-		this->parseFnParameters();
+		this->parseFnParameters(token);
 
 		this->lexer->error("unterminated function", nullptr);
 	}
@@ -113,7 +157,7 @@ class Parser {
 					"' after 'fn' keyword, got '" +
 					LexerTokenNames[static_cast<size_t>(fnName->identifier)] +
 					"'",
-				nullptr);
+				fnName);
 		}
 
 		this->parseFn(fnName->value);
@@ -144,7 +188,7 @@ class Parser {
 
 		auto importPath = import->value;
 
-		// TODO: Import module
+		// TODO: Import module.
 	}
 
 	/**
@@ -160,7 +204,7 @@ class Parser {
 		}
 
 		while (this->lexer->lex(true, false)) {
-			// TODO: Parse tokens
+			// TODO: Parse tokens.
 		}
 	}
 

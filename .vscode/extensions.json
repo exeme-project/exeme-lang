@@ -6,6 +6,7 @@
         "ms-vscode.cmake-tools",
         "ms-vscode-remote.remote-containers",
         "pkief.material-icon-theme",
+        "redhat.vscode-yaml",
         "trond-snekvik.simple-rst",
         "vadimcn.vscode-lldb",
         "xaver.clang-format",
