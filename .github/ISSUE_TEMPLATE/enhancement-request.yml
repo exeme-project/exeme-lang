@@ -1,0 +1,43 @@
+name: Enhancement Request
+description: Request an enhancement
+title: "[ENHANCEMENT]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to file an enhancement request.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the enhancement you would like to be added to Exeme.
+      placeholder: Tell us about your proposed enhancement.
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: Describe use case(s) for your proposed enhancement.
+      placeholder: Tell us about use case(s) for your proposed enhancement.
+  - type: textarea
+    id: alternatives-considered
+    attributes:
+      label: Alternatives Considered
+      description: Describe alternate solutions you have considered for the proposed enhancement.
+      placeholder: Tell us about alternate solutions you have considered for the proposed enhancement.
+  - type: textarea
+    id: additional-information
+    attributes:
+      label: Additional Information
+      description: Is there any additional information that may be useful?
+      placeholder: Tell us any additional information.
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: The Code of Conduct can be found [here](https://exeme-project.github.io/exeme-lang/contributing/code_of_conduct.html).
+      options:
+        - label: I agree to follow this project's Code of Conduct.
+          required: true

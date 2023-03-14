@@ -524,6 +524,8 @@ class Lexer {
 					string += this->chr;
 				}
 			}
+
+			string += "\n";
 		}
 
 		this->error("unterminated string",
