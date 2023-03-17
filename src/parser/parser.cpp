@@ -17,15 +17,17 @@ struct ParserTokens {
 	/**
 	 * Used to identify different parser tokens.
 	 */
-	enum class Identifiers { FunctionArg, Function };
+	enum class Identifiers { Variable, Function };
 
-	struct FunctionArg {};
+	struct Variable {
+		std::string identifier;
+	};
 
 	struct Function {
 		const std::string name;
-		const std::vector<FunctionArg> args;
+		const std::vector<Variable> args;
 
-		Function(const std::string name, std::vector<FunctionArg> args)
+		Function(const std::string name, std::vector<Variable> args)
 			: name(name), args(args) {}
 	};
 };
@@ -36,13 +38,9 @@ struct ParserTokens {
 struct ParserToken {
 	const ParserTokens::Identifiers IDENTIFIER;
 	union {
-		const ParserTokens::FunctionArg *FunctionArg;
+		const ParserTokens::Variable *Variable;
 		const ParserTokens::Function *Function;
 	};
-
-	ParserToken(ParserTokens::FunctionArg *FunctionArg)
-		: IDENTIFIER(ParserTokens::Identifiers::FunctionArg),
-		  FunctionArg(FunctionArg) {}
 
 	ParserToken(ParserTokens::Function *Function)
 		: IDENTIFIER(ParserTokens::Identifiers::Function), Function(Function) {}
@@ -108,7 +106,7 @@ class Parser {
 	 */
 	void parseFn(const std::string fnName) {
 		auto token = new ParserToken(new ParserTokens::Function(
-			fnName, std::vector<ParserTokens::FunctionArg>{}));
+			fnName, std::vector<ParserTokens::Variable>{}));
 
 		if (!this->lexer->lex(true, false)) {
 			this->lexer->error("expected '" +

@@ -11,5 +11,9 @@
         "vadimcn.vscode-lldb",
         "xaver.clang-format",
         "zhuangtongfa.material-theme",
+    ],
+    "unwantedRecommendations": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack"
     ]
 }
