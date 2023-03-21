@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
-set (CMAKE_CXX_STANDARD 20)
+set (C_STANDARD 17)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_SOURCE_DIR}/build>)
 
 project(exeme)
 
-add_executable(exeme src/main.cpp)
+add_executable(exeme src/main.c)

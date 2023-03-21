@@ -3,7 +3,7 @@
         "Ninja",
         "Visual Studio 17 2022",
     ],
-    "[cpp]": {
+    "[c]": {
         "editor.defaultFormatter": "xaver.clang-format"
     },
     "editor.fontFamily": "Fira Code",
@@ -15,5 +15,5 @@
     "git.confirmSync": false,
     "git.autofetch": true,
     "workbench.colorTheme": "One Dark Pro Darker",
-    "workbench.iconTheme": "material-icon-theme"
+    "workbench.iconTheme": "material-icon-theme",
 }

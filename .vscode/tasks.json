@@ -2,14 +2,14 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "[WINDOWS] clang++ build",
-            "command": "clang++",
+            "label": "[WINDOWS] clang build",
+            "command": "clang",
             "args": [
-                "-std=c++20",
+                "-std=c17",
                 "-g",
-                "${workspaceFolder}/src/main.cpp",
+                "${workspaceFolder}/src/main.c",
                 "-o",
-                "${workspaceFolder}/build/Debug/exeme.exe",
+                "${workspaceFolder}/build/exeme.exe",
             ],
             "group": {
                 "kind": "build",
@@ -18,12 +18,12 @@
         },
         {
             "type": "shell",
-            "label": "[LINUX] clang++ build",
-            "command": "clang++",
+            "label": "[LINUX] clang build",
+            "command": "clang",
             "args": [
-                "-std=c++20",
+                "-std=c17",
                 "-g",
-                "${workspaceFolder}/src/main.cpp",
+                "${workspaceFolder}/src/main.c",
                 "-o",
                 "${workspaceFolder}/build/exeme",
             ],
