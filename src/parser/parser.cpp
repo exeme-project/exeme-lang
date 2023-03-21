@@ -30,7 +30,7 @@ struct ParserTokens {
 		Function(const std::string name, std::vector<Variable> args)
 			: name(name), args(args) {}
 	};
-};
+}; 
 
 /**
  * Represents a parser token.
