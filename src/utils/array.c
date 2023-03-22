@@ -1,3 +1,6 @@
+// Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
+// license information. SPDX-License-Identifier: MIT License.
+
 #pragma once
 
 #include "../includes.c"
@@ -28,7 +31,7 @@ void array___realloc(struct array *self, size_t bufSize) {
 	}
 }
 
-void array_insert(struct array *self, void *value, size_t index) {
+void array_insert(struct array *self, size_t index, void *value) {
 	if (index + 1 > self->length) {
 		array___realloc(self, (index + 1) * ARRAY_STRUCT_ELEMENT_SIZE);
 		self->length = index + 1;
@@ -39,17 +42,30 @@ void array_insert(struct array *self, void *value, size_t index) {
 
 bool array_pop(struct array *self) {
 	if (self->length < 1) {
+		printf(
+			"%s%sinternal warning%s in %s (%s:%d) - nothing to pop from array",
+			F_BRIGHT_RED, S_BOLD, S_RESET, __FUNCTION__, __FILE__, __LINE__);
 		return false;
 	} else if (self->length == 1) {
 		self->length = 0;
-		self->_values = realloc(self->_values, 1);
+		array___realloc(self, 1);
 	} else {
 		self->length--;
-		self->_values =
-			realloc(self->_values, self->length * ARRAY_STRUCT_ELEMENT_SIZE);
+		array___realloc(self, self->length * ARRAY_STRUCT_ELEMENT_SIZE);
 	}
 
 	return true;
+}
+
+void *array_get(struct array *self, size_t index) {
+	if (index + 1 > self->length) {
+		printf("%s%sinternal warning%s in %s (%s:%d) - array get index out of "
+			   "bounds",
+			   F_BRIGHT_RED, S_BOLD, S_RESET, __FUNCTION__, __FILE__, __LINE__);
+		return NULL;
+	}
+
+	return self->_values[index];
 }
 
 void array_free(struct array *self) {
