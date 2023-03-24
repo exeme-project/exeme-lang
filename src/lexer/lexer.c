@@ -471,7 +471,7 @@ void lexer_lexEquals(struct Lexer *self) {
  *
  * @param self - The corresponding lexer struct.
  */
-void lexChr(struct Lexer *self) {
+void lexer_lexChr(struct Lexer *self) {
 	bool includeChr = false;
 	char *chr = NULL;
 	size_t chrLen = 0, startChrIndex = self->chrIndex;
@@ -505,4 +505,45 @@ void lexChr(struct Lexer *self) {
 
 	lexer_unGetChr(self);
 	lexer_error(self, "unterminated char", NULL);
+}
+
+/**
+ * Lex a string.
+ * Operates on the given lexer struct.
+ *
+ * @param self - The corresponding lexer struct.
+ */
+void lexer_lexString(struct Lexer *self) {
+	bool includeChr = false;
+	char *string = "";
+	size_t startChrIndex = self->chrIndex, startLineNum = self->lineNum;
+
+	while (lexer_getLine(self, false)) {
+		while (lexer_getChr(self, false)) {
+			if (self->chr == '"') {
+				array_insert(self->tokens, self->tokens->length,
+							 lexerToken_new(string, LEXERTOKENS_STRING,
+											startChrIndex, self->chrIndex,
+											self->lineNum));
+				return;
+			}
+
+			if (includeChr) {
+				string += lexer_escapeChr(self);
+				includeChr = false;
+			} else if (self->chr == '\\') {
+				includeChr = true;
+			} else {
+				string += self->chr;
+			}
+		}
+
+		string += '\n';
+	}
+
+	lexer_error(
+		self, "unterminated string",
+		lexerToken_new("", LEXERTOKENS_NONE,
+					   self->lineNum == startLineNum ? startChrIndex : 0,
+					   self->chrIndex, self->lineNum));
 }
