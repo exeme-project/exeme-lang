@@ -3,6 +3,8 @@
 
 #pragma once
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <ctype.h>
 #include <malloc.h>
 #include <stdarg.h>
