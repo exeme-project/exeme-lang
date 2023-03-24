@@ -4,24 +4,14 @@
 #pragma once
 
 #include "../includes.c"
-#include "./panic.c"
 
 struct array {
 	size_t length;
-	void **_values;
+	const void **_values;
 };
 
 #define ARRAY_STRUCT_SIZE sizeof(struct array)
 #define ARRAY_STRUCT_ELEMENT_SIZE sizeof(void *)
-
-struct array *array_new(void) {
-	struct array *self = malloc(ARRAY_STRUCT_SIZE);
-
-	self->length = 0;
-	self->_values = malloc(1);
-
-	return self;
-}
 
 void array___realloc(struct array *self, size_t bufSize) {
 	self->_values = realloc(self->_values, bufSize);
@@ -31,7 +21,7 @@ void array___realloc(struct array *self, size_t bufSize) {
 	}
 }
 
-void array_insert(struct array *self, size_t index, void *value) {
+void array_insert(struct array *self, size_t index, const void *value) {
 	if (index + 1 > self->length) {
 		array___realloc(self, (index + 1) * ARRAY_STRUCT_ELEMENT_SIZE);
 		self->length = index + 1;
@@ -42,10 +32,7 @@ void array_insert(struct array *self, size_t index, void *value) {
 
 bool array_pop(struct array *self) {
 	if (self->length < 1) {
-		printf(
-			"%s%sinternal warning%s in %s (%s:%d) - nothing to pop from array",
-			F_BRIGHT_RED, S_BOLD, S_RESET, __FUNCTION__, __FILE__, __LINE__);
-		return false;
+		panic("nothing to pop from array");
 	} else if (self->length == 1) {
 		self->length = 0;
 		array___realloc(self, 1);
@@ -57,12 +44,9 @@ bool array_pop(struct array *self) {
 	return true;
 }
 
-void *array_get(struct array *self, size_t index) {
+const void *array_get(struct array *self, size_t index) {
 	if (index + 1 > self->length) {
-		printf("%s%sinternal warning%s in %s (%s:%d) - array get index out of "
-			   "bounds",
-			   F_BRIGHT_RED, S_BOLD, S_RESET, __FUNCTION__, __FILE__, __LINE__);
-		return NULL;
+		panic("array get index out of bounds");
 	}
 
 	return self->_values[index];
@@ -74,5 +58,20 @@ void array_free(struct array *self) {
 		free(self);
 
 		self = NULL;
+	} else {
+		panic("array has already been freed");
 	}
+}
+
+struct array *array_new(void) {
+	struct array *self = malloc(ARRAY_STRUCT_SIZE);
+
+	if (!self) {
+		panic("failed to create array struct");
+	}
+
+	self->length = 0;
+	self->_values = malloc(1);
+
+	return self;
 }
