@@ -13,6 +13,28 @@
 #include "../utils/string.c"
 
 /**
+ * Used to identify keywords.
+ */
+const struct Array KEYWORDS = {
+	13,
+	(const void *[]){
+		"break",
+		"catch",
+		"class",
+		"continue",
+		"elif",
+		"else",
+		"fn",
+		"for",
+		"if",
+		"import",
+		"return",
+		"try",
+		"while",
+	},
+};
+
+/**
  * Used to identify different lexer tokens.
  */
 enum LexerTokens {
@@ -99,7 +121,7 @@ enum LexerTokens {
 /**
  * Contains the names of each of the lexer token identifiers.
  */
-struct Array LexerTokenNames = {
+const struct Array LEXER_TOKEN_NAMES = {
 	54,
 	(const void *[]){
 		"",
@@ -184,10 +206,11 @@ struct Array LexerTokenNames = {
 };
 
 /**
- * Used to identify the precedence of different tokens. Comparison can be done
- * with 'strcmp(a, b) < 0' ('true' if 'a' precedes over 'b', else 'false').
+ * Used to identify the precedence of different tokens. Comparison can
+ * be done with 'strcmp(a, b) < 0' ('true' if 'a' precedes over 'b',
+ * else 'false').
  */
-struct Array LexerTokenPrecedences = {
+const struct Array LEXER_TOKEN_PRECEDENCES = {
 	54,
 	(const void *[]){
 		"a",
@@ -320,7 +343,7 @@ struct Lexer {
 	char chr, prevChr;
 	const char *FILE_PATH;
 	FILE *filePointer;
-	size_t unGetTokens, chrIndex, lineNum;
+	size_t parsedTokensCount, chrIndex, lineNum;
 	struct Array *tokens;
 };
 
@@ -659,4 +682,101 @@ void lexer_lexString(struct Lexer *self) {
 		lexerToken_new("", LEXERTOKENS_NONE,
 					   self->lineNum == startLineNum ? startChrIndex : 0,
 					   self->chrIndex, self->lineNum));
+}
+
+/**
+ * Lexes a float.
+ *
+ * @param self          The current lexer struct.
+ * @param startChrIndex The index of the first character of the float.
+ * @param number        The float's value.
+ */
+void lexer_lexFloat(struct Lexer *self, size_t startChrIndex, char *number) {
+	while (lexer_getChr(self, false)) {
+		if (isspace(self->chr) || (self->chr != '.' && !isalpha(self->chr))) {
+			lexer_unGetChr(self);
+			break;
+		}
+
+		if (self->chr == '.') {
+			lexer_error(self, "too many decimal points for float", NULL);
+		} else if (!isdigit(self->chr)) {
+			lexer_error(self, "invalid character for float", NULL);
+		}
+
+		number += self->chr;
+	}
+
+	array_insert(self->tokens, self->tokens->length,
+				 lexerToken_new(number, LEXERTOKENS_FLOAT, startChrIndex,
+								self->chrIndex, self->lineNum));
+}
+
+/**
+ * Lexes an integer. Hands control over to lexFloat() if needed.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexInteger(struct Lexer *self) {
+	size_t startChrIndex = self->chrIndex;
+	char *number = chrToString(self->chr);
+
+	while (lexer_getChr(self, false)) {
+		if (isspace(self->chr) || (self->chr != '.' && !isalpha(self->chr))) {
+			lexer_unGetChr(self);
+			break;
+		}
+
+		number += self->chr;
+
+		if (self->chr == '.') {
+			lexer_lexFloat(self, startChrIndex, number);
+			return;
+		} else if (!isdigit(self->chr)) {
+			lexer_error(self, "invalid character for float", NULL);
+		}
+	}
+
+	array_insert(self->tokens, self->tokens->length,
+				 lexerToken_new(number, LEXERTOKENS_INTEGER, startChrIndex,
+								self->chrIndex, self->lineNum));
+}
+
+bool lexer_lexKeywordOrIdentifier_matcher(const void *element,
+										  const void *matchValue) {
+	if (strcmp((const char *)element, matchValue) == 0) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Lexes a keyword or identifier.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
+	size_t startChrIndex = self->chrIndex;
+	char *string = chrToString(self->chr);
+
+	while (lexer_getChr(self, false)) {
+		if (!isalnum(self->chr)) {
+			lexer_unGetChr(self);
+			break;
+		}
+
+		string += self->chr;
+	}
+
+	array_insert(
+		self->tokens, self->tokens->length,
+		lexerToken_new(
+			string,
+			array_find(&KEYWORDS, &lexer_lexKeywordOrIdentifier_matcher, string)
+				? LEXERTOKENS_IDENTIFIER
+				: LEXERTOKENS_KEYWORD,
+			startChrIndex,
+			self->chr == '\n' ? self->chrIndex - 1 : self->chrIndex,
+			self->lineNum));
 }

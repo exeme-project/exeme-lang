@@ -85,6 +85,28 @@ const void *array_get(struct Array *self, size_t index) {
 }
 
 /**
+ * Iterates through the array, using the passed function to check for matches.
+ *
+ * @param self    The current Array struct.
+ * @param matcher The function to check for matches.
+ *
+ * @return The matched element, or NULL if no matches were found.
+ */
+const void *array_find(const struct Array *self,
+					   bool (*matcher)(const void *, const void *),
+					   const void *match) {
+	for (size_t index = 0; index < self->length; index++) {
+		const void *element = self->_values[index];
+
+		if (matcher(element, match)) {
+			return element;
+		}
+	}
+
+	return NULL;
+}
+
+/**
  * Frees an Array struct.
  *
  * @param self The current Array struct.

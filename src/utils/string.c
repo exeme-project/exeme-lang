@@ -10,16 +10,18 @@
 /**
  * Concatenates the specified amount of strings together.
  *
+ * @param argumentsNumber The amount of strings to concatenate.
+ *
  * @return char* - The concatenated string.
  */
-char *stringConcatenate(size_t argnumentsNumber, ...) {
+char *stringConcatenate(size_t argumentsNumber, ...) {
 	char *string;
 	va_list argnuments;
-	va_start(argnuments, argnumentsNumber);
+	va_start(argnuments, argumentsNumber);
 
 	string = malloc(1);
 
-	for (size_t index = 0; index < argnumentsNumber; index++) {
+	for (size_t index = 0; index < argumentsNumber; index++) {
 		char *appendString = va_arg(argnuments, char *);
 
 		string = realloc(string, sizeof(string) + strlen(appendString));
@@ -34,6 +36,9 @@ char *stringConcatenate(size_t argnumentsNumber, ...) {
 /**
  * Repeats the char the specified amount of times.
  *
+ * @param chr    The char to repeat.
+ * @param length The amount of times to repeat the char.
+ *
  * @return char* - The repeated string.
  */
 char *repeatChr(char chr, size_t length) {
@@ -45,6 +50,22 @@ char *repeatChr(char chr, size_t length) {
 	}
 
 	string[index] = '\0';
+
+	return string;
+}
+
+/**
+ * Convers the char into a string.
+ *
+ * @param chr The char to convert into a string.
+ *
+ * @return char* - The repeated string.
+ */
+char *chrToString(char chr) {
+	char *string = malloc(2);
+
+	string[0] = chr;
+	string[1] = '\0';
 
 	return string;
 }
