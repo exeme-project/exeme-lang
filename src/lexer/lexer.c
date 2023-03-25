@@ -103,12 +103,16 @@ struct Array LexerTokenNames = {
 	54,
 	(const void *[]){
 		"",
+
 		"keyword",
 		"identifier",
+
 		"char",
 		"string",
 		"integer",
 		"float",
+
+		// Arithmetic operators
 		"modulo operator",
 		"exponent operator",
 		"division operator",
@@ -116,22 +120,31 @@ struct Array LexerTokenNames = {
 		"multiplication operator",
 		"addition operator",
 		"subtraction operator",
+
+		// Comparison / Relational operators
 		"equal to operator",
 		"not equal to operator",
 		"greater then operator",
 		"less than operator",
 		"greater than or equal operator",
 		"less than or equal operator",
+
+		// Logical operators
 		"logical and operator",
 		"logical or operator",
 		"logical not operator",
+
+		// Bitwise operators
 		"bitwise AND operator",
 		"bitwise OR operator",
 		"bitwise XOR operator",
 		"bitwise NOT operator",
 		"bitwise left shift",
 		"bitwise right shift",
+
+		// Assignment operators
 		"assignment operator",
+
 		"modulo assignment operator",
 		"exponent assignment operator",
 		"divison assignment operator",
@@ -139,25 +152,122 @@ struct Array LexerTokenNames = {
 		"multiplication assignment operator",
 		"addition assignment operator",
 		"subtraction assignment operator",
+
 		"bitwise AND assignment operator",
 		"bitwise OR assignment operator",
 		"bitwise XOR assignment operator",
 		"bitwise NOT assignment operator",
 		"bitwise left shift assignment operator",
 		"bitwise right shift assignment operator",
+
+		// Member / Pointer operators
 		"dot operator",
 		"arrow operator",
-		"address of operator",
+		"at operator",
+
+		// Syntactic constructs
 		"open brace",
 		"open square brace",
 		"open curly brace",
 		"close brace",
 		"close sqaure brace",
 		"close curly brace",
+
+		// Other operators
 		"comma",
 		"colon",
 		"scope resolution operator",
+
+		// Misc
 		"comment",
+	},
+};
+
+/**
+ * Used to identify the precedence of different tokens. Comparison can be done
+ * with 'strcmp(a, b) < 0' ('true' if 'a' precedes over 'b', else 'false').
+ */
+struct Array LexerTokenPrecedences = {
+	54,
+	(const void *[]){
+		"a",
+
+		"a",
+		"a",
+
+		"a",
+		"a",
+		"a",
+		"a",
+
+		// Arithmetic operators
+		"d",
+		"c",
+		"d",
+		"d",
+		"d",
+		"e",
+		"e",
+
+		// Comparison / Relational operators
+		"g",
+		"g",
+		"f",
+		"f",
+		"f",
+		"f",
+
+		// Logical operators
+		"h",
+		"h",
+		"h",
+
+		// Bitwise operators
+		"e",
+		"e",
+		"e",
+		"e",
+		"i",
+		"i",
+
+		// Assignment operators
+		"i",
+
+		"i",
+		"i",
+		"i",
+		"i",
+		"i",
+		"i",
+		"i",
+
+		"i",
+		"i",
+		"i",
+		"i",
+		"i",
+		"i",
+
+		// Member / Pointer operators
+		"b",
+		"b",
+		"c",
+
+		// Syntactic constructs
+		"b",
+		"b",
+		"b",
+		"b",
+		"b",
+		"b",
+
+		// Other operators
+		"j",
+		"b",
+		"a",
+
+		// Misc
+		"a",
 	},
 };
 
