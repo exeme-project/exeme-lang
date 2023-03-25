@@ -18,4 +18,5 @@
     "redhat.telemetry.enabled": false,
     "workbench.colorTheme": "One Dark Pro Darker",
     "workbench.iconTheme": "material-icon-theme",
+    "esbonio.sphinx.confDir": "",
 }

@@ -2,18 +2,18 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 <meta property="og:title" content="Setup" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="setup/setup.html" />
 <meta property="og:site_name" content="Exeme" />
-<meta property="og:description" content="Windows: Install Visual Studio with support for C++ development. If you used the above link then it should automatically choose the required options to install, and, Install the latest version of C..." />
-<meta property="og:image" content="/_images/social_previews/summary_setup_setup_a0d8f864.png" />
-<meta property="og:image:alt" content="Windows: Install Visual Studio with support for C++ development. If you used the above link then it should automatically choose the required options to insta..." />
-<meta name="description" content="Windows: Install Visual Studio with support for C++ development. If you used the above link then it should automatically choose the required options to install, and, Install the latest version of C..." />
+<meta property="og:description" content="Windows: Install the latest version of Clang from LLVM. Choose the binary ending with-win64.exe(unless your system is 32-Bit).. MacOS: Soon… Linux: Soon…" />
+<meta property="og:image" content="/_images/social_previews/summary_setup_setup_2b79e17e.png" />
+<meta property="og:image:alt" content="Windows: Install the latest version of Clang from LLVM. Choose the binary ending with-win64.exe(unless your system is 32-Bit).. MacOS: Soon… Linux: Soon…" />
+<meta name="description" content="Windows: Install the latest version of Clang from LLVM. Choose the binary ending with-win64.exe(unless your system is 32-Bit).. MacOS: Soon… Linux: Soon…" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="Setup" href="index.html" />
 
-    <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
+    <!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
         <title>Setup - Exeme</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
@@ -242,9 +242,6 @@
 <section id="windows">
 <h2>Windows<a class="headerlink" href="#windows" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Install <a class="reference external" href="https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&amp;channel=Release&amp;version=VS2022&amp;source=VSFeaturesPage&amp;passive=true&amp;tailored=cplus&amp;cid=2031#cplusplus">Visual Studio</a>
-with support for C++ development. If you used the above link then it
-should automatically choose the required options to install, and</p></li>
 <li><p>Install the latest version of <a class="reference external" href="https://github.com/llvm/llvm-project/releases/latest">Clang</a> from LLVM.
 Choose the binary ending with <code class="docutils literal notranslate"><span class="pre">-win64.exe</span></code> (unless your system is
 32-Bit).</p></li>
@@ -255,39 +252,11 @@ Choose the binary ending with <code class="docutils literal notranslate"><span c
 </div>
 </section>
 <section id="macos">
-<h2>macOS<a class="headerlink" href="#macos" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p>Install the latest XCode (from the App Store or the <a class="reference external" href="https://developer.apple.com/xcode/">Xcode website</a>),</p></li>
-<li><p>Install XCode command-line tools <code class="docutils literal notranslate"><span class="pre">xcode-select</span> <span class="pre">--install</span></code>,</p></li>
-<li><p>Install <a class="reference external" href="https://brew.sh/">Homebrew</a>,</p></li>
-<li><p>Install LLVM through Homebrew with: <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">llvm</span></code>,</p></li>
-<li><p>Run <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">'export</span> <span class="pre">PATH=&quot;/usr/local/opt/llvm/bin:$PATH&quot;'</span> <span class="pre">&gt;&gt;</span>
-<span class="pre">~/.zshrc_profile</span></code> to add LLVM to your PATH, and</p></li>
-<li><p>Run <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">~/.bash_profile</span></code> or <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">~/.zshrc</span></code> to update your
-PATH variable in the current terminal session, depending on your
-shell.</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>On newer versions of macOS, some headers are not installed by
-default. Open
-<code class="docutils literal notranslate"><span class="pre">Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_*.pkg</span></code>.</p>
-</div>
-</section>
-<section id="gnu-linux-and-other-nix">
-<h2>GNU/Linux and other Nix<a class="headerlink" href="#gnu-linux-and-other-nix" title="Permalink to this heading">#</a></h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Make sure the LLVM binaries and the linker are added to your $PATH
-environmental variable.</p>
-</div>
+<h2>MacOS<a class="headerlink" href="#macos" title="Permalink to this heading">#</a></h2>
+<p>Soon…</p>
 <section id="linux">
 <h3>Linux<a class="headerlink" href="#linux" title="Permalink to this heading">#</a></h3>
-<p>Install clang and llvm (using your distro’s package manager).</p>
-</section>
-<section id="freebsd">
-<h3>FreeBSD<a class="headerlink" href="#freebsd" title="Permalink to this heading">#</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">pkg</span> <span class="pre">install</span> <span class="pre">bash</span> <span class="pre">git</span> <span class="pre">llvm</span></code>.</p>
+<p>Soon…</p>
 </section>
 </section>
 </section>
@@ -348,10 +317,8 @@ environmental variable.</p>
             <ul>
 <li><a class="reference internal" href="#">Setup</a><ul>
 <li><a class="reference internal" href="#windows">Windows</a></li>
-<li><a class="reference internal" href="#macos">macOS</a></li>
-<li><a class="reference internal" href="#gnu-linux-and-other-nix">GNU/Linux and other Nix</a><ul>
+<li><a class="reference internal" href="#macos">MacOS</a><ul>
 <li><a class="reference internal" href="#linux">Linux</a></li>
-<li><a class="reference internal" href="#freebsd">FreeBSD</a></li>
 </ul>
 </li>
 </ul>
@@ -366,9 +333,6 @@ environmental variable.</p>
     </aside>
   </div>
 </div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/scripts/furo.js"></script>
