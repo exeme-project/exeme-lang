@@ -10,6 +10,40 @@
 #include "./panic.c"
 
 /**
+ * Represents a string.
+ */
+struct String {
+	char *_value;
+	size_t length;
+};
+
+#define STRING_STRUCT_SIZE sizeof(struct String)
+
+/**
+ * Creates a new String struct.
+ *
+ * @return The created String struct.
+ */
+struct String *string_new(char *value) {
+	struct String *self = malloc(STRING_STRUCT_SIZE);
+
+	if (!self) {
+		panic("failed to create String struct");
+	}
+
+	self->length = 0;
+	self->_value = malloc(sizeof(value));
+
+	if (!self->_value) {
+		panic("failed to malloc string");
+	}
+
+	strcpy(self->_value, value);
+
+	return self;
+}
+
+/**
  * Concatenates the specified amount of strings together.
  *
  * @param argumentsNumber The amount of strings to concatenate.
@@ -80,41 +114,6 @@ char *chrToString(char chr) {
 
 	string[0] = chr;
 	string[1] = '\0';
-
-	return string;
-}
-
-/**
- * Concatenates a char to a string.
- *
- * @param string The string to concatenate to.
- * @param chr    The char to concatenate onto the string.
- *
- * @return The concatenated string.
- */
-char *stringConcatenateChr(char *string, char chr) {
-	size_t stringSize = sizeof(string);
-	string = realloc(string, stringSize + 1);
-
-	if (!string) {
-		panic("failed to realloc string");
-	}
-
-	string[stringSize] = chr;
-	string[stringSize + 1] = '\0';
-
-	return string;
-}
-
-/**
- * Creates an empty string on the heap.
-
- * @return char* - The empty string.
- */
-char *createHeapString(void) {
-	char *string = malloc(1);
-
-	string[0] = '\0';
 
 	return string;
 }

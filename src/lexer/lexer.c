@@ -299,9 +299,9 @@ const struct Array LEXER_TOKEN_PRECEDENCES = {
  * Represents a lexer token.
  */
 struct LexerToken {
-	const char *value;
 	enum LexerTokens identifier;
 	size_t startChrIndex, chrIndex, lineNum;
+	struct String *value;
 };
 
 #define LEXERTOKEN_STRUCT_SIZE sizeof(struct LexerToken)
@@ -309,16 +309,16 @@ struct LexerToken {
 /**
  * Creates a new LexerToken struct.
  *
- * @param value         Value of the token.
  * @param identifier    Token identifier.
+ * @param value         Value of the token.
  * @param startChrIndex Start char index of token.
  * @param chrIndex      End char index of the token.
  * @param lineNum       Line num of the token.
  *
  * @return The created LexerToken struct.
  */
-const struct LexerToken *lexerToken_new(const char *value,
-										enum LexerTokens identifier,
+const struct LexerToken *lexerToken_new(enum LexerTokens identifier,
+										struct String *value,
 										size_t startChrIndex, size_t chrIndex,
 										size_t lineNum) {
 	struct LexerToken *self = malloc(LEXERTOKEN_STRUCT_SIZE);
@@ -327,8 +327,8 @@ const struct LexerToken *lexerToken_new(const char *value,
 		panic("failed to create LexerToken struct");
 	}
 
-	self->value = value;
 	self->identifier = identifier;
+	self->value = value;
 	self->startChrIndex = startChrIndex;
 	self->chrIndex = chrIndex;
 	self->lineNum = lineNum;
@@ -572,7 +572,7 @@ char lexer_escapeChr(struct Lexer *self) {
 	}
 
 	lexer_error(self, "invalid escape sequence",
-				lexerToken_new("", LEXERTOKENS_NONE, self->chrIndex - 1,
+				lexerToken_new(LEXERTOKENS_NONE, NULL, self->chrIndex - 1,
 							   self->chrIndex, self->lineNum));
 }
 
@@ -607,13 +607,14 @@ bool lexer_checkForTrailingChr(struct Lexer *self, char chr) {
  * @param self  The current lexer struct.
  * @param token The current token.
  */
-void lexer_checkForContinuation(struct Lexer *self, const char *token) {
+void lexer_checkForContinuation(struct Lexer *self,
+								const struct LexerToken *token) {
 	if (lexer_getChr(self, false)) {
 		if (!isspace(self->chr) && !isalnum(self->chr)) {
 			lexer_error(self,
 						stringConcatenate(3,
 										  "unexpected continuation of token '",
-										  token, "'"),
+										  token->value->_value, "'"),
 						NULL);
 		}
 
@@ -630,16 +631,18 @@ void lexer_lexEquals(struct Lexer *self) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_checkForTrailingChr(self, self->chr)) {
-		token = lexerToken_new("==", LEXERTOKENS_EQUAL_TO, self->chrIndex - 1,
-							   self->chrIndex, self->lineNum);
+		token =
+			lexerToken_new(LEXERTOKENS_EQUAL_TO, string_new("=="),
+						   self->chrIndex - 1, self->chrIndex, self->lineNum);
 	} else {
-		token = lexerToken_new("=", LEXERTOKENS_ASSIGNMENT, self->chrIndex - 1,
-							   self->chrIndex, self->lineNum);
+		token =
+			lexerToken_new(LEXERTOKENS_ASSIGNMENT, string_new("="),
+						   self->chrIndex - 1, self->chrIndex, self->lineNum);
 	}
 
 	array_insert(self->tokens, self->tokens->length, token);
 
-	lexer_checkForContinuation(self, token->value);
+	lexer_checkForContinuation(self, token);
 }
 
 /**
@@ -649,23 +652,23 @@ void lexer_lexEquals(struct Lexer *self) {
  */
 void lexer_lexChr(struct Lexer *self) {
 	bool includeChr = false;
-	char *chr = createHeapString();
 	size_t startChrIndex = self->chrIndex;
+	struct String *chr = string_new(chrToString(self->chr));
 
 	if (!chr) {
 		panic("failed to malloc char");
 	}
 
 	while (lexer_getChr(self, false)) {
-		if (chr[0] != '\0') {
+		if (chr->length > 1) {
 			lexer_error(self, "multi-character char",
-						lexerToken_new("", LEXERTOKENS_NONE, startChrIndex,
+						lexerToken_new(LEXERTOKENS_NONE, NULL, startChrIndex,
 									   self->chrIndex, self->lineNum));
 		}
 
 		if (self->chr == '\'') {
 			array_insert(self->tokens, self->tokens->length,
-						 lexerToken_new(chr, LEXERTOKENS_CHR, startChrIndex,
+						 lexerToken_new(LEXERTOKENS_CHR, chr, startChrIndex,
 										self->chrIndex, self->lineNum));
 			return;
 		}
@@ -691,14 +694,14 @@ void lexer_lexChr(struct Lexer *self) {
  */
 void lexer_lexString(struct Lexer *self) {
 	bool includeChr = false;
-	char *string = createHeapString();
+	struct String *string = string_new(chrToString(self->chr));
 	size_t startChrIndex = self->chrIndex, startLineNum = self->lineNum;
 
 	while (lexer_getLine(self, false)) {
 		while (lexer_getChr(self, false)) {
 			if (self->chr == '"') {
 				array_insert(self->tokens, self->tokens->length,
-							 lexerToken_new(string, LEXERTOKENS_STRING,
+							 lexerToken_new(LEXERTOKENS_STRING, string,
 											startChrIndex, self->chrIndex,
 											self->lineNum));
 				return;
@@ -719,7 +722,7 @@ void lexer_lexString(struct Lexer *self) {
 
 	lexer_error(
 		self, "unterminated string",
-		lexerToken_new("", LEXERTOKENS_NONE,
+		lexerToken_new(LEXERTOKENS_NONE, NULL,
 					   self->lineNum == startLineNum ? startChrIndex : 0,
 					   self->chrIndex, self->lineNum));
 }
@@ -732,7 +735,8 @@ void lexer_lexString(struct Lexer *self) {
  * the float.
  * @param number        The float's value.
  */
-void lexer_lexFloat(struct Lexer *self, size_t startChrIndex, char *number) {
+void lexer_lexFloat(struct Lexer *self, size_t startChrIndex,
+					struct String *number) {
 	while (lexer_getChr(self, false)) {
 		if (isspace(self->chr) || (self->chr != '.' && !isalpha(self->chr))) {
 			lexer_unGetChr(self);
@@ -749,7 +753,7 @@ void lexer_lexFloat(struct Lexer *self, size_t startChrIndex, char *number) {
 	}
 
 	array_insert(self->tokens, self->tokens->length,
-				 lexerToken_new(number, LEXERTOKENS_FLOAT, startChrIndex,
+				 lexerToken_new(LEXERTOKENS_FLOAT, number, startChrIndex,
 								self->chrIndex, self->lineNum));
 }
 
@@ -761,7 +765,7 @@ void lexer_lexFloat(struct Lexer *self, size_t startChrIndex, char *number) {
  */
 void lexer_lexInteger(struct Lexer *self) {
 	size_t startChrIndex = self->chrIndex;
-	char *number = chrToString(self->chr);
+	struct String *number = string_new(chrToString(self->chr));
 
 	while (lexer_getChr(self, false)) {
 		if (isspace(self->chr) || (self->chr != '.' && !isalpha(self->chr))) {
@@ -780,13 +784,14 @@ void lexer_lexInteger(struct Lexer *self) {
 	}
 
 	array_insert(self->tokens, self->tokens->length,
-				 lexerToken_new(number, LEXERTOKENS_INTEGER, startChrIndex,
+				 lexerToken_new(LEXERTOKENS_INTEGER, number, startChrIndex,
 								self->chrIndex, self->lineNum));
 }
 
 bool lexer_lexKeywordOrIdentifier_matcher(const void *element,
-										  const void *matchValue) {
-	return strcmp((const char *)element, matchValue) == 0;
+										  const void *match) {
+	return strcmp((const char *)element,
+				  ((const struct String *)match)->_value) == 0;
 }
 
 /**
@@ -796,7 +801,7 @@ bool lexer_lexKeywordOrIdentifier_matcher(const void *element,
  */
 void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
 	size_t startChrIndex = self->chrIndex;
-	char *string = chrToString(self->chr);
+	struct String *string = string_new(chrToString(self->chr));
 
 	while (lexer_getChr(self, false)) {
 		if (!isalnum(self->chr)) {
@@ -810,11 +815,10 @@ void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
 	array_insert(
 		self->tokens, self->tokens->length,
 		lexerToken_new(
-			string,
 			array_find(&KEYWORDS, &lexer_lexKeywordOrIdentifier_matcher, string)
 				? LEXERTOKENS_IDENTIFIER
 				: LEXERTOKENS_KEYWORD,
-			startChrIndex,
+			string, startChrIndex,
 			self->chr == '\n' ? self->chrIndex - 1 : self->chrIndex,
 			self->lineNum));
 }
@@ -846,7 +850,7 @@ void lexer_lexMultiLineComment(struct Lexer *self, size_t startChrIndex) {
 
 	lexer_error(
 		self, "unterminated multi-line comment",
-		lexerToken_new("", LEXERTOKENS_NONE,
+		lexerToken_new(LEXERTOKENS_NONE, NULL,
 					   self->lineNum == startLineNum ? startChrIndex : 0,
 					   self->chrIndex, self->lineNum));
 }
@@ -869,7 +873,7 @@ void lexer_lexSingleLineComment(struct Lexer *self) {
 	}
 
 	array_insert(self->tokens, self->tokens->length,
-				 lexerToken_new("", LEXERTOKENS_COMMENT, startChrIndex,
+				 lexerToken_new(LEXERTOKENS_COMMENT, NULL, startChrIndex,
 								self->chrIndex, self->lineNum));
 }
 
@@ -883,15 +887,15 @@ void lexer_lexModulo(struct Lexer *self) {
 
 	if (lexer_checkForTrailingChr(self, '=')) {
 		token =
-			lexerToken_new("%=", LEXERTOKENS_MODULO_ASSIGNMENT,
+			lexerToken_new(LEXERTOKENS_MODULO_ASSIGNMENT, string_new("%="),
 						   self->chrIndex - 1, self->chrIndex, self->lineNum);
 	} else {
-		token = lexerToken_new("%", LEXERTOKENS_MODULO, self->chrIndex,
-							   self->chrIndex, self->lineNum);
+		token = lexerToken_new(LEXERTOKENS_MODULO, string_new("%"),
+							   self->chrIndex, self->chrIndex, self->lineNum);
 	}
 
 	array_insert(self->tokens, self->tokens->length, token);
-	lexer_checkForContinuation(self, token->value);
+	lexer_checkForContinuation(self, token);
 }
 
 /**
@@ -904,29 +908,29 @@ void lexer_lexMultiplication(struct Lexer *self) {
 
 	if (lexer_checkForTrailingChr(self, self->chr)) {
 		if (lexer_checkForTrailingChr(self, '=')) {
-			token = lexerToken_new("**=", LEXERTOKENS_EXPONENT_ASSIGNMENT,
-								   self->chrIndex - 2, self->chrIndex,
-								   self->lineNum);
+			token = lexerToken_new(LEXERTOKENS_EXPONENT_ASSIGNMENT,
+								   string_new("**="), self->chrIndex - 2,
+								   self->chrIndex, self->lineNum);
 		} else {
-			token =
-				lexerToken_new("**", LEXERTOKENS_EXPONENT, self->chrIndex - 1,
-							   self->chrIndex, self->lineNum);
+			token = lexerToken_new(LEXERTOKENS_EXPONENT, string_new("**"),
+								   self->chrIndex - 1, self->chrIndex,
+								   self->lineNum);
 		}
 	} else {
 		if (lexer_checkForTrailingChr(self, '=')) {
-			token = lexerToken_new("*=", LEXERTOKENS_MULTIPLICATION_ASSIGNMENT,
-								   self->chrIndex, self->chrIndex - 1,
-								   self->lineNum);
+			token = lexerToken_new(LEXERTOKENS_MULTIPLICATION_ASSIGNMENT,
+								   string_new("*="), self->chrIndex,
+								   self->chrIndex - 1, self->lineNum);
 
 		} else {
 			token =
-				lexerToken_new("*", LEXERTOKENS_MULTIPLICATION, self->chrIndex,
-							   self->chrIndex, self->lineNum);
+				lexerToken_new(LEXERTOKENS_MULTIPLICATION, string_new("*"),
+							   self->chrIndex, self->chrIndex, self->lineNum);
 		}
 	}
 
 	array_insert(self->tokens, self->tokens->length, token);
-	lexer_checkForContinuation(self, token->value);
+	lexer_checkForContinuation(self, token);
 }
 
 /**
@@ -939,28 +943,29 @@ void lexer_lexDivision(struct Lexer *self) {
 
 	if (lexer_checkForTrailingChr(self, self->chr)) {
 		if (lexer_checkForTrailingChr(self, '=')) {
-			token = lexerToken_new("//=", LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT,
-								   self->chrIndex - 2, self->chrIndex,
-								   self->lineNum);
+			token = lexerToken_new(LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT,
+								   string_new("//="), self->chrIndex - 2,
+								   self->chrIndex, self->lineNum);
 		} else {
-			token = lexerToken_new("//", LEXERTOKENS_FLOOR_DIVISION,
+			token = lexerToken_new(LEXERTOKENS_FLOOR_DIVISION, string_new("//"),
 								   self->chrIndex - 1, self->chrIndex,
 								   self->lineNum);
 		}
 	} else {
 		if (lexer_checkForTrailingChr(self, '=')) {
-			token = lexerToken_new("/=", LEXERTOKENS_DIVISION_ASSIGNMENT,
-								   self->chrIndex, self->chrIndex - 1,
-								   self->lineNum);
+			token = lexerToken_new(LEXERTOKENS_DIVISION_ASSIGNMENT,
+								   string_new("/="), self->chrIndex,
+								   self->chrIndex - 1, self->lineNum);
 
 		} else {
-			token = lexerToken_new("/", LEXERTOKENS_DIVISION, self->chrIndex,
-								   self->chrIndex, self->lineNum);
+			token =
+				lexerToken_new(LEXERTOKENS_DIVISION, string_new("/"),
+							   self->chrIndex, self->chrIndex, self->lineNum);
 		}
 	}
 
 	array_insert(self->tokens, self->tokens->length, token);
-	lexer_checkForContinuation(self, token->value);
+	lexer_checkForContinuation(self, token);
 }
 
 /**
@@ -972,15 +977,16 @@ void lexer_lexAddition(struct Lexer *self) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_checkForTrailingChr(self, '=')) {
-		token = lexerToken_new("+=", LEXERTOKENS_ADDITION_ASSIGNMENT,
-							   self->chrIndex, self->chrIndex, self->lineNum);
+		token =
+			lexerToken_new(LEXERTOKENS_ADDITION_ASSIGNMENT, string_new("+="),
+						   self->chrIndex, self->chrIndex, self->lineNum);
 	} else {
-		token = lexerToken_new("+", LEXERTOKENS_ADDITION, self->chrIndex,
-							   self->chrIndex, self->lineNum);
+		token = lexerToken_new(LEXERTOKENS_ADDITION, string_new("+"),
+							   self->chrIndex, self->chrIndex, self->lineNum);
 	}
 
 	array_insert(self->tokens, self->tokens->length, token);
-	lexer_checkForContinuation(self, token->value);
+	lexer_checkForContinuation(self, token);
 }
 
 /**
@@ -992,20 +998,23 @@ void lexer_lexSubtraction(struct Lexer *self) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_checkForTrailingChr(self, '=')) {
-		token = lexerToken_new("-=", LEXERTOKENS_SUBTRACTION_ASSIGNMENT,
-							   self->chrIndex, self->chrIndex, self->lineNum);
+		token =
+			lexerToken_new(LEXERTOKENS_SUBTRACTION_ASSIGNMENT, string_new("-="),
+						   self->chrIndex, self->chrIndex, self->lineNum);
 	} else {
 		if (lexer_checkForTrailingChr(self, '>')) {
-			token = lexerToken_new("->", LEXERTOKENS_ARROW, self->chrIndex,
-								   self->chrIndex, self->lineNum);
+			token =
+				lexerToken_new(LEXERTOKENS_ARROW, string_new("->"),
+							   self->chrIndex, self->chrIndex, self->lineNum);
 		} else {
-			token = lexerToken_new("-", LEXERTOKENS_SUBTRACTION, self->chrIndex,
-								   self->chrIndex, self->lineNum);
+			token =
+				lexerToken_new(LEXERTOKENS_SUBTRACTION, string_new("-"),
+							   self->chrIndex, self->chrIndex, self->lineNum);
 		}
 	}
 
 	array_insert(self->tokens, self->tokens->length, token);
-	lexer_checkForContinuation(self, token->value);
+	lexer_checkForContinuation(self, token);
 }
 
 /**
