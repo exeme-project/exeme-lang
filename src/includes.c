@@ -1,9 +1,12 @@
-// Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
-// license information. SPDX-License-Identifier: MIT License.
+/**
+ * Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
+ * license information. SPDX-License-Identifier: MIT License.
+ */
 
 #pragma once
 
-#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS // What is deprecated on Windows isn't always on
+								// other OSes.
 
 #include <ctype.h>
 #include <malloc.h>
@@ -16,11 +19,3 @@
 #include <string.h>
 
 #include "./globals.c"
-#include "./utils/array.c"
-#include "./utils/console.c"
-#include "./utils/conversions.c"
-#include "./utils/map.c"
-#include "./utils/panic.c"
-#include "./utils/string.c"
-
-#include "./lexer/lexer.c"

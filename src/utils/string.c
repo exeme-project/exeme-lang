@@ -1,5 +1,7 @@
-// Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
-// license information. SPDX-License-Identifier: MIT License.
+/**
+ * Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
+ * license information. SPDX-License-Identifier: MIT License.
+ */
 
 #pragma once
 
@@ -21,7 +23,7 @@ char *stringConcatenate(size_t argnumentsNumber, ...) {
 		char *appendString = va_arg(argnuments, char *);
 
 		string = realloc(string, sizeof(string) + strlen(appendString));
-		stringConcatenate(string, appendString);
+		strcat(string, appendString);
 	}
 
 	va_end(argnuments);
@@ -29,6 +31,11 @@ char *stringConcatenate(size_t argnumentsNumber, ...) {
 	return string;
 }
 
+/**
+ * Repeats the char the specified amount of times.
+ *
+ * @return char* - The repeated string.
+ */
 char *repeatChr(char chr, size_t length) {
 	size_t index;
 	char *string = malloc(length + 1);

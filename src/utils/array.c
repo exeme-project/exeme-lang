@@ -1,27 +1,48 @@
-// Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
-// license information. SPDX-License-Identifier: MIT License.
+/**
+ * Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
+ * license information. SPDX-License-Identifier: MIT License.
+ */
 
 #pragma once
 
 #include "../includes.c"
 
-struct array {
+#include "./panic.c"
+
+/**
+ * Represents an array.
+ */
+struct Array {
 	size_t length;
 	const void **_values;
 };
 
-#define ARRAY_STRUCT_SIZE sizeof(struct array)
+#define ARRAY_STRUCT_SIZE sizeof(struct Array)
 #define ARRAY_STRUCT_ELEMENT_SIZE sizeof(void *)
 
-void array___realloc(struct array *self, size_t bufSize) {
-	self->_values = realloc(self->_values, bufSize);
+/**
+ * Reallocates the struct's array.
+ *
+ * @param self The current Array struct.
+ * @param size The new size of the array.
+ */
+void array___realloc(struct Array *self, size_t size) {
+	self->_values = realloc(self->_values, size);
 
 	if (!self->_values) {
 		panic("failed to realloc array values");
 	}
 }
 
-void array_insert(struct array *self, size_t index, const void *value) {
+/**
+ * Inserts a value at the specified index. Will expand the array's size if
+ * needed.
+ *
+ * @param self  The current Array struct.
+ * @param index The index at which to insert the value.
+ * @param value The value to insert.
+ */
+void array_insert(struct Array *self, size_t index, const void *value) {
 	if (index + 1 > self->length) {
 		array___realloc(self, (index + 1) * ARRAY_STRUCT_ELEMENT_SIZE);
 		self->length = index + 1;
@@ -30,7 +51,12 @@ void array_insert(struct array *self, size_t index, const void *value) {
 	self->_values[index] = value;
 }
 
-bool array_pop(struct array *self) {
+/**
+ * Removes the last element from the array.
+ *
+ * @param self The current Array struct.
+ */
+void array_pop(struct Array *self) {
 	if (self->length < 1) {
 		panic("nothing to pop from array");
 	} else if (self->length == 1) {
@@ -40,11 +66,17 @@ bool array_pop(struct array *self) {
 		self->length--;
 		array___realloc(self, self->length * ARRAY_STRUCT_ELEMENT_SIZE);
 	}
-
-	return true;
 }
 
-const void *array_get(struct array *self, size_t index) {
+/**
+ * Returns the element at the specified index in the array.
+ *
+ * @param self  The current Array struct.
+ * @param index The index from which to get the element.
+ *
+ * @return The retreived element.
+ */
+const void *array_get(struct Array *self, size_t index) {
 	if (index + 1 > self->length) {
 		panic("array get index out of bounds");
 	}
@@ -52,7 +84,12 @@ const void *array_get(struct array *self, size_t index) {
 	return self->_values[index];
 }
 
-void array_free(struct array *self) {
+/**
+ * Frees an Array struct.
+ *
+ * @param self The current Array struct.
+ */
+void array_free(struct Array *self) {
 	if (self) {
 		free(self->_values);
 		free(self);
@@ -63,11 +100,16 @@ void array_free(struct array *self) {
 	}
 }
 
-struct array *array_new(void) {
-	struct array *self = malloc(ARRAY_STRUCT_SIZE);
+/**
+ * Creates a new Array struct.
+ *
+ * @return The created Array struct.
+ */
+struct Array *array_new(void) {
+	struct Array *self = malloc(ARRAY_STRUCT_SIZE);
 
 	if (!self) {
-		panic("failed to create array struct");
+		panic("failed to create Array struct");
 	}
 
 	self->length = 0;

@@ -1,9 +1,16 @@
-// Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
-// license information. SPDX-License-Identifier: MIT License.
+/**
+ * Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
+ * license information. SPDX-License-Identifier: MIT License.
+ */
 
 #pragma once
 
 #include "../includes.c"
+
+#include "../utils/array.c"
+#include "../utils/conversions.c"
+#include "../utils/panic.c"
+#include "../utils/string.c"
 
 /**
  * Used to identify different lexer tokens.
@@ -92,7 +99,7 @@ enum LexerTokens {
 /**
  * Contains the names of each of the lexer token identifiers.
  */
-struct array LexerTokenNames = {
+struct Array LexerTokenNames = {
 	54,
 	(const void *[]){
 		"",
@@ -156,7 +163,6 @@ struct array LexerTokenNames = {
 
 /**
  * Represents a lexer token.
- * Stores data relating to it.
  */
 struct LexerToken {
 	const char *value;
@@ -169,17 +175,23 @@ struct LexerToken {
 /**
  * Creates a new LexerToken struct.
  *
- * @param value         - Value of the token.
- * @param identifier    - Token identifier.
- * @param startChrIndex - Start char index of token.
- * @param chrIndex      - End char index of the token.
- * @param lineNum       - Line num of the token.
+ * @param value         Value of the token.
+ * @param identifier    Token identifier.
+ * @param startChrIndex Start char index of token.
+ * @param chrIndex      End char index of the token.
+ * @param lineNum       Line num of the token.
+ *
+ * @return The created LexerToken struct.
  */
 const struct LexerToken *lexerToken_new(const char *value,
 										enum LexerTokens identifier,
 										size_t startChrIndex, size_t chrIndex,
 										size_t lineNum) {
 	struct LexerToken *self = malloc(LEXERTOKEN_STRUCT_SIZE);
+
+	if (!self) {
+		panic("failed to create LexerToken struct");
+	}
 
 	self->value = value;
 	self->identifier = identifier;
@@ -191,8 +203,7 @@ const struct LexerToken *lexerToken_new(const char *value,
 }
 
 /**
- * Represents a lexer class.
- * Handles logic for lexing a file.
+ * Represents a lexer.
  */
 struct Lexer {
 	bool closed;
@@ -200,16 +211,17 @@ struct Lexer {
 	const char *FILE_PATH;
 	FILE *filePointer;
 	size_t unGetTokens, chrIndex, lineNum;
-	struct array *tokens;
+	struct Array *tokens;
 };
 
+#define LEXER_STRUCT_SIZE sizeof(struct Lexer)
+
 /**
- * Prints an error and exits.
- * Operates on the given lexer struct.
+ * Prints a lexing error and exits.
  *
- * @param self          - The corresponding lexer struct.
- * @param ERROR_MSG     - The error message.
- * @param token         - The erroneous token.
+ * @param self      The current lexer struct.
+ * @param ERROR_MSG The error message.
+ * @param token     The erroneous token.
  */
 noreturn void lexer_error(struct Lexer *self, const char *ERROR_MSG,
 						  const struct LexerToken *token) {
@@ -261,10 +273,9 @@ noreturn void lexer_error(struct Lexer *self, const char *ERROR_MSG,
 
 /**
  * Gets the next character.
- * Operates on the given lexer struct.
  *
- * @param self           - The corresponding lexer struct.
- * @param skipWhitespace - Whether to skip whitespace characters.
+ * @param self           The current lexer struct.
+ * @param skipWhitespace Whether to skip whitespace characters.
  *
  * @return Whether the next character was got successfully.
  */
@@ -307,9 +318,8 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
 
 /**
  * Un-gets the current character.
- * Operates on the given lexer struct.
  *
- * @param self - The corresponding lexer struct.
+ * @param self The current lexer struct.
  *
  * @return Whether the current character was un-got successfully.
  */
@@ -335,10 +345,9 @@ bool lexer_unGetChr(struct Lexer *self) {
 
 /**
  * Gets the next line.
- * Operates on the given lexer struct.
  *
- * @param self        - The corresponding lexer struct.
- * @param getNextLine - Get the next line even if the EOL has not been reached.
+ * @param self        The current lexer struct.
+ * @param getNextLine Get the next line even if the EOL has not been reached.
  *
  * @return Whether the next line was got successfully.
  */
@@ -363,9 +372,8 @@ bool lexer_getLine(struct Lexer *self, bool getNextLine) {
 
 /**
  * Returns the escaped version of the current character.
- * Operates on the given lexer struct.
  *
- * @param self - The corresponding lexer struct.
+ * @param self The current lexer struct.
  *
  * @return The escaped version of the current character.
  */
@@ -398,9 +406,8 @@ char lexer_escapeChr(struct Lexer *self) {
 
 /**
  * Checks for a trailing character.
- * Operates on the given lexer struct.
  *
- * @param self - The corresponding lexer struct.
+ * @param self The current lexer struct.
  *
  * @return Whether the trailing character was found.
  */
@@ -424,10 +431,9 @@ bool lexer_checkForTrailingChr(struct Lexer *self, char chr) {
 
 /**
  * Checks for an unexpected continuation of the current token.
- * Operates on the given lexer struct.
  *
- * @param self  - The corresponding lexer struct.
- * @param token - The current token.
+ * @param self  The current lexer struct.
+ * @param token The current token.
  */
 void lexer_checkForContinuation(struct Lexer *self, const char *token) {
 	if (lexer_getChr(self, false)) {
@@ -444,10 +450,9 @@ void lexer_checkForContinuation(struct Lexer *self, const char *token) {
 }
 
 /**
- * Lex a '=' token.
- * Operates on the given lexer struct.
+ * Lexes a '=' token.
  *
- * @param self - The corresponding lexer struct.
+ * @param self The current lexer struct.
  */
 void lexer_lexEquals(struct Lexer *self) {
 	const struct LexerToken *token = NULL;
@@ -466,10 +471,9 @@ void lexer_lexEquals(struct Lexer *self) {
 }
 
 /**
- * Lex a character.
- * Operates on the given lexer struct.
+ * Lexes a character.
  *
- * @param self - The corresponding lexer struct.
+ * @param self The current lexer struct.
  */
 void lexer_lexChr(struct Lexer *self) {
 	bool includeChr = false;
@@ -508,10 +512,9 @@ void lexer_lexChr(struct Lexer *self) {
 }
 
 /**
- * Lex a string.
- * Operates on the given lexer struct.
+ * Lexes a string.
  *
- * @param self - The corresponding lexer struct.
+ * @param self The current lexer struct.
  */
 void lexer_lexString(struct Lexer *self) {
 	bool includeChr = false;

@@ -1,37 +1,88 @@
-// Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
-// license information. SPDX-License-Identifier: MIT License.
+/**
+ * Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
+ * license information. SPDX-License-Identifier: MIT License.
+ */
 
 #pragma once
 
 #include "../includes.c"
 
-struct map {
-	struct array *_values;
+#include "./array.c"
+#include "./panic.c"
+
+/**
+ * Represents a map.
+ */
+struct Map {
+	struct Array *_values;
 };
 
-#define MAP_STRUCT_SIZE sizeof(struct map)
+#define MAP_STRUCT_SIZE sizeof(struct Map)
 
-size_t map___hash(const char *key) {
+/**
+ * Calculates the hash for a key.
+ *
+ * @param KEY The key to calculate the hash for.
+ *
+ * @return The calculated hash.
+ */
+size_t map___hash(const char *KEY) {
 	size_t hash = 5381;
 	int chr;
 
-	while ((chr = *key++)) {
+	while ((chr = *KEY++)) {
 		hash = ((hash << 5) + hash) + (size_t)chr; /* hash * 33 + c */
 	}
 
 	return hash;
 }
 
-void map_set(struct map *self, const char *KEY, void *value) {
-	array_insert(self->_values, map___hash(KEY), value);
+/**
+ * Calculates the hash of the key and inserts the value at that index.
+ *
+ * @param self  The current Map struct.
+ * @param KEY   The key to calculate the hash for.
+ * @param VALUE The value to insert.
+ */
+void map_set(struct Map *self, const char *KEY, const void *VALUE) {
+	array_insert(self->_values, map___hash(KEY), VALUE);
 }
 
-void *map_get(struct map *self, const char *KEY) {
+/**
+ * Calculates the hash of the key and and returns the element at that index.
+ *
+ * @param self  The current Map struct.
+ * @param KEY   The key to calculate the hash for.
+ *
+ * @return The retreived element.
+ */
+const void *map_get(struct Map *self, const char *KEY) {
 	return array_get(self->_values, map___hash(KEY));
 }
 
-struct map *map_new(void) {
-	struct map *self = malloc(MAP_STRUCT_SIZE);
+/**
+ * Frees an Map struct.
+ *
+ * @param self The current Map struct.
+ */
+void map_free(struct Map *self) {
+	if (self) {
+		array_free(self->_values);
+		free(self);
+
+		self = NULL;
+	} else {
+		panic("map has already been freed");
+	}
+}
+
+/**
+ * Creates a new Map struct.
+ *
+ * @return The created Map struct.
+ */
+struct Map *map_new(void) {
+	struct Map *self = malloc(MAP_STRUCT_SIZE);
 
 	if (!self) {
 		panic("failed to create map struct");
