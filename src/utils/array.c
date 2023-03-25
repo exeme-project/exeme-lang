@@ -87,6 +87,16 @@ void array_pop(struct Array *self) {
 }
 
 /**
+ * Removes all the elements from the array.
+ *
+ * @param self The current Array struct.
+ */
+void array_clear(struct Array *self) {
+	self->length = 0;
+	array___realloc(self, 1);
+}
+
+/**
  * Returns the element at the specified index in the array.
  *
  * @param self  The current Array struct.
@@ -108,20 +118,20 @@ const void *array_get(struct Array *self, size_t index) {
  * @param self    The current Array struct.
  * @param matcher The function to check for matches.
  *
- * @return The matched element, or NULL if no matches were found.
+ * @return If a match was found.
  */
-const void *array_find(const struct Array *self,
-					   bool (*matcher)(const void *, const void *),
-					   const void *match) {
+bool array_find(const struct Array *self,
+				bool (*matcher)(const void *, const void *),
+				const void *match) {
 	for (size_t index = 0; index < self->length; index++) {
 		const void *element = self->_values[index];
 
 		if (matcher(element, match)) {
-			return element;
+			return true;
 		}
 	}
 
-	return NULL;
+	return false;
 }
 
 /**

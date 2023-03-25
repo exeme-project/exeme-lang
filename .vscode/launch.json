@@ -6,7 +6,7 @@
             "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/build/exeme.exe",
-            "cwd": "${workspaceFolder}/build/Debug",
+            "cwd": "${workspaceFolder}/build/",
             "preLaunchTask": "[WINDOWS] clang build"
         },
         {

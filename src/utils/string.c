@@ -7,6 +7,8 @@
 
 #include "../includes.c"
 
+#include "./panic.c"
+
 /**
  * Concatenates the specified amount of strings together.
  *
@@ -20,6 +22,10 @@ char *stringConcatenate(size_t argumentsNumber, ...) {
 	va_start(argnuments, argumentsNumber);
 
 	string = malloc(1);
+
+	if (!string) {
+		panic("failed to malloc string");
+	}
 
 	for (size_t index = 0; index < argumentsNumber; index++) {
 		char *appendString = va_arg(argnuments, char *);
@@ -45,6 +51,10 @@ char *repeatChr(char chr, size_t length) {
 	size_t index;
 	char *string = malloc(length + 1);
 
+	if (!string) {
+		panic("failed to malloc string");
+	}
+
 	for (index = 0; index < length; index++) {
 		string[index] = chr;
 	}
@@ -64,8 +74,47 @@ char *repeatChr(char chr, size_t length) {
 char *chrToString(char chr) {
 	char *string = malloc(2);
 
+	if (!string) {
+		panic("failed to malloc string");
+	}
+
 	string[0] = chr;
 	string[1] = '\0';
+
+	return string;
+}
+
+/**
+ * Concatenates a char to a string.
+ *
+ * @param string The string to concatenate to.
+ * @param chr    The char to concatenate onto the string.
+ *
+ * @return The concatenated string.
+ */
+char *stringConcatenateChr(char *string, char chr) {
+	size_t stringSize = sizeof(string);
+	string = realloc(string, stringSize + 1);
+
+	if (!string) {
+		panic("failed to realloc string");
+	}
+
+	string[stringSize] = chr;
+	string[stringSize + 1] = '\0';
+
+	return string;
+}
+
+/**
+ * Creates an empty string on the heap.
+
+ * @return char* - The empty string.
+ */
+char *createHeapString(void) {
+	char *string = malloc(1);
+
+	string[0] = '\0';
 
 	return string;
 }

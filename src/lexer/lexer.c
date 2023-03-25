@@ -344,7 +344,7 @@ struct Lexer {
 	char chr, prevChr;
 	const char *FILE_PATH;
 	FILE *filePointer;
-	size_t parsedTokensCount, chrIndex, lineNum;
+	size_t chrIndex, lineNum, parsedTokensCount;
 	struct Array *tokens;
 };
 
@@ -371,13 +371,13 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
 	}
 
 	self->closed = false;
-
 	self->chr = '\n';
 	self->prevChr = '\0';
-
+	self->FILE_PATH = FILE_PATH;
 	self->chrIndex = 0;
 	self->lineNum = 0;
 	self->parsedTokensCount = 0;
+	self->tokens = array_new();
 
 	return self;
 }
@@ -389,8 +389,8 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
  * @param ERROR_MSG The error message.
  * @param token     The erroneous token.
  */
-noreturn void lexer_error(struct Lexer *self, const char *ERROR_MSG,
-						  const struct LexerToken *token) {
+void lexer_error(struct Lexer *self, const char *ERROR_MSG,
+				 const struct LexerToken *token) {
 	size_t length, lineNum = 0;
 	char *line;
 	FILE *filePointer = fopen(self->FILE_PATH, "r");
@@ -649,11 +649,15 @@ void lexer_lexEquals(struct Lexer *self) {
  */
 void lexer_lexChr(struct Lexer *self) {
 	bool includeChr = false;
-	char *chr = NULL;
-	size_t chrLen = 0, startChrIndex = self->chrIndex;
+	char *chr = createHeapString();
+	size_t startChrIndex = self->chrIndex;
+
+	if (!chr) {
+		panic("failed to malloc char");
+	}
 
 	while (lexer_getChr(self, false)) {
-		if (chrLen > 1) {
+		if (chr[0] != '\0') {
 			lexer_error(self, "multi-character char",
 						lexerToken_new("", LEXERTOKENS_NONE, startChrIndex,
 									   self->chrIndex, self->lineNum));
@@ -666,15 +670,12 @@ void lexer_lexChr(struct Lexer *self) {
 			return;
 		}
 
-		chrLen++;
-
 		if (includeChr) {
-			chr += lexer_escapeChr(self);
+			stringConcatenateChr(chr, lexer_escapeChr(self));
 			includeChr = false;
 		} else if (self->chr != '\\') {
-			chr += self->chr;
+			stringConcatenateChr(chr, self->chr);
 		} else {
-			chrLen--;
 			includeChr = true;
 		}
 	}
@@ -690,7 +691,7 @@ void lexer_lexChr(struct Lexer *self) {
  */
 void lexer_lexString(struct Lexer *self) {
 	bool includeChr = false;
-	char *string = "";
+	char *string = createHeapString();
 	size_t startChrIndex = self->chrIndex, startLineNum = self->lineNum;
 
 	while (lexer_getLine(self, false)) {
@@ -704,16 +705,16 @@ void lexer_lexString(struct Lexer *self) {
 			}
 
 			if (includeChr) {
-				string += lexer_escapeChr(self);
+				stringConcatenateChr(string, lexer_escapeChr(self));
 				includeChr = false;
 			} else if (self->chr == '\\') {
 				includeChr = true;
 			} else {
-				string += self->chr;
+				stringConcatenateChr(string, self->chr);
 			}
 		}
 
-		string += '\n';
+		stringConcatenateChr(string, '\n');
 	}
 
 	lexer_error(
@@ -744,7 +745,7 @@ void lexer_lexFloat(struct Lexer *self, size_t startChrIndex, char *number) {
 			lexer_error(self, "invalid character for float", NULL);
 		}
 
-		number += self->chr;
+		stringConcatenateChr(number, self->chr);
 	}
 
 	array_insert(self->tokens, self->tokens->length,
@@ -768,7 +769,7 @@ void lexer_lexInteger(struct Lexer *self) {
 			break;
 		}
 
-		number += self->chr;
+		stringConcatenateChr(number, self->chr);
 
 		if (self->chr == '.') {
 			lexer_lexFloat(self, startChrIndex, number);
@@ -803,7 +804,7 @@ void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
 			break;
 		}
 
-		string += self->chr;
+		stringConcatenateChr(string, self->chr);
 	}
 
 	array_insert(
@@ -1329,4 +1330,67 @@ bool lexer_lexNext(struct Lexer *self) {
 	}
 
 	return true;
+}
+
+/**
+ * Clears the tokens list.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_clearTokens(struct Lexer *self) { array_clear(self->tokens); }
+
+/**
+ * Gets the next character and lexes it.
+ *
+ * @param self        The current lexer struct.
+ * @param mustLexChar Whether a character must be lexed.
+ * @param nextLine    Whether the character can be on the next line.
+ *
+ * @return bool Whether lexing succeeded.
+ */
+bool lexer_lex(struct Lexer *self, bool mustLexChar, bool nextLine) {
+	if (mustLexChar) {
+		while (true) {
+			while (!lexer_getChr(self, true)) {
+				if (!nextLine || !lexer_getLine(self, nextLine)) {
+					return false;
+				}
+			}
+
+			if (lexer_lexNext(self)) {
+				return true;
+			}
+		}
+	} else {
+		while (!lexer_getChr(self, true)) {
+			if (!lexer_getLine(self, nextLine)) {
+				return false;
+			}
+		}
+	}
+
+	return lexer_lexNext(self);
+}
+
+/**
+ * Un-lexes the last token.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_unLex(struct Lexer *self) { self->parsedTokensCount++; }
+
+/**
+ * Retreives the last token. Respects un-lexes.
+ *
+ * @param self The current lexer struct.
+ *
+ * @return The retreived token.
+ */
+const struct LexerToken *lexer_getToken(struct Lexer *self) {
+	if (self->parsedTokensCount > 0) {
+		return self->tokens
+			->_values[self->tokens->length - 1 - (self->parsedTokensCount--)];
+	}
+
+	return self->tokens->_values[self->tokens->length - 1];
 }
