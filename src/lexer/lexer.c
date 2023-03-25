@@ -11,6 +11,7 @@
 #include "../utils/conversions.c"
 #include "../utils/panic.c"
 #include "../utils/string.c"
+#include <stdio.h>
 
 /**
  * Used to identify keywords.
@@ -350,6 +351,38 @@ struct Lexer {
 #define LEXER_STRUCT_SIZE sizeof(struct Lexer)
 
 /**
+ * Creates a new Lexer struct.
+ *
+ * @param FILE_PATH The path of the file to lex.
+ *
+ * @return The created Lexer struct.
+ */
+struct Lexer *lexer_new(const char *FILE_PATH) {
+	struct Lexer *self = malloc(LEXER_STRUCT_SIZE);
+
+	if (!self) {
+		panic("failed to create Lexer struct");
+	}
+
+	self->filePointer = fopen(FILE_PATH, "r");
+
+	if (ferror(self->filePointer)) {
+		panic(stringConcatenate(3, "failed to open file '", FILE_PATH, "'"));
+	}
+
+	self->closed = false;
+
+	self->chr = '\n';
+	self->prevChr = '\0';
+
+	self->chrIndex = 0;
+	self->lineNum = 0;
+	self->parsedTokensCount = 0;
+
+	return self;
+}
+
+/**
  * Prints a lexing error and exits.
  *
  * @param self      The current lexer struct.
@@ -361,6 +394,11 @@ noreturn void lexer_error(struct Lexer *self, const char *ERROR_MSG,
 	size_t length, lineNum = 0;
 	char *line;
 	FILE *filePointer = fopen(self->FILE_PATH, "r");
+
+	if (ferror(filePointer)) {
+		panic(stringConcatenate(
+			3, "failed to open file while reporting error '", ERROR_MSG, "'"));
+	}
 
 	printf("%s%s--> %s%s\n", F_BRIGHT_BLUE, S_BOLD, S_RESET, self->FILE_PATH);
 
@@ -480,7 +518,8 @@ bool lexer_unGetChr(struct Lexer *self) {
  * Gets the next line.
  *
  * @param self        The current lexer struct.
- * @param getNextLine Get the next line even if the EOL has not been reached.
+ * @param getNextLine Get the next line even if the EOL has not been
+ * reached.
  *
  * @return Whether the next line was got successfully.
  */
@@ -688,7 +727,8 @@ void lexer_lexString(struct Lexer *self) {
  * Lexes a float.
  *
  * @param self          The current lexer struct.
- * @param startChrIndex The index of the first character of the float.
+ * @param startChrIndex The index of the first character of
+ * the float.
  * @param number        The float's value.
  */
 void lexer_lexFloat(struct Lexer *self, size_t startChrIndex, char *number) {
@@ -713,7 +753,8 @@ void lexer_lexFloat(struct Lexer *self, size_t startChrIndex, char *number) {
 }
 
 /**
- * Lexes an integer. Hands control over to lexFloat() if needed.
+ * Lexes an integer. Hands control over to lexFloat() if
+ * needed.
  *
  * @param self The current lexer struct.
  */
@@ -744,11 +785,7 @@ void lexer_lexInteger(struct Lexer *self) {
 
 bool lexer_lexKeywordOrIdentifier_matcher(const void *element,
 										  const void *matchValue) {
-	if (strcmp((const char *)element, matchValue) == 0) {
-		return true;
-	}
-
-	return false;
+	return strcmp((const char *)element, matchValue) == 0;
 }
 
 /**
@@ -779,4 +816,517 @@ void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
 			startChrIndex,
 			self->chr == '\n' ? self->chrIndex - 1 : self->chrIndex,
 			self->lineNum));
+}
+
+/**
+ * Lexes '#='.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexMultiLineComment(struct Lexer *self, size_t startChrIndex) {
+	bool end;
+	size_t startLineNum = self->lineNum;
+
+	while (lexer_getLine(self, false)) {
+		end = false;
+
+		while (lexer_getChr(self, true)) {
+			if (end) {
+				if (self->chr == '#') {
+					return;
+				}
+
+				end = false;
+			} else if (self->chr == '=') {
+				end = true;
+			}
+		}
+	}
+
+	lexer_error(
+		self, "unterminated multi-line comment",
+		lexerToken_new("", LEXERTOKENS_NONE,
+					   self->lineNum == startLineNum ? startChrIndex : 0,
+					   self->chrIndex, self->lineNum));
+}
+
+/**
+ * Lexes '#'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexSingleLineComment(struct Lexer *self) {
+	size_t startChrIndex = self->chrIndex - 1;
+
+	if (lexer_getChr(self, false)) {
+		if (self->chr == '=') {
+			lexer_lexMultiLineComment(self, startChrIndex);
+		} else {
+			while (lexer_getChr(self, true)) {
+			}
+		}
+	}
+
+	array_insert(self->tokens, self->tokens->length,
+				 lexerToken_new("", LEXERTOKENS_COMMENT, startChrIndex,
+								self->chrIndex, self->lineNum));
+}
+
+/**
+ * Lexes '%'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexModulo(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, '=')) {
+		token =
+			lexerToken_new("%=", LEXERTOKENS_MODULO_ASSIGNMENT,
+						   self->chrIndex - 1, self->chrIndex, self->lineNum);
+	} else {
+		token = lexerToken_new("%", LEXERTOKENS_MODULO, self->chrIndex,
+							   self->chrIndex, self->lineNum);
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Lexes '*'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexMultiplication(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, self->chr)) {
+		if (lexer_checkForTrailingChr(self, '=')) {
+			token = lexerToken_new("**=", LEXERTOKENS_EXPONENT_ASSIGNMENT,
+								   self->chrIndex - 2, self->chrIndex,
+								   self->lineNum);
+		} else {
+			token =
+				lexerToken_new("**", LEXERTOKENS_EXPONENT, self->chrIndex - 1,
+							   self->chrIndex, self->lineNum);
+		}
+	} else {
+		if (lexer_checkForTrailingChr(self, '=')) {
+			token = lexerToken_new("*=", LEXERTOKENS_MULTIPLICATION_ASSIGNMENT,
+								   self->chrIndex, self->chrIndex - 1,
+								   self->lineNum);
+
+		} else {
+			token =
+				lexerToken_new("*", LEXERTOKENS_MULTIPLICATION, self->chrIndex,
+							   self->chrIndex, self->lineNum);
+		}
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Lexes '/'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexDivision(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, self->chr)) {
+		if (lexer_checkForTrailingChr(self, '=')) {
+			token = lexerToken_new("//=", LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT,
+								   self->chrIndex - 2, self->chrIndex,
+								   self->lineNum);
+		} else {
+			token = lexerToken_new("//", LEXERTOKENS_FLOOR_DIVISION,
+								   self->chrIndex - 1, self->chrIndex,
+								   self->lineNum);
+		}
+	} else {
+		if (lexer_checkForTrailingChr(self, '=')) {
+			token = lexerToken_new("/=", LEXERTOKENS_DIVISION_ASSIGNMENT,
+								   self->chrIndex, self->chrIndex - 1,
+								   self->lineNum);
+
+		} else {
+			token = lexerToken_new("/", LEXERTOKENS_DIVISION, self->chrIndex,
+								   self->chrIndex, self->lineNum);
+		}
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Lexes '+'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexAddition(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, '=')) {
+		token = lexerToken_new("+=", LEXERTOKENS_ADDITION_ASSIGNMENT,
+							   self->chrIndex, self->chrIndex, self->lineNum);
+	} else {
+		token = lexerToken_new("+", LEXERTOKENS_ADDITION, self->chrIndex,
+							   self->chrIndex, self->lineNum);
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Lexes '-'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexSubtraction(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, '=')) {
+		token = lexerToken_new("-=", LEXERTOKENS_SUBTRACTION_ASSIGNMENT,
+							   self->chrIndex, self->chrIndex, self->lineNum);
+	} else {
+		if (lexer_checkForTrailingChr(self, '>')) {
+			token = lexerToken_new("->", LEXERTOKENS_ARROW, self->chrIndex,
+								   self->chrIndex, self->lineNum);
+		} else {
+			token = lexerToken_new("-", LEXERTOKENS_SUBTRACTION, self->chrIndex,
+								   self->chrIndex, self->lineNum);
+		}
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Lexes '>'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexGreaterThan(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, self->chr)) {
+		if (lexer_checkForTrailingChr(self, '=')) {
+			token = lexerToken_new(
+				">>=", LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT,
+				self->chrIndex - 2, self->chrIndex, self->lineNum);
+		} else {
+			token = lexerToken_new(">>", LEXERTOKENS_BITWISE_RIGHT_SHIFT,
+								   self->chrIndex - 1, self->chrIndex,
+								   self->lineNum);
+		}
+	} else {
+		if (lexer_checkForTrailingChr(self, '=')) {
+			token = lexerToken_new(">=", LEXERTOKENS_GREATER_THAN_OR_EQUAL,
+								   self->chrIndex - 1, self->chrIndex,
+								   self->lineNum);
+		} else {
+			token =
+				lexerToken_new(">", LEXERTOKENS_GREATER_THAN, self->chrIndex,
+							   self->chrIndex, self->lineNum);
+		}
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Lexes '<'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexLessThan(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, self->chr)) {
+		if (lexer_checkForTrailingChr(self, '=')) {
+			token = lexerToken_new(
+				"<<=", LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT,
+				self->chrIndex - 2, self->chrIndex, self->lineNum);
+		} else {
+			token = lexerToken_new("<<", LEXERTOKENS_BITWISE_LEFT_SHIFT,
+								   self->chrIndex - 1, self->chrIndex,
+								   self->lineNum);
+		}
+	} else {
+		if (lexer_checkForTrailingChr(self, '=')) {
+			token = lexerToken_new("<=", LEXERTOKENS_LESS_THAN_OR_EQUAL,
+								   self->chrIndex - 1, self->chrIndex,
+								   self->lineNum);
+		} else {
+			token = lexerToken_new("<", LEXERTOKENS_LESS_THAN, self->chrIndex,
+								   self->chrIndex, self->lineNum);
+		}
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Lexes '!'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexLogicalNot(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, '=')) {
+		token = lexerToken_new("!=", LEXERTOKENS_NOT_EQUAL_TO, self->chrIndex,
+							   self->chrIndex, self->lineNum);
+	} else {
+		token = lexerToken_new("!", LEXERTOKENS_LOGICAL_NOT, self->chrIndex,
+							   self->chrIndex, self->lineNum);
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Lexes '&'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexBitwiseAND(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, self->chr)) {
+		token =
+			lexerToken_new("&&", LEXERTOKENS_LOGICAL_AND, self->chrIndex - 1,
+						   self->chrIndex, self->lineNum);
+	} else {
+		if (lexer_checkForTrailingChr(self, '=')) {
+			token = lexerToken_new("&=", LEXERTOKENS_BITWISE_AND_ASSIGNMENT,
+								   self->chrIndex - 1, self->chrIndex,
+								   self->lineNum);
+		} else {
+			token = lexerToken_new("&", LEXERTOKENS_BITWISE_AND, self->chrIndex,
+								   self->chrIndex, self->lineNum);
+		}
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Lexes '|'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexBitwiseOR(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, self->chr)) {
+		token = lexerToken_new("||", LEXERTOKENS_LOGICAL_OR, self->chrIndex - 1,
+							   self->chrIndex, self->lineNum);
+	} else {
+		if (lexer_checkForTrailingChr(self, '=')) {
+			token = lexerToken_new("|=", LEXERTOKENS_BITWISE_OR_ASSIGNMENT,
+								   self->chrIndex - 1, self->chrIndex,
+								   self->lineNum);
+		} else {
+			token = lexerToken_new("|", LEXERTOKENS_BITWISE_OR, self->chrIndex,
+								   self->chrIndex, self->lineNum);
+		}
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Lexes '^'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexBitwiseXOR(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, '=')) {
+		token = lexerToken_new("^=", LEXERTOKENS_BITWISE_XOR_ASSIGNMENT,
+							   self->chrIndex, self->chrIndex, self->lineNum);
+	} else {
+		token = lexerToken_new("^", LEXERTOKENS_BITWISE_XOR, self->chrIndex,
+							   self->chrIndex, self->lineNum);
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Lexes '~'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexBitwiseNOT(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, '=')) {
+		token = lexerToken_new("~=", LEXERTOKENS_BITWISE_NOT_ASSIGNMENT,
+							   self->chrIndex, self->chrIndex, self->lineNum);
+	} else {
+		token = lexerToken_new("~", LEXERTOKENS_BITWISE_NOT, self->chrIndex,
+							   self->chrIndex, self->lineNum);
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Lexes ':'.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexColon(struct Lexer *self) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_checkForTrailingChr(self, ':')) {
+		token = lexerToken_new("::", LEXERTOKENS_SCOPE_RESOLUTION,
+							   self->chrIndex, self->chrIndex, self->lineNum);
+	} else {
+		token = lexerToken_new(":", LEXERTOKENS_COLON, self->chrIndex,
+							   self->chrIndex, self->lineNum);
+	}
+
+	array_insert(self->tokens, self->tokens->length, token);
+	lexer_checkForContinuation(self, token->value);
+}
+
+/**
+ * Calls the correct function for lexing the current character.
+ *
+ * @param self The current lexer struct.
+ *
+ * @return bool - Whether lexing succeeded.
+ */
+bool lexer_lexNext(struct Lexer *self) {
+	switch (self->chr) {
+	case '\'':
+		lexer_lexChr(self);
+		break;
+	case '"':
+		lexer_lexString(self);
+		break;
+	case '=':
+		lexer_lexEquals(self);
+		break;
+	case '(':
+		array_insert(self->tokens, self->tokens->length,
+					 lexerToken_new("", LEXERTOKENS_OPEN_BRACE, self->chrIndex,
+									self->chrIndex, self->lineNum));
+		break;
+	case '[':
+		array_insert(self->tokens, self->tokens->length,
+					 lexerToken_new("", LEXERTOKENS_OPEN_SQUARE_BRACE,
+									self->chrIndex, self->chrIndex,
+									self->lineNum));
+		break;
+	case '{':
+		array_insert(self->tokens, self->tokens->length,
+					 lexerToken_new("", LEXERTOKENS_OPEN_CURLY_BRACE,
+									self->chrIndex, self->chrIndex,
+									self->lineNum));
+		break;
+	case ')':
+		array_insert(self->tokens, self->tokens->length,
+					 lexerToken_new("", LEXERTOKENS_CLOSE_BRACE, self->chrIndex,
+									self->chrIndex, self->lineNum));
+		break;
+	case ']':
+		array_insert(self->tokens, self->tokens->length,
+					 lexerToken_new("", LEXERTOKENS_CLOSE_SQUARE_BRACE,
+									self->chrIndex, self->chrIndex,
+									self->lineNum));
+		break;
+	case '}':
+		array_insert(self->tokens, self->tokens->length,
+					 lexerToken_new("", LEXERTOKENS_CLOSE_CURLY_BRACE,
+									self->chrIndex, self->chrIndex,
+									self->lineNum));
+		break;
+	case '.':
+		array_insert(self->tokens, self->tokens->length,
+					 lexerToken_new("", LEXERTOKENS_DOT, self->chrIndex,
+									self->chrIndex, self->lineNum));
+		break;
+	case '@':
+		array_insert(self->tokens, self->tokens->length,
+					 lexerToken_new("", LEXERTOKENS_AT, self->chrIndex,
+									self->chrIndex, self->lineNum));
+		break;
+	case '#':
+		lexer_lexSingleLineComment(self);
+		break;
+	case '%':
+		lexer_lexModulo(self);
+		break;
+	case '*':
+		lexer_lexMultiplication(self);
+		break;
+	case '/':
+		lexer_lexDivision(self);
+		break;
+	case '+':
+		lexer_lexAddition(self);
+		break;
+	case '-':
+		lexer_lexSubtraction(self);
+		break;
+	case '>':
+		lexer_lexGreaterThan(self);
+		break;
+	case '<':
+		lexer_lexLessThan(self);
+		break;
+	case '!':
+		lexer_lexLogicalNot(self);
+		break;
+	case '&':
+		lexer_lexBitwiseAND(self);
+		break;
+	case '|':
+		lexer_lexBitwiseOR(self);
+		break;
+	case '^':
+		lexer_lexBitwiseXOR(self);
+		break;
+	case '~':
+		lexer_lexBitwiseNOT(self);
+		break;
+	case ',':
+		array_insert(self->tokens, self->tokens->length,
+					 lexerToken_new("", LEXERTOKENS_COMMA, self->chrIndex,
+									self->chrIndex, self->lineNum));
+		break;
+	case ':':
+		lexer_lexColon(self);
+		break;
+	default:
+		if (isalpha(self->chr) || self->chr == '_') {
+			lexer_lexKeywordOrIdentifier(self);
+		} else if (isdigit(self->chr)) {
+			lexer_lexInteger(self);
+		} else {
+			lexer_error(self, "unknown character", NULL);
+		}
+
+		break;
+	}
+
+	return true;
 }

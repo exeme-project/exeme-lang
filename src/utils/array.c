@@ -21,6 +21,24 @@ struct Array {
 #define ARRAY_STRUCT_ELEMENT_SIZE sizeof(void *)
 
 /**
+ * Creates a new Array struct.
+ *
+ * @return The created Array struct.
+ */
+struct Array *array_new(void) {
+	struct Array *self = malloc(ARRAY_STRUCT_SIZE);
+
+	if (!self) {
+		panic("failed to create Array struct");
+	}
+
+	self->length = 0;
+	self->_values = malloc(1);
+
+	return self;
+}
+
+/**
  * Reallocates the struct's array.
  *
  * @param self The current Array struct.
@@ -120,22 +138,4 @@ void array_free(struct Array *self) {
 	} else {
 		panic("array has already been freed");
 	}
-}
-
-/**
- * Creates a new Array struct.
- *
- * @return The created Array struct.
- */
-struct Array *array_new(void) {
-	struct Array *self = malloc(ARRAY_STRUCT_SIZE);
-
-	if (!self) {
-		panic("failed to create Array struct");
-	}
-
-	self->length = 0;
-	self->_values = malloc(1);
-
-	return self;
 }

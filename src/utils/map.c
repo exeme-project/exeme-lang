@@ -20,6 +20,23 @@ struct Map {
 #define MAP_STRUCT_SIZE sizeof(struct Map)
 
 /**
+ * Creates a new Map struct.
+ *
+ * @return The created Map struct.
+ */
+struct Map *map_new(void) {
+	struct Map *self = malloc(MAP_STRUCT_SIZE);
+
+	if (!self) {
+		panic("failed to create map struct");
+	}
+
+	self->_values = array_new();
+
+	return self;
+}
+
+/**
  * Calculates the hash for a key.
  *
  * @param KEY The key to calculate the hash for.
@@ -74,21 +91,4 @@ void map_free(struct Map *self) {
 	} else {
 		panic("map has already been freed");
 	}
-}
-
-/**
- * Creates a new Map struct.
- *
- * @return The created Map struct.
- */
-struct Map *map_new(void) {
-	struct Map *self = malloc(MAP_STRUCT_SIZE);
-
-	if (!self) {
-		panic("failed to create map struct");
-	}
-
-	self->_values = array_new();
-
-	return self;
 }
