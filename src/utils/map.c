@@ -61,7 +61,7 @@ size_t map___hash(const char *KEY) {
  * @param KEY   The key to calculate the hash for.
  * @param VALUE The value to insert.
  */
-void map_set(struct Map *self, const char *KEY, const void *VALUE) {
+void map_set(struct Map *self, const char *KEY, void *VALUE) {
 	array_insert(self->_values, map___hash(KEY), VALUE);
 }
 
@@ -73,7 +73,7 @@ void map_set(struct Map *self, const char *KEY, const void *VALUE) {
  *
  * @return The retreived element.
  */
-const void *map_get(struct Map *self, const char *KEY) {
+void *map_get(struct Map *self, const char *KEY) {
 	return array_get(self->_values, map___hash(KEY));
 }
 
