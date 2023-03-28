@@ -26,7 +26,7 @@ in the `Design Specification
    using io::out
 
    # Returns whether `n` itself is prime.
-   fn isPrime(n: i32) -> bool {
+   func isPrime(n: i32) -> bool {
        for _, d = range(2, n) { # '_' is the index, but it is not needed
            if (n % d == 0) { # Can be divided without a remainder
                return false
@@ -36,7 +36,7 @@ in the `Design Specification
        return true
    }
 
-   fn main() {
+   func main() {
        out(isPrime(100))
    }
 

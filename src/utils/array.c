@@ -29,7 +29,7 @@ struct Array *array_new(void) {
 	struct Array *self = malloc(ARRAY_STRUCT_SIZE);
 
 	if (!self) {
-		panic("failed to create Array struct");
+		panic("failed to malloc Array struct");
 	}
 
 	self->length = 0;

@@ -28,7 +28,7 @@ struct Map *map_new(void) {
 	struct Map *self = malloc(MAP_STRUCT_SIZE);
 
 	if (!self) {
-		panic("failed to create map struct");
+		panic("failed to malloc Map struct");
 	}
 
 	self->_values = array_new();

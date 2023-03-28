@@ -39,7 +39,7 @@ Here is a simple function showing some Exeme code:
    using io::out
 
    # Returns whether `n` itself is prime.
-   fn isPrime(n: i32) -> bool {
+   func isPrime(n: i32) -> bool {
        for _, d = range(2, n) { # '_' is the index, but it is not needed
            if (n % d == 0) { # Can be divided without a remainder
                return false
@@ -49,7 +49,7 @@ Here is a simple function showing some Exeme code:
        return true
    }
 
-   fn main() {
+   func main() {
        out(isPrime(100))
    }
 
@@ -103,7 +103,7 @@ Function Declaration
 
 A :doc:`function declaration <index>` consists of:
 
--  The ``fn`` keyword introducer,
+-  The ``func`` keyword introducer,
 -  The function's name,
 -  A parameters list in round parenthesis ``(``\ …\ ``)``,
 -  An optional ``->`` followed by return type(s), and
@@ -111,7 +111,7 @@ A :doc:`function declaration <index>` consists of:
 
 .. code::
 
-   fn isPrime(n: i32) -> bool {
+   func isPrime(n: i32) -> bool {
        ...
            ...
                return false

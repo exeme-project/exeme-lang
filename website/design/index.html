@@ -264,7 +264,7 @@ descriptions.</p>
 <span class="n">using</span> <span class="n">io</span><span class="p">::</span><span class="n">out</span>
 
 <span class="c1"># Returns whether `n` itself is prime.</span>
-<span class="n">fn</span> <span class="n">isPrime</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">i32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="p">{</span>
+<span class="n">func</span> <span class="n">isPrime</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">i32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="p">{</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># &#39;_&#39; is the index, but it is not needed</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># Can be divided without a remainder</span>
             <span class="k">return</span> <span class="n">false</span>
@@ -274,7 +274,7 @@ descriptions.</p>
     <span class="k">return</span> <span class="n">true</span>
 <span class="p">}</span>
 
-<span class="n">fn</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="n">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
     <span class="n">out</span><span class="p">(</span><span class="n">isPrime</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
 <span class="p">}</span>
 </pre></div>
@@ -320,13 +320,13 @@ end of lines, etc), and have to start with <code class="docutils literal notrans
 <h3>Function Declaration<a class="headerlink" href="#function-declaration" title="Permalink to this heading">#</a></h3>
 <p>A <a class="reference internal" href="#"><span class="doc">function declaration</span></a> consists of:</p>
 <ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">fn</span></code> keyword introducer,</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">func</span></code> keyword introducer,</p></li>
 <li><p>The function’s name,</p></li>
 <li><p>A parameters list in round parenthesis <code class="docutils literal notranslate"><span class="pre">(</span></code>…<code class="docutils literal notranslate"><span class="pre">)</span></code>,</p></li>
 <li><p>An optional <code class="docutils literal notranslate"><span class="pre">-&gt;</span></code> followed by return type(s), and</p></li>
 <li><p>A body inside curly braces <code class="docutils literal notranslate"><span class="pre">{</span></code>…<code class="docutils literal notranslate"><span class="pre">}</span></code>.</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fn</span> <span class="n">isPrime</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">i32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="p">{</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">func</span> <span class="n">isPrime</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">i32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="p">{</span>
     <span class="o">...</span>
         <span class="o">...</span>
             <span class="k">return</span> <span class="n">false</span>
