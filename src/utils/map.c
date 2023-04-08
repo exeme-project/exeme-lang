@@ -89,6 +89,6 @@ void map_free(struct Map *self) {
 
 		self = NULL;
 	} else {
-		panic("map has already been freed");
+		panic("Map struct has already been freed");
 	}
 }

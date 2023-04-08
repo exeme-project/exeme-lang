@@ -32,14 +32,13 @@ struct String *string_new(char *string, bool copy) {
 		panic("failed to malloc String struct");
 	}
 
-	self->length = 0;
-	self->_value = malloc(stringSize);
-
-	if (!self->_value) {
-		panic("failed to malloc string");
-	}
-
 	if (copy) {
+		self->_value = malloc(stringSize);
+
+		if (!self->_value) {
+			panic("failed to malloc string");
+		}
+
 		for (size_t index = 0; index < stringSize - 1; index++) {
 			self->_value[index] = string[index];
 			self->length++;
@@ -48,9 +47,58 @@ struct String *string_new(char *string, bool copy) {
 		self->_value[self->length] = '\0';
 	} else {
 		self->_value = string;
+		self->length = strlen(self->_value);
 	}
 
 	return self;
+}
+
+/**
+ * Reallocates the struct's string.
+ *
+ * @param self The current String struct.
+ * @param size The new size of the string.
+ */
+void string___realloc(struct String *self, size_t size) {
+	self->_value = realloc(self->_value, size);
+
+	if (!self->_value) {
+		panic("failed to realloc string");
+	}
+}
+
+void string_append(struct String *self, char chr) {
+	string___realloc(self, self->length + 1);
+
+	self->_value[self->length++] = chr;
+	self->_value[self->length] = '\0';
+}
+
+/**
+ * Removes all the elements from the String.
+ *
+ * @param self The current String struct.
+ */
+void string_clear(struct String *self) {
+	self->_value[0] = '\0';
+	self->length = 1;
+	string___realloc(self, 1);
+}
+
+/**
+ * Frees an String struct.
+ *
+ * @param self The current String struct.
+ */
+void string_free(struct String *self) {
+	if (self) {
+		free(self->_value);
+		free(self);
+
+		self = NULL;
+	} else {
+		panic("String struct has already been freed");
+	}
 }
 
 /**

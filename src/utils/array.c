@@ -48,7 +48,7 @@ void array___realloc(struct Array *self, size_t size) {
 	self->_values = realloc(self->_values, size);
 
 	if (!self->_values) {
-		panic("failed to realloc array values");
+		panic("failed to realloc array");
 	}
 }
 
@@ -145,6 +145,6 @@ void array_free(struct Array *self) {
 
 		self = NULL;
 	} else {
-		panic("array has already been freed");
+		panic("Array struct has already been freed");
 	}
 }
