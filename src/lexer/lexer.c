@@ -368,7 +368,7 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
 	}
 
 	self->chr = '\n';
-	self->prevChr = '\n';
+	self->prevChr = '\0';
 	self->FILE_PATH = FILE_PATH;
 	self->filePointer = fopen(FILE_PATH, "r");
 	self->chrIndex = 0;
@@ -393,55 +393,8 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
  */
 void lexer_error(struct Lexer *self, const char *ERROR_MSG,
 				 const struct LexerToken *token) {
-	size_t length = strlen(ulToString(self->chrIndex)) + 3, lineIndex = 0;
-	struct String *line = string_new("\0", true);
-
-	self->filePointer = fopen(self->FILE_PATH, "r");
-
-	if (ferror(self->filePointer)) { // File should exist at this stage, but
-									 // just in case
-		panic(stringConcatenate(
-			3, "failed to open file while reporting error '", ERROR_MSG, "'"));
-	}
-
-	printf("%s%s--> %s%s\n", F_BRIGHT_BLUE, S_BOLD, S_RESET,
-		   self->FILE_PATH); // Print file
-
-	while (true) {
-		while (true) {
-			char chr = (char)fgetc(
-				self->filePointer); // Specify cast to char to silence warnings
-
-			if (chr == '\n' || chr == EOF) { // EOL or EOF
-				break;
-			}
-
-			string_append(line, chr);
-		}
-
-		if (lineIndex++ == self->lineIndex) { // Works because lineIndex starts
-											  // at '0', not 'negativeIndex'
-			break;
-		}
-
-		string_clear(line);
-	}
-
-	printf("%zu | %s\n", self->lineIndex + 1, line->_value); // Print line
-
-	if (!token) { // The error realtes to only one char
-		printf("%s^ %s%serror: %s%s\n", repeatChr(' ', self->chrIndex),
-			   F_BRIGHT_RED, S_BOLD, S_RESET, ERROR_MSG); // Print error
-	} else { // The error relates to a string (multiple chars)
-		self->lineIndex =
-			token->lineIndex; // Make sure the current line and char are correct
-		self->chrIndex = token->endChrIndex;
-
-		printf("%s%s %s%serror: %s%s\n",
-			   repeatChr(' ', length + token->startChrIndex),
-			   repeatChr('^', self->chrIndex - token->startChrIndex + 1),
-			   F_BRIGHT_RED, S_BOLD, S_RESET, ERROR_MSG); // Print error
-	}
+	printf("%s on line index %zu char index %zu\n", ERROR_MSG, token->lineIndex,
+		   token->startChrIndex);
 
 	exit(EXIT_FAILURE);
 }
@@ -462,7 +415,7 @@ bool lexer_getLine(struct Lexer *self, bool nextLine) {
 		return true;
 	}
 
-	self->prevChr = self->chr;
+	self->prevChr = '\0';
 	self->chr = '\n';
 
 	self->chrIndex = negativeIndex; // Will wrap around when a char is got
@@ -481,7 +434,8 @@ bool lexer_getLine(struct Lexer *self, bool nextLine) {
  */
 bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
 	if (!self->filePointer ||
-		self->lineIndex == negativeIndex) { // EOF or Start of File
+		(self->chr == '\n' && self->chrIndex != negativeIndex) ||
+		self->lineIndex == negativeIndex) { // EOF / EOL / Start of File
 		return false;
 	}
 
@@ -500,7 +454,7 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
 		}
 
 		if (self->chr == '\n') { // EOL has been reached
-			return false;
+			return true;
 		} else if (skipWhitespace) {   // Keep going till we encounter a chars
 									   // that is not whitespace
 			if (!isspace(self->chr)) { // Not whitespace
@@ -596,7 +550,9 @@ void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR,
 		if (self->chr == SECOND_CHR) { // Second char was found
 			token = lexerToken_new(
 				IF_TWO,
-				string_new(chrToString(self->prevChr + self->chr), false),
+				string_new(stringConcatenate(2, chrToString(self->prevChr),
+											 chrToString(self->chr)),
+						   false),
 				self->chrIndex - 1, self->chrIndex, self->lineIndex);
 		} else { // Second char was not found, un-get it
 			lexer_unGetChr(self);

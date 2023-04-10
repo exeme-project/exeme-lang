@@ -115,6 +115,7 @@ char *stringConcatenate(size_t argumentsNumber, ...) {
 	va_start(arguments, argumentsNumber);
 
 	string = malloc(1);
+	string[0] = '\0';
 
 	if (!string) {
 		panic("failed to malloc string");
@@ -123,7 +124,7 @@ char *stringConcatenate(size_t argumentsNumber, ...) {
 	for (size_t index = 0; index < argumentsNumber; index++) {
 		char *appendString = va_arg(arguments, char *);
 
-		string = realloc(string, sizeof(string) + strlen(appendString));
+		string = realloc(string, strlen(string) + 1 + strlen(appendString));
 
 		if (!string) {
 			panic("failed to realloc string");
