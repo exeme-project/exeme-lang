@@ -295,7 +295,7 @@ const struct Array LEXER_TOKEN_PRECEDENCES = {
  */
 struct LexerToken {
 	enum LexerTokens identifier;
-	size_t startChrIndex, chrIndex, lineIndex;
+	size_t startChrIndex, endChrIndex, lineIndex;
 	const struct String *value;
 };
 
@@ -304,18 +304,18 @@ struct LexerToken {
 /**
  * Creates a new LexerToken struct.
  *
- * @param identifier    Token identifier.
- * @param value         Value of the token.
- * @param startChrIndex Start char index of the token.
- * @param chrIndex      End char index of the token.
- * @param lineIndex     Line num of the token.
+ * @param identifier       Token identifier.
+ * @param value            Value of the token.
+ * @param startChrIndex    Start char index of the token.
+ * @param endChrIndex      End char index of the token.
+ * @param lineIndex        Line num of the token.
  *
  * @return The created LexerToken struct.
  */
 const struct LexerToken *lexerToken_new(enum LexerTokens identifier,
 										struct String *value,
-										size_t startChrIndex, size_t chrIndex,
-										size_t lineIndex) {
+										size_t startChrIndex,
+										size_t endChrIndex, size_t lineIndex) {
 	struct LexerToken *self = malloc(LEXERTOKEN_STRUCT_SIZE);
 
 	if (!self) {
@@ -325,7 +325,7 @@ const struct LexerToken *lexerToken_new(enum LexerTokens identifier,
 	self->identifier = identifier;
 	self->value = value;
 	self->startChrIndex = startChrIndex;
-	self->chrIndex = chrIndex;
+	self->endChrIndex = endChrIndex;
 	self->lineIndex = lineIndex;
 
 	return self;
@@ -391,8 +391,8 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
  * @param ERROR_MSG The error message.
  * @param token     The erroneous token.
  */
-noreturn void lexer_error(struct Lexer *self, const char *ERROR_MSG,
-						  const struct LexerToken *token) {
+void lexer_error(struct Lexer *self, const char *ERROR_MSG,
+				 const struct LexerToken *token) {
 	size_t length = strlen(ulToString(self->chrIndex)) + 3, lineIndex = 0;
 	struct String *line = string_new("\0", true);
 
@@ -435,7 +435,7 @@ noreturn void lexer_error(struct Lexer *self, const char *ERROR_MSG,
 	} else { // The error relates to a string (multiple chars)
 		self->lineIndex =
 			token->lineIndex; // Make sure the current line and char are correct
-		self->chrIndex = token->chrIndex;
+		self->chrIndex = token->endChrIndex;
 
 		printf("%s%s %s%serror: %s%s\n",
 			   repeatChr(' ', length + token->startChrIndex),

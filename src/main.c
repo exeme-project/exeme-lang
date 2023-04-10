@@ -16,10 +16,11 @@ int main(void) {
 
 		if (lexerToken) {
 			printf(
-				"identifier: %s\nstartChrIndex: %zu\nchrIndex: %zu\nlineIndex: "
+				"identifier: %s\nstartChrIndex: %zu\nendChrIndex: "
+				"%zu\nlineIndex: "
 				"%zu\nvalue: %s\n\n",
 				(const char *)LEXER_TOKEN_NAMES._values[lexerToken->identifier],
-				lexerToken->startChrIndex, lexerToken->chrIndex,
+				lexerToken->startChrIndex, lexerToken->endChrIndex,
 				lexerToken->lineIndex, lexerToken->value->_value);
 
 			lexerToken_free(lexerToken);
