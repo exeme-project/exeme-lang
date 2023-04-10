@@ -34,6 +34,7 @@ struct String *string_new(char *string, bool copy) {
 
 	if (copy) {
 		self->_value = malloc(stringSize);
+		self->length = 0;
 
 		if (!self->_value) {
 			panic("failed to malloc string");
