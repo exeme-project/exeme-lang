@@ -351,6 +351,7 @@ void lexerToken_free(struct LexerToken *self) {
  * Represents a lexer.
  */
 struct Lexer {
+	bool nextLine;
 	char chr, prevChr;
 	const char *FILE_PATH;
 	FILE *filePointer;
@@ -367,6 +368,7 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
 		panic("failed to malloc Lexer struct");
 	}
 
+	self->nextLine = true;
 	self->chr = '\n';
 	self->prevChr = '\0';
 	self->FILE_PATH = FILE_PATH;
@@ -411,7 +413,7 @@ void lexer_error(struct Lexer *self, const char *ERROR_MSG,
 bool lexer_getLine(struct Lexer *self, bool nextLine) {
 	if (!self->filePointer) { // EOF
 		return false;
-	} else if (!nextLine && self->chr != '\n') { // EOL has not been reached
+	} else if (!nextLine && !self->nextLine) { // EOL has not been reached
 		return true;
 	}
 
@@ -421,49 +423,7 @@ bool lexer_getLine(struct Lexer *self, bool nextLine) {
 	self->chrIndex = negativeIndex; // Will wrap around when a char is got
 	self->lineIndex++;
 
-	return true;
-}
-
-/**
- * Gets the next char.
- *
- * @param self           The current lexer struct.
- * @param skipWhitespace Whether to skip whitespace chars.
- *
- * @return Whether the next char was got successfully.
- */
-bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
-	if (!self->filePointer ||
-		(self->chr == '\n' && self->chrIndex != negativeIndex) ||
-		self->lineIndex == negativeIndex) { // EOF / EOL / Start of File
-		return false;
-	}
-
-	while (true) {
-		self->prevChr = self->chr;
-		self->chr = (char)fgetc(
-			self->filePointer); // Specify cast to char to silence warnings
-		self->chrIndex++;
-
-		if (self->chr == EOF ||
-			ferror(self->filePointer) != 0) { // EOF or error
-			fclose(self->filePointer);
-			self->filePointer = NULL; // Set to NULL to prevent future errors
-
-			return false;
-		}
-
-		if (self->chr == '\n') { // EOL has been reached
-			return true;
-		} else if (skipWhitespace) {   // Keep going till we encounter a chars
-									   // that is not whitespace
-			if (!isspace(self->chr)) { // Not whitespace
-				break;
-			}
-		} else { // Don't skip whitespace chars
-			break;
-		}
-	}
+	self->nextLine = false;
 
 	return true;
 }
@@ -491,6 +451,53 @@ bool lexer_unGetChr(struct Lexer *self) {
 		self->filePointer = NULL; // Set to NULL to prevent future errors
 
 		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Gets the next char.
+ *
+ * @param self           The current lexer struct.
+ * @param skipWhitespace Whether to skip whitespace chars.
+ *
+ * @return Whether the next char was got successfully.
+ */
+bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
+	if (!self->filePointer || self->nextLine) { // EOF / EOL
+		return false;
+	}
+
+	while (true) {
+		char prevChr = self->prevChr;
+		self->prevChr = self->chr;
+		self->chr = (char)fgetc(
+			self->filePointer); // Specify cast to char to silence warnings
+		self->chrIndex++;
+
+		if (self->chr == EOF ||
+			ferror(self->filePointer) != 0) { // EOF or error
+			fclose(self->filePointer);
+			self->filePointer = NULL; // Set to NULL to prevent future errors
+
+			return false;
+		}
+
+		if (self->chr == '\n') { // EOL has been reached
+			self->chr = self->prevChr;
+			self->prevChr = prevChr;
+			self->nextLine = true;
+
+			return false;
+		} else if (skipWhitespace) {   // Keep going till we encounter a chars
+									   // that is not whitespace
+			if (!isspace(self->chr)) { // Not whitespace
+				break;
+			}
+		} else { // Don't skip whitespace chars
+			break;
+		}
 	}
 
 	return true;

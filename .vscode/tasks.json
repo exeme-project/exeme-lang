@@ -9,7 +9,7 @@
                 "-g",
                 "${workspaceFolder}/src/main.c",
                 "-o",
-                "${workspaceFolder}/build/exeme.exe",
+                "${workspaceFolder}/build/exeme/exeme.exe",
             ],
             "group": {
                 "kind": "build",
@@ -25,7 +25,7 @@
                 "-g",
                 "${workspaceFolder}/src/main.c",
                 "-o",
-                "${workspaceFolder}/build/exeme",
+                "${workspaceFolder}/build/exeme/exeme",
             ],
             "group": {
                 "kind": "build",
