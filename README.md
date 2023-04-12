@@ -32,4 +32,4 @@ Exeme is ***not*** ready for use. It is currently a work in progress, but there 
 
 ## Join us
 
-Exeme is commited to having a welcoming and inclusive environment where everyone can contribute. For more information about the Exeme development community, see our [**Code of Conduct**](https://github.com/exeme-project/exeme-lang/blob/main/CODE_OF_CONDUCT.md) and [**Contributing Guidelines**](https://github.com/exeme-project/exeme-lang/blob/main/CONTRIBUTING.md)
+Exeme is commited to having a welcoming and inclusive environment where everyone can contribute. For more information about the Exeme development community, see our [**Code of Conduct**](https://github.com/exeme-project/exeme-lang/blob/main/CODE_OF_CONDUCT.md) and [**Contributing Guidelines**](https://github.com/exeme-project/exeme-lang/blob/main/CONTRIBUTING.md).
