@@ -12,7 +12,7 @@
 
 ## The Exeme Project
 
-C++ remains the dominant programming language for performance-critical software. However, it is struggling to meet the needs of modern developers, in no small part due to the accumulation of technical debt over decades. Improvement of C++ is extremely difficult 1, not just because of decades of technical debt, but also due to challenges in its evolution process. The best way to address these problems is by avoiding inheriting the legacy of C and C++, and instead start with solid language foundations.
+C++ remains the dominant programming language for performance-critical software. However, it is struggling to meet the needs of modern developers, in no small part due to the accumulation of technical debt over decades. Improvement of C++ is extremely difficult, not just because of decades of technical debt, but also due to challenges in its evolution process. The best way to address these problems is by avoiding inheriting the legacy of C and C++, and instead start with solid language foundations.
 
 ## Goals
 
