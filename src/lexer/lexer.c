@@ -136,10 +136,10 @@ const struct Array LEXER_TOKEN_NAMES = {
 
 		// Arithmetic operators
 		"modulo operator",
+		"multiplication operator",
 		"exponent operator",
 		"division operator",
 		"floor division operator",
-		"multiplication operator",
 		"addition operator",
 		"subtraction operator",
 
@@ -168,10 +168,10 @@ const struct Array LEXER_TOKEN_NAMES = {
 		"assignment operator",
 
 		"modulo assignment operator",
+		"multiplication assignment operator",
 		"exponent assignment operator",
 		"divison assignment operator",
 		"floor division assignment operator",
-		"multiplication assignment operator",
 		"addition assignment operator",
 		"subtraction assignment operator",
 
@@ -554,19 +554,83 @@ void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR,
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
-		if (self->chr == SECOND_CHR) { // Second char was found
+		if (self->chr == SECOND_CHR) {
 			token = lexerToken_new(
 				IF_TWO,
 				string_new(stringConcatenate(2, chrToString(self->prevChr),
 											 chrToString(self->chr)),
 						   false),
 				self->chrIndex - 1, self->chrIndex, self->lineIndex);
-		} else { // Second char was not found, un-get it
+		} else { // SECOND_CHR was not found, un-get it
 			lexer_unGetChr(self);
 		}
 	}
 
-	if (token == NULL) { // Second char was not found
+	if (token == NULL) { // SECOND_CHR was not found
+		token =
+			lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false),
+						   self->chrIndex, self->chrIndex, self->lineIndex);
+	}
+
+	array_insert(self->tokens, 0, token);
+	lexer_checkForContinuation(self, token);
+}
+
+/**
+ * Creates a LexerToken for a possible three-char token.
+ *
+ * @param self           The current lexer struct.
+ * @param SECOND_CHR     The second char to check for.
+ * @param THIRD_CHR      The third char to check for.
+ * @param IF_ONE         If the token is one char.
+ * @param IF_TWO         If the token is two SECOND_CHRs.
+ * @param IF_ONE_AND_ONE If the token is SECOND_CHR and THIRD_CHR.
+ * @param IF_TWO_AND_ONE If the token is two of SECOND_CHR and THIRD_CHR.
+ */
+void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR,
+						const char THIRD_CHR, const enum LexerTokens IF_ONE,
+						const enum LexerTokens IF_TWO,
+						const enum LexerTokens IF_ONE_AND_ONE,
+						const enum LexerTokens IF_TWO_AND_ONE) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_getChr(self, false)) {
+		if (self->chr == SECOND_CHR) {
+			const char prevChr = self->prevChr;
+
+			if (lexer_getChr(self, false)) {
+				if (self->chr == THIRD_CHR) {
+					token = lexerToken_new(
+						IF_TWO_AND_ONE,
+						string_new(stringConcatenate(3, chrToString(prevChr),
+													 chrToString(self->prevChr),
+													 chrToString(self->chr)),
+								   false),
+						self->chrIndex - 2, self->chrIndex, self->lineIndex);
+				}
+			}
+
+			if (token == NULL) { // THIRD_CHR was not found
+				token = lexerToken_new(
+					IF_TWO,
+					string_new(stringConcatenate(2, chrToString(self->prevChr),
+												 chrToString(self->chr)),
+							   false),
+					self->chrIndex - 1, self->chrIndex, self->lineIndex);
+			}
+		} else if (self->chr == THIRD_CHR) {
+			token = lexerToken_new(
+				IF_ONE_AND_ONE,
+				string_new(stringConcatenate(2, chrToString(self->prevChr),
+											 chrToString(self->chr)),
+						   false),
+				self->chrIndex - 1, self->chrIndex, self->lineIndex);
+		} else { // SECOND_CHR was not found, un-get it
+			lexer_unGetChr(self);
+		}
+	}
+
+	if (token == NULL) { // SECOND_CHR was not found
 		token =
 			lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false),
 						   self->chrIndex, self->chrIndex, self->lineIndex);
@@ -589,6 +653,34 @@ bool lexer_lexNext(struct Lexer *self) {
 	case '%':
 		lexer_lexTwoChar(self, '=', LEXERTOKENS_MODULO,
 						 LEXERTOKENS_MODULO_ASSIGNMENT);
+		break;
+	case '*':
+		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_MULTIPLICATION,
+						   LEXERTOKENS_EXPONENT,
+						   LEXERTOKENS_MULTIPLICATION_ASSIGNMENT,
+						   LEXERTOKENS_EXPONENT_ASSIGNMENT);
+		break;
+
+	// Comparison / Relational operators
+	case '=':
+		lexer_lexTwoChar(self, self->chr, LEXERTOKENS_ASSIGNMENT,
+						 LEXERTOKENS_EQUAL_TO);
+		break;
+	case '!':
+		lexer_lexTwoChar(self, '=', LEXERTOKENS_LOGICAL_NOT,
+						 LEXERTOKENS_NOT_EQUAL_TO);
+		break;
+	case '>':
+		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_GREATER_THAN,
+						   LEXERTOKENS_BITWISE_RIGHT_SHIFT,
+						   LEXERTOKENS_GREATER_THAN_OR_EQUAL,
+						   LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT);
+		break;
+	case '<':
+		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_LESS_THAN,
+						   LEXERTOKENS_BITWISE_LEFT_SHIFT,
+						   LEXERTOKENS_LESS_THAN_OR_EQUAL,
+						   LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT);
 		break;
 
 	// Member / Pointer operators
