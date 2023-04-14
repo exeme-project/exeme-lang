@@ -531,8 +531,7 @@ void lexer_checkForContinuation(struct Lexer *self,
  * @param self       The current lexer struct.
  * @param IDENTIFIER The current token's identifier.
  */
-void lexer_lexSyntacticConstruct(struct Lexer *self,
-								 const enum LexerTokens IDENTIFIER) {
+void lexer_lexOneChar(struct Lexer *self, const enum LexerTokens IDENTIFIER) {
 	const struct LexerToken *token =
 		lexerToken_new(IDENTIFIER, string_new(chrToString(self->chr), false),
 					   self->chrIndex, self->chrIndex, self->lineIndex);
@@ -566,7 +565,7 @@ void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR,
 		}
 	}
 
-	if (token == NULL) { // SECOND_CHR was not found
+	if (!token) { // SECOND_CHR was not found
 		token =
 			lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false),
 						   self->chrIndex, self->chrIndex, self->lineIndex);
@@ -598,7 +597,7 @@ void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR,
 		if (self->chr == SECOND_CHR) {
 			const char prevChr = self->prevChr;
 
-			if (lexer_getChr(self, false)) {
+			if (IF_TWO_AND_ONE && lexer_getChr(self, false)) {
 				if (self->chr == THIRD_CHR) {
 					token = lexerToken_new(
 						IF_TWO_AND_ONE,
@@ -610,7 +609,7 @@ void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR,
 				}
 			}
 
-			if (token == NULL) { // THIRD_CHR was not found
+			if (!token) { // THIRD_CHR was not found
 				token = lexerToken_new(
 					IF_TWO,
 					string_new(stringConcatenate(2, chrToString(self->prevChr),
@@ -630,7 +629,7 @@ void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR,
 		}
 	}
 
-	if (token == NULL) { // SECOND_CHR was not found
+	if (!token) { // SECOND_CHR was not found
 		token =
 			lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false),
 						   self->chrIndex, self->chrIndex, self->lineIndex);
@@ -660,6 +659,20 @@ bool lexer_lexNext(struct Lexer *self) {
 						   LEXERTOKENS_MULTIPLICATION_ASSIGNMENT,
 						   LEXERTOKENS_EXPONENT_ASSIGNMENT);
 		break;
+	case '/':
+		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_DIVISION,
+						   LEXERTOKENS_FLOOR_DIVISION,
+						   LEXERTOKENS_DIVISION_ASSIGNMENT,
+						   LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT);
+		break;
+	case '+':
+		lexer_lexTwoChar(self, '=', LEXERTOKENS_ADDITION,
+						 LEXERTOKENS_ADDITION_ASSIGNMENT);
+		break;
+	case '-': // TODO: '->'
+		lexer_lexTwoChar(self, '=', LEXERTOKENS_SUBTRACTION,
+						 LEXERTOKENS_SUBTRACTION_ASSIGNMENT);
+		break;
 
 	// Comparison / Relational operators
 	case '=':
@@ -683,35 +696,58 @@ bool lexer_lexNext(struct Lexer *self) {
 						   LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT);
 		break;
 
+	// Logical operators
+	case '&':
+		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_BITWISE_AND,
+						   LEXERTOKENS_LOGICAL_AND,
+						   LEXERTOKENS_BITWISE_AND_ASSIGNMENT,
+						   LEXERTOKENS_NONE);
+		break;
+	case '|':
+		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_BITWISE_OR,
+						   LEXERTOKENS_LOGICAL_OR,
+						   LEXERTOKENS_BITWISE_OR_ASSIGNMENT, LEXERTOKENS_NONE);
+		break;
+
+	// Bitwise operators
+	case '^':
+		lexer_lexTwoChar(self, '=', LEXERTOKENS_BITWISE_XOR,
+						 LEXERTOKENS_BITWISE_XOR_ASSIGNMENT);
+		break;
+	case '~':
+		lexer_lexTwoChar(self, '=', LEXERTOKENS_BITWISE_NOT,
+						 LEXERTOKENS_BITWISE_NOT_ASSIGNMENT);
+		break;
+
 	// Member / Pointer operators
 	case '.':
-		lexer_lexSyntacticConstruct(self, LEXERTOKENS_DOT);
+		lexer_lexOneChar(self, LEXERTOKENS_DOT);
 		break;
 	case '@':
-		lexer_lexSyntacticConstruct(self, LEXERTOKENS_AT);
+		lexer_lexOneChar(self, LEXERTOKENS_AT);
 		break;
 
 	// Syntactic constructs
 	case '(':
-		lexer_lexSyntacticConstruct(self, LEXERTOKENS_OPEN_BRACE);
+		lexer_lexOneChar(self, LEXERTOKENS_OPEN_BRACE);
 		break;
 	case '[':
-		lexer_lexSyntacticConstruct(self, LEXERTOKENS_OPEN_SQUARE_BRACE);
+		lexer_lexOneChar(self, LEXERTOKENS_OPEN_SQUARE_BRACE);
 		break;
 	case '{':
-		lexer_lexSyntacticConstruct(self, LEXERTOKENS_OPEN_CURLY_BRACE);
+		lexer_lexOneChar(self, LEXERTOKENS_OPEN_CURLY_BRACE);
 		break;
 	case ')':
-		lexer_lexSyntacticConstruct(self, LEXERTOKENS_CLOSE_BRACE);
+		lexer_lexOneChar(self, LEXERTOKENS_CLOSE_BRACE);
 		break;
 	case ']':
-		lexer_lexSyntacticConstruct(self, LEXERTOKENS_CLOSE_SQUARE_BRACE);
+		lexer_lexOneChar(self, LEXERTOKENS_CLOSE_SQUARE_BRACE);
 		break;
 	case '}':
-		lexer_lexSyntacticConstruct(self, LEXERTOKENS_CLOSE_CURLY_BRACE);
+		lexer_lexOneChar(self, LEXERTOKENS_CLOSE_CURLY_BRACE);
 		break;
 	case ',':
-		lexer_lexSyntacticConstruct(self, LEXERTOKENS_COMMA);
+		lexer_lexOneChar(self, LEXERTOKENS_COMMA);
 		break;
 	case ':':
 		lexer_lexTwoChar(self, self->chr, LEXERTOKENS_COLON,
