@@ -16,7 +16,7 @@
 
 ## Welcome
 
-Thank you for your interest in contributing to Exeme. There are many different ways to contribute, and they are all appreciated. If you have any questions, feel free to ask on the [GitHub](https://github.com/exeme-project/exeme-lang/discussions).
+Thank you for your interest in contributing to Exeme. There are many different ways to contribute, and they are all appreciated. If you have any questions, feel free to ask on the [**GitHub**](https://github.com/exeme-project/exeme-lang/discussions).
 
 Everyone who contributes to Exeme is expected to:
 

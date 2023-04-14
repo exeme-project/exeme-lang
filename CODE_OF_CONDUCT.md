@@ -49,15 +49,14 @@ We will not all agree, but disagreement does not excuse bad behavior or hurtful 
 
 Do not use insults or put-downs. It is not acceptable to engage in harassment or other exclusionary behavior. This includes, but is not limited to:
 
--   Using or threatening to use violent language.
--   Discriminatory jokes and slurs.
--   Posting sexually explicit or violent material.
--   Posting or threatening to post someone else's personal information
-    without their permission ('doxing').
--   Personal abuse, especially the use of racist or sexist language.
--   Unwelcome sexual attention.
--   Advocacy or encouragement of any of the above behavior.
--   In general, if someone asks you to stop, stop. It is considered harassment to persist after being asked to stop.
+* Using or threatening to use violent language.
+* Discriminatory jokes and slurs.
+* Posting sexually explicit or violent material.
+* Posting or threatening to post someone else's personal information without their permission (*doxing*).
+* Personal abuse, especially the use of racist or sexist language.
+* Unwelcome sexual attention.
+* Advocacy or encouragement of any of the above behavior.
+* In general, if someone asks you to stop, stop. It is considered harassment to persist after being asked to stop.
 
 ### When we disagree, we try to understand why
 
