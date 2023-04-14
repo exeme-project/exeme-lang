@@ -669,9 +669,38 @@ bool lexer_lexNext(struct Lexer *self) {
 		lexer_lexTwoChar(self, '=', LEXERTOKENS_ADDITION,
 						 LEXERTOKENS_ADDITION_ASSIGNMENT);
 		break;
-	case '-': // TODO: '->'
-		lexer_lexTwoChar(self, '=', LEXERTOKENS_SUBTRACTION,
-						 LEXERTOKENS_SUBTRACTION_ASSIGNMENT);
+	case '-':
+		const struct LexerToken *token = NULL;
+
+		if (lexer_getChr(self, false)) {
+			if (self->chr == '=') {
+				token = lexerToken_new(
+					LEXERTOKENS_SUBTRACTION_ASSIGNMENT,
+					string_new(stringConcatenate(2, chrToString(self->prevChr),
+												 chrToString(self->chr)),
+							   false),
+					self->chrIndex - 1, self->chrIndex, self->lineIndex);
+			} else if (self->chr == '>') {
+				token = lexerToken_new(
+					LEXERTOKENS_ARROW,
+					string_new(stringConcatenate(2, chrToString(self->prevChr),
+												 chrToString(self->chr)),
+							   false),
+					self->chrIndex - 1, self->chrIndex, self->lineIndex);
+			} else {
+				lexer_unGetChr(self);
+			}
+		}
+
+		if (!token) {
+			token =
+				lexerToken_new(LEXERTOKENS_SUBTRACTION,
+							   string_new(chrToString(self->chr), false),
+							   self->chrIndex, self->chrIndex, self->lineIndex);
+		}
+
+		array_insert(self->tokens, 0, token);
+		lexer_checkForContinuation(self, token);
 		break;
 
 	// Comparison / Relational operators
