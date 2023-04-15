@@ -8,6 +8,8 @@
 
 |Licensed under the MIT License| |PR's Welcome| |Website Status| |Visitor Count|
 
+**NOTE:** Most work is happening over on the `dev <https://github.com/exeme-project/exeme-lang/tree/dev/>`__ branch currently.
+
 An introduction to Exeme can be found on the `website
 <https://exeme-project.github.io/exeme-lang/>`__.
 
