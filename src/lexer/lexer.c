@@ -576,6 +576,54 @@ void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR,
 }
 
 /**
+ * Creates a LexerToken for a possible two-char token with two possible second
+ * chars.
+ *
+ * @param self             The current lexer struct.
+ * @param SECOND_CHR       The second char to check for.
+ * @param OTHER_SECOND_CHR The other second char to check for.
+ * @param IF_ONE           If the token is one char.
+ * @param IF_TWO           If the token is two chars with SECOND_CHR.
+ * @param IF_OTHER_TWO     If the token is two chars with OTEHR_SECOND_CHR.
+ */
+void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR,
+					   const char OTHER_SECOND_CHR,
+					   const enum LexerTokens IF_ONE,
+					   const enum LexerTokens IF_TWO,
+					   const enum LexerTokens IF_OTHER_TWO) {
+	const struct LexerToken *token = NULL;
+
+	if (lexer_getChr(self, false)) {
+		if (self->chr == SECOND_CHR) {
+			token = lexerToken_new(
+				IF_TWO,
+				string_new(stringConcatenate(2, chrToString(self->prevChr),
+											 chrToString(self->chr)),
+						   false),
+				self->chrIndex - 1, self->chrIndex, self->lineIndex);
+		} else if (self->chr == OTHER_SECOND_CHR) {
+			token = lexerToken_new(
+				IF_OTHER_TWO,
+				string_new(stringConcatenate(2, chrToString(self->prevChr),
+											 chrToString(self->chr)),
+						   false),
+				self->chrIndex - 1, self->chrIndex, self->lineIndex);
+		} else {
+			lexer_unGetChr(self);
+		}
+	}
+
+	if (!token) {
+		token =
+			lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false),
+						   self->chrIndex, self->chrIndex, self->lineIndex);
+	}
+
+	array_insert(self->tokens, 0, token);
+	lexer_checkForContinuation(self, token);
+}
+
+/**
  * Creates a LexerToken for a possible three-char token.
  *
  * @param self           The current lexer struct.
@@ -670,37 +718,9 @@ bool lexer_lexNext(struct Lexer *self) {
 						 LEXERTOKENS_ADDITION_ASSIGNMENT);
 		break;
 	case '-':
-		const struct LexerToken *token = NULL;
-
-		if (lexer_getChr(self, false)) {
-			if (self->chr == '=') {
-				token = lexerToken_new(
-					LEXERTOKENS_SUBTRACTION_ASSIGNMENT,
-					string_new(stringConcatenate(2, chrToString(self->prevChr),
-												 chrToString(self->chr)),
-							   false),
-					self->chrIndex - 1, self->chrIndex, self->lineIndex);
-			} else if (self->chr == '>') {
-				token = lexerToken_new(
-					LEXERTOKENS_ARROW,
-					string_new(stringConcatenate(2, chrToString(self->prevChr),
-												 chrToString(self->chr)),
-							   false),
-					self->chrIndex - 1, self->chrIndex, self->lineIndex);
-			} else {
-				lexer_unGetChr(self);
-			}
-		}
-
-		if (!token) {
-			token =
-				lexerToken_new(LEXERTOKENS_SUBTRACTION,
-							   string_new(chrToString(self->chr), false),
-							   self->chrIndex, self->chrIndex, self->lineIndex);
-		}
-
-		array_insert(self->tokens, 0, token);
-		lexer_checkForContinuation(self, token);
+		lexer_lex2TwoChar(self, '=', '>', LEXERTOKENS_SUBTRACTION,
+						  LEXERTOKENS_SUBTRACTION_ASSIGNMENT,
+						  LEXERTOKENS_ARROW);
 		break;
 
 	// Comparison / Relational operators
