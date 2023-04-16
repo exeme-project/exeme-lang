@@ -115,14 +115,15 @@ enum LexerTokens {
 	LEXERTOKENS_SCOPE_RESOLUTION,	// '::'
 
 	// Misc
-	LEXERTOKENS_COMMENT,
+	LEXERTOKENS_SINGLE_LINE_COMMENT,
+	LEXERTOKENS_MULTI_LINE_COMMENT
 };
 
 /**
  * Contains the names of each of the lexer token identifiers.
  */
 const struct Array LEXER_TOKEN_NAMES = {
-	54,
+	55,
 	(void *[]){
 		"",
 
@@ -199,7 +200,8 @@ const struct Array LEXER_TOKEN_NAMES = {
 		"scope resolution operator",
 
 		// Misc
-		"comment",
+		"single line comment",
+		"multi line comment",
 	},
 };
 
@@ -209,7 +211,7 @@ const struct Array LEXER_TOKEN_NAMES = {
  * else 'false').
  */
 const struct Array LEXER_TOKEN_PRECEDENCES = {
-	54,
+	55,
 	(void *[]){
 		"a",
 
@@ -286,6 +288,7 @@ const struct Array LEXER_TOKEN_PRECEDENCES = {
 		"a",
 
 		// Misc
+		"a",
 		"a",
 	},
 };
@@ -395,8 +398,8 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
  */
 void lexer_error(struct Lexer *self, const char *ERROR_MSG,
 				 const struct LexerToken *token) {
-	printf("%s on line index %zu char index %zu\n", ERROR_MSG, token->lineIndex,
-		   token->startChrIndex);
+	printf("%s on line index %zu from char index %zu to %zu\n", ERROR_MSG,
+		   token->lineIndex, token->startChrIndex, token->endChrIndex);
 
 	exit(EXIT_FAILURE);
 }
@@ -488,6 +491,7 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
 			self->chr = self->prevChr;
 			self->prevChr = prevChr;
 			self->nextLine = true;
+			self->chrIndex--;
 
 			return false;
 		} else if (skipWhitespace) {   // Keep going till we encounter a chars
@@ -536,7 +540,7 @@ void lexer_lexOneChar(struct Lexer *self, const enum LexerTokens IDENTIFIER) {
 		lexerToken_new(IDENTIFIER, string_new(chrToString(self->chr), false),
 					   self->chrIndex, self->chrIndex, self->lineIndex);
 
-	array_insert(self->tokens, 0, token);
+	array_insert(self->tokens, self->tokens->length, token);
 }
 
 /**
@@ -571,7 +575,7 @@ void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR,
 						   self->chrIndex, self->chrIndex, self->lineIndex);
 	}
 
-	array_insert(self->tokens, 0, token);
+	array_insert(self->tokens, self->tokens->length, token);
 	lexer_checkForContinuation(self, token);
 }
 
@@ -619,7 +623,7 @@ void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR,
 						   self->chrIndex, self->chrIndex, self->lineIndex);
 	}
 
-	array_insert(self->tokens, 0, token);
+	array_insert(self->tokens, self->tokens->length, token);
 	lexer_checkForContinuation(self, token);
 }
 
@@ -683,8 +687,55 @@ void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR,
 						   self->chrIndex, self->chrIndex, self->lineIndex);
 	}
 
-	array_insert(self->tokens, 0, token);
+	array_insert(self->tokens, self->tokens->length, token);
 	lexer_checkForContinuation(self, token);
+}
+
+void lexer_lexMultiLineComment(struct Lexer *self, const size_t startChrIndex) {
+	const size_t startLineIndex = self->lineIndex;
+
+	while (lexer_getLine(self, false)) {
+		while (lexer_getChr(self, true)) {
+			if (self->chr == '=') {
+				if (lexer_getChr(self, false)) {
+					if (self->chr == '#') {
+						array_insert(self->tokens, self->tokens->length,
+									 lexerToken_new(
+										 LEXERTOKENS_MULTI_LINE_COMMENT,
+										 string_new("\0", true), startChrIndex,
+										 self->chrIndex, startLineIndex));
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	lexer_error(
+		self, "unterminated multi-line comment",
+		lexerToken_new(LEXERTOKENS_MULTI_LINE_COMMENT, string_new("\0", true),
+					   self->lineIndex == startLineIndex ? startChrIndex : 0,
+					   self->chrIndex, self->lineIndex));
+}
+
+void lexer_lexSingleLineComment(struct Lexer *self) {
+	const size_t startChrIndex = self->chrIndex;
+
+	if (lexer_getChr(self, false)) {
+		if (self->chr == '=') {
+			lexer_lexMultiLineComment(self, startChrIndex);
+
+			return;
+		} else {
+			while (lexer_getChr(self, true)) {
+			}
+		}
+	}
+
+	array_insert(self->tokens, self->tokens->length,
+				 lexerToken_new(LEXERTOKENS_SINGLE_LINE_COMMENT,
+								string_new("\0", true), startChrIndex,
+								self->chrIndex, self->lineIndex));
 }
 
 /**
@@ -802,6 +853,9 @@ bool lexer_lexNext(struct Lexer *self) {
 		lexer_lexTwoChar(self, self->chr, LEXERTOKENS_COLON,
 						 LEXERTOKENS_SCOPE_RESOLUTION);
 		break;
+	case '#':
+		lexer_lexSingleLineComment(self);
+		break;
 	}
 
 	return true;
@@ -816,18 +870,13 @@ bool lexer_lexNext(struct Lexer *self) {
  * @return bool Whether lexing succeeded.
  */
 bool lexer_lex(struct Lexer *self, bool nextLine) {
-	while (true) {
-		while (!lexer_getChr(self, true)) { // EOL has been reached
-			if (!nextLine || !lexer_getLine(self, true)) {
-				return false;
-			}
-		}
-
-		if (lexer_lexNext(self)) { // If a token was lexed (because some
-								   // tokens like comments don't count)
-			return true;
+	while (!lexer_getChr(self, true)) { // EOL has been reached
+		if (!nextLine || !lexer_getLine(self, true)) {
+			return false;
 		}
 	}
+
+	return lexer_lexNext(self);
 }
 
 /**

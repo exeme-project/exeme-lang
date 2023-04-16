@@ -117,6 +117,7 @@ void *array_get(struct Array *self, size_t index) {
  *
  * @param self    The current Array struct.
  * @param matcher The function to check for matches.
+ * @param match   The value to match against.
  *
  * @return If a match was found.
  */
