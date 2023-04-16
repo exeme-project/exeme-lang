@@ -691,6 +691,12 @@ void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR,
 	lexer_checkForContinuation(self, token);
 }
 
+/**
+ * Creates a LexerToken for a multi-line comment.
+ *
+ * @param self          The current lexer struct.
+ * @param startChrIndex The start chr index of the comment.
+ */
 void lexer_lexMultiLineComment(struct Lexer *self, const size_t startChrIndex) {
 	const size_t startLineIndex = self->lineIndex;
 
@@ -718,6 +724,11 @@ void lexer_lexMultiLineComment(struct Lexer *self, const size_t startChrIndex) {
 					   self->chrIndex, self->lineIndex));
 }
 
+/**
+ * Creates a LexerToken for a single-line comment.
+ *
+ * @param self The current lexer struct.
+ */
 void lexer_lexSingleLineComment(struct Lexer *self) {
 	const size_t startChrIndex = self->chrIndex;
 
@@ -737,6 +748,8 @@ void lexer_lexSingleLineComment(struct Lexer *self) {
 								string_new("\0", true), startChrIndex,
 								self->chrIndex, self->lineIndex));
 }
+
+void lexer_lexKeywordOrIdentifier(struct Lexer *self) {}
 
 /**
  * Calls the correct function for lexing the current character.
@@ -855,6 +868,12 @@ bool lexer_lexNext(struct Lexer *self) {
 		break;
 	case '#':
 		lexer_lexSingleLineComment(self);
+		break;
+	default:
+		if (isalpha(self->chr) || self->chr == '_') {
+			lexer_lexKeywordOrIdentifier(self);
+		}
+
 		break;
 	}
 
