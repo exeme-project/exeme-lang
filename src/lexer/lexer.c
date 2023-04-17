@@ -11,12 +11,13 @@
 #include "../utils/conversions.c"
 #include "../utils/panic.c"
 #include "../utils/string.c"
+#include <ctype.h>
 
 /**
  * Used to identify keywords.
  */
 static const struct Array KEYWORDS = {
-	14,
+	15,
 	(void *[]){
 		"break",
 		"case",
@@ -123,7 +124,7 @@ enum LexerTokens {
  * Contains the names of each of the lexer token identifiers.
  */
 const struct Array LEXER_TOKEN_NAMES = {
-	55,
+	56,
 	(void *[]){
 		"",
 
@@ -211,7 +212,7 @@ const struct Array LEXER_TOKEN_NAMES = {
  * else 'false').
  */
 const struct Array LEXER_TOKEN_PRECEDENCES = {
-	55,
+	56,
 	(void *[]){
 		"a",
 
@@ -749,7 +750,33 @@ void lexer_lexSingleLineComment(struct Lexer *self) {
 								self->chrIndex, self->lineIndex));
 }
 
-void lexer_lexKeywordOrIdentifier(struct Lexer *self) {}
+bool lexer_lexKeywordOrIdentifier_match_(const char *element,
+										 const char *match) {
+	return strcmp(element, match) == 0;
+}
+
+void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
+	const size_t startChrIndex = self->chrIndex;
+	struct String *identifier = string_new(chrToString(self->chr), false);
+
+	while (lexer_getChr(self, false)) {
+		if (!isalnum(self->chr)) {
+			lexer_unGetChr(self);
+			break;
+		}
+
+		string_append(identifier, self->chr);
+	}
+
+	array_insert(self->tokens, self->tokens->length,
+				 lexerToken_new(array_find(&KEYWORDS,
+										   lexer_lexKeywordOrIdentifier_match_,
+										   identifier->_value)
+									? LEXERTOKENS_KEYWORD
+									: LEXERTOKENS_IDENTIFIER,
+								identifier, startChrIndex, self->chrIndex,
+								self->lineIndex));
+}
 
 /**
  * Calls the correct function for lexing the current character.
