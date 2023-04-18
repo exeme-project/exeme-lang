@@ -720,7 +720,7 @@ void lexer_lexMultiLineComment(struct Lexer *self, const size_t startChrIndex) {
 
 	lexer_error(
 		self, "unterminated multi-line comment",
-		lexerToken_new(LEXERTOKENS_MULTI_LINE_COMMENT, string_new("\0", true),
+		lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
 					   self->lineIndex == startLineIndex ? startChrIndex : 0,
 					   self->chrIndex, self->lineIndex));
 }
@@ -755,6 +755,11 @@ bool lexer_lexKeywordOrIdentifier_match_(const char *element,
 	return strcmp(element, match) == 0;
 }
 
+/**
+ * Creates a LexerToken for a keyword or identifier.
+ *
+ * @param self The current lexer struct.
+ */
 void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
 	const size_t startChrIndex = self->chrIndex;
 	struct String *identifier = string_new(chrToString(self->chr), false);
@@ -776,6 +781,48 @@ void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
 									: LEXERTOKENS_IDENTIFIER,
 								identifier, startChrIndex, self->chrIndex,
 								self->lineIndex));
+}
+
+/**
+ * Creates a LexerToken for an integer / float.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexNumber(struct Lexer *self) {
+	bool isFloat = false;
+	size_t startChrIndex = self->chrIndex;
+	struct String *number = string_new(chrToString(self->chr), false);
+
+	while (lexer_getChr(self, false)) {
+		if (isspace(self->chr)) {
+			break;
+		} else if (isalpha(self->chr)) {
+			lexer_error(self,
+						stringConcatenate(2, "invalid character for ",
+										  isFloat ? "float" : "integer"),
+						lexerToken_new(LEXERTOKENS_NONE, number, startChrIndex,
+									   self->chrIndex, self->lineIndex));
+		} else if (self->chr == '.') {
+			if (isFloat) {
+				lexer_error(self, "too many decimal points for float",
+							lexerToken_new(LEXERTOKENS_NONE, number,
+										   startChrIndex, self->chrIndex,
+										   self->lineIndex));
+			} else {
+				isFloat = true;
+			}
+		} else if (!isdigit(self->chr)) {
+			lexer_unGetChr(self);
+			break;
+		}
+
+		string_append(number, self->chr);
+	}
+
+	array_insert(
+		self->tokens, self->tokens->length,
+		lexerToken_new(isFloat ? LEXERTOKENS_FLOAT : LEXERTOKENS_INTEGER,
+					   number, startChrIndex, self->chrIndex, self->lineIndex));
 }
 
 /**
@@ -899,6 +946,8 @@ bool lexer_lexNext(struct Lexer *self) {
 	default:
 		if (isalpha(self->chr) || self->chr == '_') {
 			lexer_lexKeywordOrIdentifier(self);
+		} else if (isdigit(self->chr)) {
+			lexer_lexNumber(self);
 		}
 
 		break;
