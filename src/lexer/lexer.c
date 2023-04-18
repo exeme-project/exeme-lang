@@ -763,8 +763,49 @@ void lexer_lexChr(struct Lexer *self) {
 	}
 
 	lexer_error(self, "unterminated char",
-				lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
-							   startChrIndex, self->chrIndex, self->lineIndex));
+				lexerToken_new(LEXERTOKENS_NONE, chr, startChrIndex,
+							   self->chrIndex, self->lineIndex));
+}
+
+/**
+ * Creates a LexerToken for a string.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexString(struct Lexer *self) {
+	bool escapeChr = false;
+	const size_t startChrIndex = self->chrIndex,
+				 startLineIndex = self->lineIndex;
+	struct String *string = string_new("\0", true);
+
+	while (lexer_getLine(self, false)) {
+		while (lexer_getChr(self, false)) {
+			if (self->chr == '"') {
+				array_insert(self->tokens, self->tokens->length,
+							 lexerToken_new(LEXERTOKENS_STRING, string,
+											startChrIndex, self->chrIndex,
+											self->lineIndex));
+				return;
+			}
+
+			if (escapeChr) {
+				string_append(string, lexer_escapeChr(self, startChrIndex));
+				escapeChr = false;
+			} else if (self->chr == '\\') {
+				escapeChr = true;
+			} else {
+				string_append(string, self->chr);
+			}
+		}
+
+		string_append(string, '\n');
+	}
+
+	lexer_error(
+		self, "unterminated string",
+		lexerToken_new(LEXERTOKENS_STRING, string,
+					   self->lineIndex == startLineIndex ? startChrIndex : 0,
+					   self->chrIndex, self->lineIndex));
 }
 
 /**
@@ -914,6 +955,9 @@ bool lexer_lexNext(struct Lexer *self) {
 	switch (self->chr) {
 	case '\'':
 		lexer_lexChr(self);
+		break;
+	case '"':
+		lexer_lexString(self);
 		break;
 
 	// Arithmetic operators
