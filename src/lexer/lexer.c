@@ -18,7 +18,7 @@
  */
 static const struct Array KEYWORDS = {
 	15,
-	(void *[]){
+	(const void *[]){
 		"break",
 		"case",
 		"class",
@@ -125,7 +125,7 @@ enum LexerTokens {
  */
 const struct Array LEXER_TOKEN_NAMES = {
 	56,
-	(void *[]){
+	(const void *[]){
 		"",
 
 		"keyword",
@@ -213,7 +213,7 @@ const struct Array LEXER_TOKEN_NAMES = {
  */
 const struct Array LEXER_TOKEN_PRECEDENCES = {
 	56,
-	(void *[]){
+	(const void *[]){
 		"a",
 
 		"a",
@@ -340,7 +340,7 @@ const struct LexerToken *lexerToken_new(enum LexerTokens identifier,
  *
  * @param self The current LexerToken struct.
  */
-void lexerToken_free(struct LexerToken *self) {
+void lexerToken_free(const struct LexerToken *self) {
 	if (self) {
 		string_free(self->value);
 		free(self);

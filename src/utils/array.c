@@ -14,11 +14,11 @@
  */
 struct Array {
 	size_t length;
-	void **_values;
+	const void **_values;
 };
 
 #define ARRAY_STRUCT_SIZE sizeof(struct Array)
-#define ARRAY_STRUCT_ELEMENT_SIZE sizeof(void *)
+#define ARRAY_STRUCT_ELEMENT_SIZE sizeof(const void *)
 
 /**
  * Creates a new Array struct.
@@ -60,7 +60,7 @@ void array___realloc(struct Array *self, size_t size) {
  * @param index The index at which to insert the value.
  * @param value The value to insert.
  */
-void array_insert(struct Array *self, size_t index, void *value) {
+void array_insert(struct Array *self, size_t index, const void *value) {
 	if (index + 1 > self->length) {
 		array___realloc(self, (index + 1) * ARRAY_STRUCT_ELEMENT_SIZE);
 		self->length = index + 1;
@@ -104,7 +104,7 @@ void array_clear(struct Array *self) {
  *
  * @return The retreived element.
  */
-void *array_get(struct Array *self, size_t index) {
+const void *array_get(struct Array *self, size_t index) {
 	if (index + 1 > self->length) {
 		panic("array get index out of bounds");
 	}
@@ -121,10 +121,10 @@ void *array_get(struct Array *self, size_t index) {
  *
  * @return If a match was found.
  */
-bool array_find(struct Array *self, bool (*matcher)(void *, void *),
+bool array_find(struct Array *self, bool (*matcher)(const void *, const void *),
 				void *match) {
 	for (size_t index = 0; index < self->length; index++) {
-		void *element = self->_values[index];
+		const void *element = self->_values[index];
 
 		if (matcher(element, match)) {
 			return true;
