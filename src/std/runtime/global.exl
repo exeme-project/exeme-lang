@@ -1,7 +1,0 @@
-package std
-
-class List {
-    fn __init__(self) {
-        self.
-    }
-}
