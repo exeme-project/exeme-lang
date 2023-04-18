@@ -693,10 +693,85 @@ void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR,
 }
 
 /**
+ * Escapes the current character in the lexer struct.
+ *
+ * @param self          The current lexer struct.
+ * @param startChrIndex The start index of the char.
+ *
+ * @return The escaped char.
+ */
+char lexer_escapeChr(struct Lexer *self, const size_t startChrIndex) {
+	switch (self->chr) {
+	case 'b':
+		return '\b';
+	case 'f':
+		return '\f';
+	case 'n':
+		return '\n';
+	case 'r':
+		return '\r';
+	case 't':
+		return '\t';
+	case 'v':
+		return '\v';
+	case '\'':
+		return '\'';
+	case '"':
+		return '"';
+	case '\\':
+		return '\\';
+	}
+
+	lexer_error(self, "invalid escape sequence",
+				lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
+							   startChrIndex, self->chrIndex, self->lineIndex));
+
+	return '\0';
+}
+
+/**
+ * Creates a LexerToken for a char.
+ *
+ * @param self The current lexer struct.
+ */
+void lexer_lexChr(struct Lexer *self) {
+	bool escapeChr = false;
+	const size_t startChrIndex = self->chrIndex;
+	struct String *chr = string_new("\0", true);
+
+	while (lexer_getChr(self, false)) {
+		if (self->chr == '\'') {
+			array_insert(self->tokens, self->tokens->length,
+						 lexerToken_new(LEXERTOKENS_CHR, chr, startChrIndex,
+										self->chrIndex, self->lineIndex));
+			return;
+		} else if (chr->length == 1) {
+			lexer_error(self, "multi-character char",
+						lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
+									   startChrIndex, self->chrIndex,
+									   self->lineIndex));
+		}
+
+		if (escapeChr) {
+			string_append(chr, lexer_escapeChr(self, startChrIndex));
+			escapeChr = false;
+		} else if (self->chr == '\\') {
+			escapeChr = true;
+		} else {
+			string_append(chr, self->chr);
+		}
+	}
+
+	lexer_error(self, "unterminated char",
+				lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
+							   startChrIndex, self->chrIndex, self->lineIndex));
+}
+
+/**
  * Creates a LexerToken for a multi-line comment.
  *
  * @param self          The current lexer struct.
- * @param startChrIndex The start chr index of the comment.
+ * @param startChrIndex The start char index of the comment.
  */
 void lexer_lexMultiLineComment(struct Lexer *self, const size_t startChrIndex) {
 	const size_t startLineIndex = self->lineIndex;
@@ -706,11 +781,14 @@ void lexer_lexMultiLineComment(struct Lexer *self, const size_t startChrIndex) {
 			if (self->chr == '=') {
 				if (lexer_getChr(self, false)) {
 					if (self->chr == '#') {
-						array_insert(self->tokens, self->tokens->length,
-									 lexerToken_new(
-										 LEXERTOKENS_MULTI_LINE_COMMENT,
-										 string_new("\0", true), startChrIndex,
-										 self->chrIndex, startLineIndex));
+						array_insert(
+							self->tokens, self->tokens->length,
+							lexerToken_new(LEXERTOKENS_MULTI_LINE_COMMENT,
+										   string_new("\0", true),
+										   self->lineIndex == startLineIndex
+											   ? startChrIndex
+											   : 0,
+										   self->chrIndex, startLineIndex));
 						return;
 					}
 				}
@@ -834,6 +912,10 @@ void lexer_lexNumber(struct Lexer *self) {
  */
 bool lexer_lexNext(struct Lexer *self) {
 	switch (self->chr) {
+	case '\'':
+		lexer_lexChr(self);
+		break;
+
 	// Arithmetic operators
 	case '%':
 		lexer_lexTwoChar(self, '=', LEXERTOKENS_MODULO,

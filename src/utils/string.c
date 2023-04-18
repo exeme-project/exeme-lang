@@ -26,23 +26,21 @@ struct String {
  */
 struct String *string_new(char *string, bool copy) {
 	struct String *self = malloc(STRING_STRUCT_SIZE);
-	size_t stringSize = sizeof(string);
 
 	if (!self) {
 		panic("failed to malloc String struct");
 	}
 
 	if (copy) {
-		self->_value = malloc(stringSize);
-		self->length = 0;
+		self->length = strlen(string);
+		self->_value = malloc(self->length + 1);
 
 		if (!self->_value) {
 			panic("failed to malloc string");
 		}
 
-		for (size_t index = 0; index < stringSize - 1; index++) {
+		for (size_t index = 0; index < self->length; index++) {
 			self->_value[index] = string[index];
-			self->length++;
 		}
 
 		self->_value[self->length] = '\0';
