@@ -69,7 +69,8 @@ void string___realloc(struct String *self, size_t size) {
 }
 
 void string_append(struct String *self, char chr) {
-	string___realloc(self, self->length + 1);
+	string___realloc(self, self->length +
+							   2); // 1 for new char and 1 for null terminator
 
 	self->_value[self->length++] = chr;
 	self->_value[self->length] = '\0';
