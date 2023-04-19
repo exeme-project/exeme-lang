@@ -11,7 +11,6 @@
 #include "../utils/conversions.c"
 #include "../utils/panic.c"
 #include "../utils/string.c"
-#include <ctype.h>
 
 /**
  * Used to identify keywords.
@@ -365,6 +364,13 @@ struct Lexer {
 
 #define LEXER_STRUCT_SIZE sizeof(struct Lexer)
 
+/**
+ * Creates a new Lexer struct.
+ *
+ * @param FILE_PATH The path of the file to lex.
+ *
+ * @return The created Lexer struct.
+ */
 struct Lexer *lexer_new(const char *FILE_PATH) {
 	struct Lexer *self = malloc(LEXER_STRUCT_SIZE);
 
