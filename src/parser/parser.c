@@ -33,10 +33,41 @@ struct Parser *parser_new(const char *FILE_PATH) {
 	return self;
 }
 
+/**
+ * Calls the correct function for lexing the current Lexer token.
+ *
+ * @param self The current parser struct.
+ *
+ * @return bool - Whether parsing succeeded.
+ */
+bool parser_parseNext(struct Parser *self,
+					  const struct LexerToken *lexerToken) {
+	printf("identifier: %s\nstartChrIndex: %zu\nendChrIndex: "
+		   "%zu\nlineIndex: "
+		   "%zu\nvalue: %s\n\n",
+		   (const char *)LEXER_TOKEN_NAMES._values[lexerToken->identifier],
+		   lexerToken->startChrIndex, lexerToken->endChrIndex,
+		   lexerToken->lineIndex, lexerToken->value->_value);
+
+	switch (lexerToken->identifier) {
+	case LEXERTOKENS_ASSIGNMENT:
+		break;
+	}
+
+	return true;
+}
+
+/**
+ * Gets the next Lexer token and parses it.
+ *
+ * @param self The current parser struct.
+ *
+ * @return bool Whether parsing succeeded.
+ */
 bool parser_parse(struct Parser *self) {
 	if (!lexer_lex(self->lexer, true)) {
 		return false;
 	}
 
-	return true;
+	return parser_parseNext(self, lexer_getToken(self->lexer));
 }

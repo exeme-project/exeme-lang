@@ -405,8 +405,13 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
  */
 void lexer_error(struct Lexer *self, const char *ERROR_MSG,
 				 const struct LexerToken *token) {
-	printf("%s on line index %zu from char index %zu to %zu\n", ERROR_MSG,
-		   token->lineIndex, token->startChrIndex, token->endChrIndex);
+	if (token) {
+		printf("%s on line index %zu from char index %zu to %zu\n", ERROR_MSG,
+			   token->lineIndex, token->startChrIndex, token->endChrIndex);
+	} else {
+		printf("%s on line index %zu at char index %zu\n", ERROR_MSG,
+			   self->lineIndex, self->chrIndex);
+	}
 
 	exit(EXIT_FAILURE);
 }
@@ -1080,6 +1085,8 @@ bool lexer_lexNext(struct Lexer *self) {
 			lexer_lexKeywordOrIdentifier(self);
 		} else if (isdigit(self->chr)) {
 			lexer_lexNumber(self);
+		} else {
+			lexer_error(self, "unknown character", NULL);
 		}
 
 		break;
