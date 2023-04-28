@@ -85,8 +85,8 @@ void *map_get(struct Map *self, const char *KEY) {
 void map_free(struct Map *self) {
 	if (self) {
 		array_free(self->_values);
-		free(self);
 
+		free(self);
 		self = NULL;
 	} else {
 		panic("Map struct has already been freed");

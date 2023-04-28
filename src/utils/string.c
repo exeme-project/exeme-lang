@@ -93,8 +93,8 @@ void string_clear(struct String *self) {
 void string_free(struct String *self) {
 	if (self) {
 		free(self->_value);
-		free(self);
 
+		free(self);
 		self = NULL;
 	} else {
 		panic("String struct has already been freed");

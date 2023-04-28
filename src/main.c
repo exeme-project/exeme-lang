@@ -13,4 +13,6 @@ int main(void) {
 
 	while (parser_parse(parser)) {
 	}
+
+	parser_free(parser);
 }

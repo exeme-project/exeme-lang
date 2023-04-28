@@ -11,6 +11,7 @@
 #include "../utils/conversions.c"
 #include "../utils/panic.c"
 #include "../utils/string.c"
+#include <stdio.h>
 
 /**
  * Used to identify keywords.
@@ -39,7 +40,7 @@ static const struct Array KEYWORDS = {
 /**
  * Used to identify different lexer tokens.
  */
-enum LexerTokens {
+enum LexerTokensIdentifiers {
 	LEXERTOKENS_NONE,
 
 	LEXERTOKENS_KEYWORD,
@@ -297,7 +298,7 @@ const struct Array LEXER_TOKEN_PRECEDENCES = {
  * Represents a lexer token.
  */
 struct LexerToken {
-	enum LexerTokens identifier;
+	enum LexerTokensIdentifiers identifier;
 	size_t startChrIndex, endChrIndex, lineIndex;
 	const struct String *value;
 };
@@ -311,11 +312,11 @@ struct LexerToken {
  * @param value            Value of the token.
  * @param startChrIndex    Start char index of the token.
  * @param endChrIndex      End char index of the token.
- * @param lineIndex        Line num of the token.
+ * @param lineIndex        Line index of the token.
  *
  * @return The created LexerToken struct.
  */
-const struct LexerToken *lexerToken_new(enum LexerTokens identifier,
+const struct LexerToken *lexerToken_new(enum LexerTokensIdentifiers identifier,
 										struct String *value,
 										size_t startChrIndex,
 										size_t endChrIndex, size_t lineIndex) {
@@ -342,8 +343,8 @@ const struct LexerToken *lexerToken_new(enum LexerTokens identifier,
 void lexerToken_free(const struct LexerToken *self) {
 	if (self) {
 		string_free(self->value);
-		free(self);
 
+		free(self);
 		self = NULL;
 	} else {
 		panic("LexerToken struct has already been freed");
@@ -397,6 +398,26 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
 }
 
 /**
+ * Frees an Lexer struct.
+ *
+ * @param self The current Lexer struct.
+ */
+void lexer_free(const struct Lexer *self) {
+	if (self) {
+		if (self->filePointer) {
+			fclose(self->filePointer);
+		}
+
+		array_free(self->tokens);
+
+		free(self);
+		self = NULL;
+	} else {
+		panic("Lexer struct has already been freed");
+	}
+}
+
+/**
  * Prints a lexing error and exits.
  *
  * @param self      The current lexer struct.
@@ -406,8 +427,25 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
 void lexer_error(struct Lexer *self, const char *ERROR_MSG,
 				 const struct LexerToken *token) {
 	if (token) {
-		printf("%s on line index %zu from char index %zu to %zu\n", ERROR_MSG,
-			   token->lineIndex, token->startChrIndex, token->endChrIndex);
+		FILE *filePointer = fopen(self->FILE_PATH, "r");
+		struct String *line = string_new("\0", true);
+		size_t lineIndex = 0;
+
+		while (true) {
+			char chr = fgetc(filePointer);
+
+			if (chr == '\n') {
+				if (self->lineIndex++ == lineIndex) {
+					break;
+				}
+
+				string_clear(line);
+			} else if (lineIndex == self->lineIndex) {
+				string_append(line, chr);
+			}
+		}
+
+		printf("--> %s\n", self->FILE_PATH);
 	} else {
 		printf("%s on line index %zu at char index %zu\n", ERROR_MSG,
 			   self->lineIndex, self->chrIndex);
@@ -547,7 +585,8 @@ void lexer_checkForContinuation(struct Lexer *self,
  * @param self       The current lexer struct.
  * @param IDENTIFIER The current token's identifier.
  */
-void lexer_lexOneChar(struct Lexer *self, const enum LexerTokens IDENTIFIER) {
+void lexer_lexOneChar(struct Lexer *self,
+					  const enum LexerTokensIdentifiers IDENTIFIER) {
 	const struct LexerToken *token =
 		lexerToken_new(IDENTIFIER, string_new(chrToString(self->chr), false),
 					   self->chrIndex, self->chrIndex, self->lineIndex);
@@ -564,8 +603,8 @@ void lexer_lexOneChar(struct Lexer *self, const enum LexerTokens IDENTIFIER) {
  * @param IF_TWO     If the token is two chars.
  */
 void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR,
-					  const enum LexerTokens IF_ONE,
-					  const enum LexerTokens IF_TWO) {
+					  const enum LexerTokensIdentifiers IF_ONE,
+					  const enum LexerTokensIdentifiers IF_TWO) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
@@ -604,9 +643,9 @@ void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR,
  */
 void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR,
 					   const char OTHER_SECOND_CHR,
-					   const enum LexerTokens IF_ONE,
-					   const enum LexerTokens IF_TWO,
-					   const enum LexerTokens IF_OTHER_TWO) {
+					   const enum LexerTokensIdentifiers IF_ONE,
+					   const enum LexerTokensIdentifiers IF_TWO,
+					   const enum LexerTokensIdentifiers IF_OTHER_TWO) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
@@ -651,10 +690,11 @@ void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR,
  * @param IF_TWO_AND_ONE If the token is two of SECOND_CHR and THIRD_CHR.
  */
 void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR,
-						const char THIRD_CHR, const enum LexerTokens IF_ONE,
-						const enum LexerTokens IF_TWO,
-						const enum LexerTokens IF_ONE_AND_ONE,
-						const enum LexerTokens IF_TWO_AND_ONE) {
+						const char THIRD_CHR,
+						const enum LexerTokensIdentifiers IF_ONE,
+						const enum LexerTokensIdentifiers IF_TWO,
+						const enum LexerTokensIdentifiers IF_ONE_AND_ONE,
+						const enum LexerTokensIdentifiers IF_TWO_AND_ONE) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
