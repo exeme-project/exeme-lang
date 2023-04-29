@@ -8,6 +8,7 @@
 #include "../includes.c"
 
 #include "../lexer/lexer.c"
+#include "../utils/errors.c"
 
 /**
  * Used to identify different parser tokens.
@@ -197,11 +198,9 @@ bool parser_parseNext(struct Parser *self,
 	printf("identifier: %s\nstartChrIndex: %zu\nendChrIndex: "
 		   "%zu\nlineIndex: "
 		   "%zu\nvalue: %s\n\n",
-		   (const char *)LEXER_TOKEN_NAMES._values[lexerToken->identifier],
+		   (const char *)LEXERTOKEN_NAMES._values[lexerToken->identifier],
 		   lexerToken->startChrIndex, lexerToken->endChrIndex,
 		   lexerToken->lineIndex, lexerToken->value->_value);
-
-	lexer_error(self->lexer, "hmm thats an error", lexerToken);
 
 	switch (lexerToken->identifier) {
 	case LEXERTOKENS_IDENTIFIER:

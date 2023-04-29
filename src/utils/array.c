@@ -142,7 +142,7 @@ bool array_find(struct Array *self, bool (*matcher)(const void *, const void *),
 void array_free(struct Array *self) {
 	if (self) {
 		free(self->_values);
-		
+
 		free(self);
 		self = NULL;
 	} else {

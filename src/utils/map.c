@@ -73,7 +73,7 @@ void map_set(struct Map *self, const char *KEY, void *VALUE) {
  *
  * @return The retreived element.
  */
-void *map_get(struct Map *self, const char *KEY) {
+const void *map_get(struct Map *self, const char *KEY) {
 	return array_get(self->_values, map___hash(KEY));
 }
 
