@@ -426,29 +426,38 @@ void lexer_free(const struct Lexer *self) {
  */
 void lexer_error(struct Lexer *self, const char *ERROR_MSG,
 				 const struct LexerToken *token) {
-	if (token) {
-		FILE *filePointer = fopen(self->FILE_PATH, "r");
-		struct String *line = string_new("\0", true);
-		size_t lineIndex = 0;
+	const char *lineIndexString;
+	FILE *filePointer = fopen(self->FILE_PATH, "r");
+	struct String *line = string_new("\0", true);
+	size_t lineIndex = 0, lineIndexStringLength;
 
-		while (true) {
-			char chr = fgetc(filePointer);
+	while (true) {
+		char chr = fgetc(filePointer);
 
-			if (chr == '\n') {
-				if (self->lineIndex++ == lineIndex) {
-					break;
-				}
-
-				string_clear(line);
-			} else if (lineIndex == self->lineIndex) {
-				string_append(line, chr);
+		if (chr == '\n') {
+			if (self->lineIndex++ == lineIndex) {
+				break;
 			}
-		}
 
-		printf("--> %s\n", self->FILE_PATH);
+			string_clear(line);
+		} else if (lineIndex == self->lineIndex) {
+			string_append(line, chr);
+		}
+	}
+
+	lineIndexString = ulToString(self->lineIndex);
+	lineIndexStringLength = strlen(lineIndexString);
+
+	printf("-%s> %s\n%s | %s\n%s", repeatChr('-', lineIndexStringLength),
+		   self->FILE_PATH, lineIndexString, line->_value,
+		   repeatChr(' ', lineIndexStringLength + 3));
+
+	if (token) {
+		printf("%s%s %s\n", repeatChr(' ', token->startChrIndex),
+			   repeatChr('^', token->endChrIndex - token->startChrIndex + 1),
+			   ERROR_MSG);
 	} else {
-		printf("%s on line index %zu at char index %zu\n", ERROR_MSG,
-			   self->lineIndex, self->chrIndex);
+		printf("%s^ %s\n", repeatChr(' ', self->chrIndex), ERROR_MSG);
 	}
 
 	exit(EXIT_FAILURE);
