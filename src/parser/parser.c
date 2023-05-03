@@ -120,7 +120,7 @@ void parserToken_free(struct ParserToken *self) {
  */
 struct Parser {
 	struct Lexer *lexer;
-	struct ParserToken *currentToken, *token;
+	struct ParserToken *_token, *token;
 };
 
 #define PARSER_STRUCT_SIZE sizeof(struct Parser)
@@ -139,7 +139,7 @@ struct Parser *parser_new(const char *FILE_PATH) {
 
 	self->lexer = lexer_new(FILE_PATH);
 
-	self->currentToken = NULL;
+	self->_token = NULL;
 	self->token = NULL;
 
 	return self;
@@ -156,8 +156,8 @@ void parser_free(const struct Parser *self) {
 			lexer_free(self->lexer);
 		}
 
-		if (self->currentToken) {
-			parserToken_free(self->currentToken);
+		if (self->_token) {
+			parserToken_free(self->_token);
 		}
 
 		if (self->token) {
@@ -183,6 +183,18 @@ bool parser_parse(struct Parser *self);
  */
 bool parser_parseIdentifier(struct Parser *self,
 							const struct LexerToken *lexerToken) {
+	if (self->_token) {
+		lexer_error(self->lexer,
+					ERRORIDENTIFIER_NAMES._values[ERRORIDENTIFIERS_PARSER_1],
+					"no effect of variable", lexerToken);
+	}
+
+	self->_token =
+		parserToken_new(PARSERTOKENS_VARIABLE,
+						parserTokenVariable_new(
+							lexerToken->startChrIndex, lexerToken->endChrIndex,
+							lexerToken->lineIndex, lexerToken->value));
+
 	return false;
 }
 

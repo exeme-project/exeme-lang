@@ -21,6 +21,9 @@ enum ErrorIdentifiers {
 	ERRORIDENTIFIERS_LEXER_5,
 	ERRORIDENTIFIERS_LEXER_6,
 	ERRORIDENTIFIERS_LEXER_7,
+
+	// Parser
+	ERRORIDENTIFIERS_PARSER_1,
 };
 
 /**
@@ -36,5 +39,6 @@ const struct Array ERRORIDENTIFIER_NAMES = {
 		"L5",
 		"L6",
 		"L7",
+		"P1",
 	},
 };
