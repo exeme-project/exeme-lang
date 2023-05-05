@@ -31,7 +31,12 @@ struct String *string_new(char *string, bool copy) {
 		panic("failed to malloc String struct");
 	}
 
-	if (copy) {
+	if (string[0] == '\0') {
+		self->_value = malloc(1);
+		self->length = 0;
+
+		self->_value[self->length] = '\0';
+	} else if (copy) {
 		self->length = strlen(string);
 		self->_value = malloc(self->length + 1);
 
@@ -81,7 +86,7 @@ void string_append(struct String *self, char chr) {
  */
 void string_clear(struct String *self) {
 	self->_value[0] = '\0';
-	self->length = 1;
+	self->length = 0;
 	string___realloc(self, 1);
 }
 
