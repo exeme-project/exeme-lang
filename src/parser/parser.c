@@ -35,6 +35,13 @@ enum ParserTokenIdentifiers {
 	PARSERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT,
 };
 
+/* Forward declarations to silence warnings */
+struct Parser;
+struct ParserToken;
+
+bool parser_parse(struct Parser *self);
+void parserToken_free(struct ParserToken *self);
+
 /**
  * Represent a parser token for a variable.
  */
@@ -52,6 +59,8 @@ struct ParserTokenVariable {
  * @param endChrIndex   End char index of the token.
  * @param lineIndex     Line index of the token.
  * @param value         Value of the token.
+ *
+ * @return The created ParserTokenVariable struct.
  */
 struct ParserTokenVariable *
 parserTokenVariable_new(size_t startChrIndex, size_t endChrIndex,
@@ -68,6 +77,11 @@ parserTokenVariable_new(size_t startChrIndex, size_t endChrIndex,
 	return self;
 }
 
+/**
+ * Frees an ParserTokenVariable struct.
+ *
+ * @param self The current ParserTokenVariable struct.
+ */
 void parserTokenVariable_free(struct ParserTokenVariable *self) {
 	if (self) {
 		string_free(self->value);
@@ -79,14 +93,22 @@ void parserTokenVariable_free(struct ParserTokenVariable *self) {
 	}
 }
 
+/**
+ * Represents a parser token for an assignment.
+ */
 struct ParserTokenAssignment {
 	struct ParserToken *operand1, *operand2;
 };
 
 #define PARSERTOKENASSIGNMENT_STRUCT_SIZE sizeof(struct ParserTokenAssignment)
 
+/**
+ * Creates a new ParserTokenAssignment.
+ *
+ * @return The created ParserTokenAssignment struct.
+ */
 struct ParserTokenAssignment *
-ParserTokenAssignment_new(struct ParserToken *operand1,
+parserTokenAssignment_new(struct ParserToken *operand1,
 						  struct ParserToken *operand2) {
 	struct ParserTokenAssignment *self =
 		malloc(PARSERTOKENASSIGNMENT_STRUCT_SIZE);
@@ -98,12 +120,30 @@ ParserTokenAssignment_new(struct ParserToken *operand1,
 }
 
 /**
+ * Frees an ParserTokenVariable struct.
+ *
+ * @param self The current ParserTokenVariable struct.
+ */
+void parserTokenAssignment_free(struct ParserTokenAssignment *self) {
+	if (self) {
+		parserToken_free(self->operand1);
+		parserToken_free(self->operand2);
+
+		free(self);
+		self = NULL;
+	} else {
+		panic("ParserTokenVariable struct has already been freed");
+	}
+}
+
+/**
  * Represents a parser token.
  */
 struct ParserToken {
 	enum ParserTokenIdentifiers identifier;
 
 	union {
+		struct ParserTokenAssignment *ASSIGNMENT;
 		struct ParserTokenVariable *VARIABLE;
 	};
 };
@@ -115,6 +155,8 @@ struct ParserToken {
  *
  * @param IDENTIFIER Token identifier.
  * @param VALUE      The token value.
+ *
+ * @return The created ParserToken struct.
  */
 struct ParserToken *
 parserToken_new(const enum ParserTokenIdentifiers IDENTIFIER, void *VALUE) {
@@ -127,8 +169,12 @@ parserToken_new(const enum ParserTokenIdentifiers IDENTIFIER, void *VALUE) {
 	self->identifier = IDENTIFIER;
 
 	switch (self->identifier) {
+	case PARSERTOKENS_ASSIGNMENT:
+		self->ASSIGNMENT = VALUE;
+		break;
 	case PARSERTOKENS_VARIABLE:
 		self->VARIABLE = VALUE;
+		break;
 	}
 
 	return self;
@@ -142,8 +188,25 @@ parserToken_new(const enum ParserTokenIdentifiers IDENTIFIER, void *VALUE) {
 void parserToken_free(struct ParserToken *self) {
 	if (self) {
 		switch (self->identifier) {
+		case PARSERTOKENS_ASSIGNMENT:
+		case PARSERTOKENS_MODULO_ASSIGNMENT:
+		case PARSERTOKENS_MULTIPLICATION_ASSIGNMENT:
+		case PARSERTOKENS_EXPONENT_ASSIGNMENT:
+		case PARSERTOKENS_DIVISION_ASSIGNMENT:
+		case PARSERTOKENS_FLOOR_DIVISION_ASSIGNMENT:
+		case PARSERTOKENS_ADDITION_ASSIGNMENT:
+		case PARSERTOKENS_SUBTRACTION_ASSIGNMENT:
+		case PARSERTOKENS_BITWISE_AND_ASSIGNMENT:
+		case PARSERTOKENS_BITWISE_OR_ASSIGNMENT:
+		case PARSERTOKENS_BITWISE_XOR_ASSIGNMENT:
+		case PARSERTOKENS_BITWISE_NOT_ASSIGNMENT:
+		case PARSERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
+		case PARSERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
+			parserTokenAssignment_free(self->ASSIGNMENT);
+			break;
 		case PARSERTOKENS_VARIABLE:
 			parserTokenVariable_free(self->VARIABLE);
+			break;
 		}
 
 		free(self);
@@ -167,6 +230,8 @@ struct Parser {
  * Creates a new Parser struct.
  *
  * @param FILE_PATH The path of the file to parse.
+ *
+ * @return The created Parser struct.
  */
 struct Parser *parser_new(const char *FILE_PATH) {
 	struct Parser *self = malloc(PARSER_STRUCT_SIZE);
@@ -209,11 +274,8 @@ void parser_free(const struct Parser *self) {
 	}
 }
 
-bool parser_parse(
-	struct Parser *self); // Forward declaration to silence warnings
-
-bool parser_parseEqualTo(struct Parser *self,
-						 const struct LexerToken *lexerToken) {
+bool parser_parseAssignment(struct Parser *self,
+							const struct LexerToken *lexerToken) {
 	if (!self->_token) {
 		lexer_error(self->lexer,
 					ERRORIDENTIFIER_NAMES._values[ERRORIDENTIFIERS_PARSER_2],
@@ -265,7 +327,7 @@ bool parser_parseNext(struct Parser *self,
 		   lexerToken->lineIndex, lexerToken->value->_value);
 
 	switch (lexerToken->identifier) {
-	case LEXERTOKENS_EQUAL_TO:
+	case LEXERTOKENS_ASSIGNMENT:
 	case LEXERTOKENS_MODULO_ASSIGNMENT:
 	case LEXERTOKENS_MULTIPLICATION_ASSIGNMENT:
 	case LEXERTOKENS_EXPONENT_ASSIGNMENT:
@@ -279,7 +341,7 @@ bool parser_parseNext(struct Parser *self,
 	case LEXERTOKENS_BITWISE_NOT_ASSIGNMENT:
 	case LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
 	case LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
-		return parser_parseEqualTo(self, lexerToken);
+		return parser_parseAssignment(self, lexerToken);
 	case LEXERTOKENS_IDENTIFIER:
 		return parser_parseIdentifier(self, lexerToken);
 	}
