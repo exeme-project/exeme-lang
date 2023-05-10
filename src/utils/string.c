@@ -32,10 +32,14 @@ struct String *string_new(char *string, bool copy) {
 	}
 
 	if (string[0] == '\0') {
-		self->_value = malloc(1);
 		self->length = 0;
 
-		self->_value[self->length] = '\0';
+		if (copy) {
+			self->_value = malloc(1);
+			self->_value[self->length] = '\0';
+		} else {
+			self->_value = string;
+		}
 	} else if (copy) {
 		self->length = strlen(string);
 		self->_value = malloc(self->length + 1);
