@@ -24,6 +24,7 @@ enum ErrorIdentifiers {
 
 	// Parser
 	ERRORIDENTIFIERS_PARSER_1,
+	ERRORIDENTIFIERS_PARSER_2,
 };
 
 /**
@@ -32,6 +33,7 @@ enum ErrorIdentifiers {
 const struct Array ERRORIDENTIFIER_NAMES = {
 	7,
 	(const void *[]){
+		// Lexer
 		"L1",
 		"L2",
 		"L3",
@@ -39,6 +41,9 @@ const struct Array ERRORIDENTIFIER_NAMES = {
 		"L5",
 		"L6",
 		"L7",
+
+		// Parser
 		"P1",
+		"P2",
 	},
 };

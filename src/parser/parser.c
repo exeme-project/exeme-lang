@@ -13,7 +13,27 @@
 /**
  * Used to identify different parser tokens.
  */
-enum ParserTokenIdentifiers { PARSERTOKENS_VARIABLE };
+enum ParserTokenIdentifiers {
+	PARSERTOKENS_VARIABLE,
+
+	// Assignment operators
+	PARSERTOKENS_ASSIGNMENT,
+
+	PARSERTOKENS_MODULO_ASSIGNMENT,
+	PARSERTOKENS_MULTIPLICATION_ASSIGNMENT,
+	PARSERTOKENS_EXPONENT_ASSIGNMENT,
+	PARSERTOKENS_DIVISION_ASSIGNMENT,
+	PARSERTOKENS_FLOOR_DIVISION_ASSIGNMENT,
+	PARSERTOKENS_ADDITION_ASSIGNMENT,
+	PARSERTOKENS_SUBTRACTION_ASSIGNMENT,
+
+	PARSERTOKENS_BITWISE_AND_ASSIGNMENT,
+	PARSERTOKENS_BITWISE_OR_ASSIGNMENT,
+	PARSERTOKENS_BITWISE_XOR_ASSIGNMENT,
+	PARSERTOKENS_BITWISE_NOT_ASSIGNMENT,
+	PARSERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT,
+	PARSERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT,
+};
 
 /**
  * Represent a parser token for a variable.
@@ -57,6 +77,24 @@ void parserTokenVariable_free(struct ParserTokenVariable *self) {
 	} else {
 		panic("ParserTokenVariable struct has already been freed");
 	}
+}
+
+struct ParserTokenAssignment {
+	struct ParserToken *operand1, *operand2;
+};
+
+#define PARSERTOKENASSIGNMENT_STRUCT_SIZE sizeof(struct ParserTokenAssignment)
+
+struct ParserTokenAssignment *
+ParserTokenAssignment_new(struct ParserToken *operand1,
+						  struct ParserToken *operand2) {
+	struct ParserTokenAssignment *self =
+		malloc(PARSERTOKENASSIGNMENT_STRUCT_SIZE);
+
+	self->operand1 = operand1;
+	self->operand2 = operand2;
+
+	return self;
 }
 
 /**
@@ -171,7 +209,19 @@ void parser_free(const struct Parser *self) {
 	}
 }
 
-bool parser_parse(struct Parser *self);
+bool parser_parse(
+	struct Parser *self); // Forward declaration to silence warnings
+
+bool parser_parseEqualTo(struct Parser *self,
+						 const struct LexerToken *lexerToken) {
+	if (!self->_token) {
+		lexer_error(self->lexer,
+					ERRORIDENTIFIER_NAMES._values[ERRORIDENTIFIERS_PARSER_2],
+					"missing first operand for assignment", lexerToken);
+	}
+
+	return true;
+}
 
 /**
  * Parses the current lexer token.
@@ -215,6 +265,21 @@ bool parser_parseNext(struct Parser *self,
 		   lexerToken->lineIndex, lexerToken->value->_value);
 
 	switch (lexerToken->identifier) {
+	case LEXERTOKENS_EQUAL_TO:
+	case LEXERTOKENS_MODULO_ASSIGNMENT:
+	case LEXERTOKENS_MULTIPLICATION_ASSIGNMENT:
+	case LEXERTOKENS_EXPONENT_ASSIGNMENT:
+	case LEXERTOKENS_DIVISION_ASSIGNMENT:
+	case LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT:
+	case LEXERTOKENS_ADDITION_ASSIGNMENT:
+	case LEXERTOKENS_SUBTRACTION_ASSIGNMENT:
+	case LEXERTOKENS_BITWISE_AND_ASSIGNMENT:
+	case LEXERTOKENS_BITWISE_OR_ASSIGNMENT:
+	case LEXERTOKENS_BITWISE_XOR_ASSIGNMENT:
+	case LEXERTOKENS_BITWISE_NOT_ASSIGNMENT:
+	case LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
+	case LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
+		return parser_parseEqualTo(self, lexerToken);
 	case LEXERTOKENS_IDENTIFIER:
 		return parser_parseIdentifier(self, lexerToken);
 	}
