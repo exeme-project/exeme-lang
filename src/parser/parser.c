@@ -14,6 +14,8 @@
  * Used to identify different parser tokens.
  */
 enum ParserTokenIdentifiers {
+	PARSERTOKENS_NONE,
+
 	PARSERTOKENS_VARIABLE,
 
 	// Assignment operators
@@ -120,9 +122,9 @@ parserTokenAssignment_new(struct ParserToken *operand1,
 }
 
 /**
- * Frees an ParserTokenVariable struct.
+ * Frees an ParserTokenAssignment struct.
  *
- * @param self The current ParserTokenVariable struct.
+ * @param self The current ParserTokenAssignment struct.
  */
 void parserTokenAssignment_free(struct ParserTokenAssignment *self) {
 	if (self) {
@@ -132,7 +134,7 @@ void parserTokenAssignment_free(struct ParserTokenAssignment *self) {
 		free(self);
 		self = NULL;
 	} else {
-		panic("ParserTokenVariable struct has already been freed");
+		panic("ParserTokenAssignment struct has already been freed");
 	}
 }
 
@@ -170,6 +172,19 @@ parserToken_new(const enum ParserTokenIdentifiers IDENTIFIER, void *VALUE) {
 
 	switch (self->identifier) {
 	case PARSERTOKENS_ASSIGNMENT:
+	case PARSERTOKENS_MODULO_ASSIGNMENT:
+	case PARSERTOKENS_MULTIPLICATION_ASSIGNMENT:
+	case PARSERTOKENS_EXPONENT_ASSIGNMENT:
+	case PARSERTOKENS_DIVISION_ASSIGNMENT:
+	case PARSERTOKENS_FLOOR_DIVISION_ASSIGNMENT:
+	case PARSERTOKENS_ADDITION_ASSIGNMENT:
+	case PARSERTOKENS_SUBTRACTION_ASSIGNMENT:
+	case PARSERTOKENS_BITWISE_AND_ASSIGNMENT:
+	case PARSERTOKENS_BITWISE_OR_ASSIGNMENT:
+	case PARSERTOKENS_BITWISE_XOR_ASSIGNMENT:
+	case PARSERTOKENS_BITWISE_NOT_ASSIGNMENT:
+	case PARSERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
+	case PARSERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
 		self->ASSIGNMENT = VALUE;
 		break;
 	case PARSERTOKENS_VARIABLE:
@@ -282,6 +297,45 @@ bool parser_parseAssignment(struct Parser *self,
 					"missing first operand for assignment", lexerToken);
 	}
 
+	struct ParserToken *token = self->_token;
+	self->_token = NULL;
+
+	while (!self->token && !self->_token) {
+		parser_parse(self);
+	}
+
+	self->token = parserToken_new(
+		lexerToken->identifier == LEXERTOKENS_ASSIGNMENT
+			? PARSERTOKENS_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_MODULO_ASSIGNMENT
+			? PARSERTOKENS_MODULO_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_MULTIPLICATION_ASSIGNMENT
+			? PARSERTOKENS_MULTIPLICATION_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_EXPONENT_ASSIGNMENT
+			? PARSERTOKENS_EXPONENT_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_DIVISION_ASSIGNMENT
+			? PARSERTOKENS_DIVISION_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT
+			? PARSERTOKENS_FLOOR_DIVISION_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_ADDITION_ASSIGNMENT
+			? PARSERTOKENS_ADDITION_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_SUBTRACTION_ASSIGNMENT
+			? PARSERTOKENS_SUBTRACTION_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_BITWISE_AND_ASSIGNMENT
+			? PARSERTOKENS_BITWISE_AND_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_BITWISE_OR_ASSIGNMENT
+			? PARSERTOKENS_BITWISE_OR_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_BITWISE_XOR_ASSIGNMENT
+			? PARSERTOKENS_BITWISE_XOR_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_BITWISE_NOT_ASSIGNMENT
+			? PARSERTOKENS_BITWISE_NOT_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT
+			? PARSERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT
+		: lexerToken->identifier == LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT
+			? PARSERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT
+			: PARSERTOKENS_NONE,
+		parserTokenAssignment_new(token, self->_token));
+
 	return true;
 }
 
@@ -290,10 +344,8 @@ bool parser_parseAssignment(struct Parser *self,
  *
  * @param self       The current parser struct.
  * @param lexerToken The current lexer token.
- *
- * @return Whether a parser token was created.
  */
-bool parser_parseIdentifier(struct Parser *self,
+void parser_parseIdentifier(struct Parser *self,
 							const struct LexerToken *lexerToken) {
 	if (self->_token) {
 		lexer_error(self->lexer,
@@ -306,18 +358,14 @@ bool parser_parseIdentifier(struct Parser *self,
 						parserTokenVariable_new(
 							lexerToken->startChrIndex, lexerToken->endChrIndex,
 							lexerToken->lineIndex, lexerToken->value));
-
-	return false;
 }
 
 /**
  * Calls the correct function for parsing the current lexer token.
  *
  * @param self The current parser struct.
- *
- * @return Whether a parser token was created.
  */
-bool parser_parseNext(struct Parser *self,
+void parser_parseNext(struct Parser *self,
 					  const struct LexerToken *lexerToken) {
 	printf("identifier: %s\nstartChrIndex: %zu\nendChrIndex: "
 		   "%zu\nlineIndex: "
@@ -341,12 +389,12 @@ bool parser_parseNext(struct Parser *self,
 	case LEXERTOKENS_BITWISE_NOT_ASSIGNMENT:
 	case LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
 	case LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
-		return parser_parseAssignment(self, lexerToken);
+		parser_parseAssignment(self, lexerToken);
+		break;
 	case LEXERTOKENS_IDENTIFIER:
-		return parser_parseIdentifier(self, lexerToken);
+		parser_parseIdentifier(self, lexerToken);
+		break;
 	}
-
-	return false;
 }
 
 /**
@@ -357,13 +405,16 @@ bool parser_parseNext(struct Parser *self,
  * @return bool Whether parsing succeeded.
  */
 bool parser_parse(struct Parser *self) {
+	self->_token = NULL;
 	self->token = NULL;
 
 	do {
 		if (!lexer_lex(self->lexer, true)) {
 			return false;
 		}
-	} while (!parser_parseNext(self, lexer_getToken(self->lexer)));
+
+		parser_parseNext(self, lexer_getToken(self->lexer));
+	} while (!self->token);
 
 	return true;
 }
