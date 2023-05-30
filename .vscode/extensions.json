@@ -14,4 +14,7 @@
         "vadimcn.vscode-lldb",
         "xaver.clang-format",
     ],
+    "unwantedRecommendations": [
+        "ms-vscode.cpptools-extension-pack",
+    ]
 }
