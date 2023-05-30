@@ -385,7 +385,7 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
 	self->FILE_PATH = FILE_PATH;
 	self->filePointer = fopen(FILE_PATH, "r");
 	self->chrIndex = 0;
-	self->lineIndex = negativeIndex; // Will wrap around when a line is got
+	self->lineIndex = negativeULL; // Will wrap around when a line is got
 	self->tokenUnlexes = 0;
 	self->tokens = array_new();
 
@@ -484,7 +484,7 @@ bool lexer_getLine(struct Lexer *self, bool nextLine) {
 	self->prevChr = '\0';
 	self->chr = '\n';
 
-	self->chrIndex = negativeIndex; // Will wrap around when a char is got
+	self->chrIndex = negativeULL; // Will wrap around when a char is got
 	self->lineIndex++;
 
 	self->nextLine = false;

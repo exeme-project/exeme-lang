@@ -7,4 +7,4 @@
 
 #include "./includes.c"
 
-const size_t negativeIndex = (size_t)-1;
+const size_t negativeULL = (size_t)-1;
