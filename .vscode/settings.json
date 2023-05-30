@@ -2,7 +2,6 @@
     "[c]": {
         "editor.defaultFormatter": "xaver.clang-format"
     },
-    "C_Cpp.intelliSenseEngine": "disabled",
     "cmake.preferredGenerators": [
         "Ninja",
         "Visual Studio 17 2022",
@@ -18,5 +17,4 @@
     "redhat.telemetry.enabled": false,
     "workbench.colorTheme": "Default Dark Modern",
     "workbench.iconTheme": "material-icon-theme",
-    "esbonio.sphinx.confDir": "",
 }
