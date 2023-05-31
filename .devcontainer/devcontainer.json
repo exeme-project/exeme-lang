@@ -3,6 +3,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				// Update `../.vscode/extensions.json` as well.
 				"alexanderte.dainty-one-dark-pro-vscode",
 				"github.vscode-github-actions",
 				"gruntfuggly.todo-tree",
