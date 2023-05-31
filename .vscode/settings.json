@@ -15,6 +15,6 @@
     "git.confirmSync": false,
     "git.autofetch": true,
     "redhat.telemetry.enabled": false,
-    "workbench.colorTheme": "Default Dark Modern",
+    "workbench.colorTheme": "Dainty – One Dark Pro (chroma 0, lightness 1)",
     "workbench.iconTheme": "material-icon-theme",
 }
