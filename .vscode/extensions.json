@@ -1,5 +1,5 @@
 {
-    // Update `../.devcontainer/extensions.json` as well.
+    // Update `../.devcontainer/devcontainer.json` as well.
     "recommendations": [
         "alexanderte.dainty-one-dark-pro-vscode",
         "github.vscode-github-actions",
