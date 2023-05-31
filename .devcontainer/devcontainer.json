@@ -4,10 +4,13 @@
 		"vscode": {
 			"extensions": [
 				// Update `../.vscode/extensions.json` as well.
+				"albert.tabout",
 				"alexanderte.dainty-one-dark-pro-vscode",
+				"donjayamanne.githistory",
 				"github.vscode-github-actions",
 				"gruntfuggly.todo-tree",
 				"lextudio.restructuredtext",
+				"mhutchie.git-graph",
 				"ms-vscode.cmake-tools",
 				"ms-vscode.cpptools",
 				"ms-vscode-remote.remote-containers",
