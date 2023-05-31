@@ -1,4 +1,5 @@
 {
+    // Update `../.devcontainer/extensions.json` as well.
     "recommendations": [
         "alexanderte.dainty-one-dark-pro-vscode",
         "gruntfuggly.todo-tree",
