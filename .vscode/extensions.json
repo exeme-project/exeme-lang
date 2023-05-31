@@ -2,6 +2,7 @@
     // Update `../.devcontainer/extensions.json` as well.
     "recommendations": [
         "alexanderte.dainty-one-dark-pro-vscode",
+        "github.vscode-github-actions",
         "gruntfuggly.todo-tree",
         "lextudio.restructuredtext",
         "ms-vscode.cmake-tools",
