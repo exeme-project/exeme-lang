@@ -1,3 +1,10 @@
 {
-	"image": "mcr.microsoft.com/devcontainers/cpp"
+	"image": "mcr.microsoft.com/devcontainers/cpp",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"alexanderte.dainty-one-dark-pro-vscode"
+			]
+		}
+	}
 }
