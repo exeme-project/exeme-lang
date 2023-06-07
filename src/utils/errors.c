@@ -13,18 +13,13 @@
  * Used to identify errors.
  */
 enum ErrorIdentifiers {
-	// Lexer
-	ERRORIDENTIFIERS_LEXER_1,
-	ERRORIDENTIFIERS_LEXER_2,
-	ERRORIDENTIFIERS_LEXER_3,
-	ERRORIDENTIFIERS_LEXER_4,
-	ERRORIDENTIFIERS_LEXER_5,
-	ERRORIDENTIFIERS_LEXER_6,
-	ERRORIDENTIFIERS_LEXER_7,
-
-	// Parser
-	ERRORIDENTIFIERS_PARSER_1,
-	ERRORIDENTIFIERS_PARSER_2,
+	E0001,
+	E0002,
+	E0003,
+	E0004,
+	E0005,
+	E0006,
+	E0007,
 };
 
 /**
@@ -33,17 +28,12 @@ enum ErrorIdentifiers {
 const struct Array ERRORIDENTIFIER_NAMES = {
 	7,
 	(const void *[]){
-		// Lexer
-		"L1",
-		"L2",
-		"L3",
-		"L4",
-		"L5",
-		"L6",
-		"L7",
-
-		// Parser
-		"P1",
-		"P2",
+		"E0001",
+		"E0002",
+		"E0003",
+		"E0004",
+		"E0005",
+		"E0006",
+		"E0007",
 	},
 };

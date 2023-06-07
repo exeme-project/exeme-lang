@@ -579,9 +579,7 @@ void lexer_checkForContinuation(struct Lexer *self,
 	if (lexer_getChr(self, false)) {
 		if (!isspace(self->chr) && !isalnum(self->chr)) {
 			lexer_error(
-				self,
-				(const char *)
-					ERRORIDENTIFIER_NAMES._values[ERRORIDENTIFIERS_LEXER_1],
+				self, (const char *)ERRORIDENTIFIER_NAMES._values[E0001],
 				stringConcatenate(3, "unexpected continuation of token '",
 								  token->value->_value, "'"),
 				token);
@@ -786,12 +784,10 @@ char lexer_escapeChr(struct Lexer *self, const size_t startChrIndex) {
 		return '\\';
 	}
 
-	lexer_error(
-		self,
-		(const char *)ERRORIDENTIFIER_NAMES._values[ERRORIDENTIFIERS_LEXER_2],
-		"invalid escape sequence",
-		lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true), startChrIndex,
-					   self->chrIndex, self->lineIndex));
+	lexer_error(self, (const char *)ERRORIDENTIFIER_NAMES._values[E0002],
+				"invalid escape sequence",
+				lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
+							   startChrIndex, self->chrIndex, self->lineIndex));
 
 	return '\0';
 }
@@ -814,9 +810,7 @@ void lexer_lexChr(struct Lexer *self) {
 			return;
 		} else if (chr->length == 1) {
 			lexer_error(
-				self,
-				(const char *)
-					ERRORIDENTIFIER_NAMES._values[ERRORIDENTIFIERS_LEXER_3],
+				self, (const char *)ERRORIDENTIFIER_NAMES._values[E0003],
 				"multi-character char",
 				lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
 							   startChrIndex, self->chrIndex, self->lineIndex));
@@ -832,12 +826,10 @@ void lexer_lexChr(struct Lexer *self) {
 		}
 	}
 
-	lexer_error(
-		self,
-		(const char *)ERRORIDENTIFIER_NAMES._values[ERRORIDENTIFIERS_LEXER_4],
-		"unterminated char",
-		lexerToken_new(LEXERTOKENS_NONE, chr, startChrIndex, self->chrIndex,
-					   self->lineIndex));
+	lexer_error(self, (const char *)ERRORIDENTIFIER_NAMES._values[E0004],
+				"unterminated char",
+				lexerToken_new(LEXERTOKENS_NONE, chr, startChrIndex,
+							   self->chrIndex, self->lineIndex));
 }
 
 /**
@@ -875,8 +867,7 @@ void lexer_lexString(struct Lexer *self) {
 	}
 
 	lexer_error(
-		self,
-		(const char *)ERRORIDENTIFIER_NAMES._values[ERRORIDENTIFIERS_LEXER_4],
+		self, (const char *)ERRORIDENTIFIER_NAMES._values[E0004],
 		"unterminated string",
 		lexerToken_new(LEXERTOKENS_STRING, string,
 					   self->lineIndex == startLineIndex ? startChrIndex : 0,
@@ -913,8 +904,7 @@ void lexer_lexMultiLineComment(struct Lexer *self, const size_t startChrIndex) {
 	}
 
 	lexer_error(
-		self,
-		(const char *)ERRORIDENTIFIER_NAMES._values[ERRORIDENTIFIERS_LEXER_4],
+		self, (const char *)ERRORIDENTIFIER_NAMES._values[E0004],
 		"unterminated multi-line comment",
 		lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
 					   self->lineIndex == startLineIndex ? startChrIndex : 0,
@@ -994,8 +984,7 @@ void lexer_lexNumber(struct Lexer *self) {
 			break;
 		} else if (isalpha(self->chr)) {
 			lexer_error(self,
-						(const char *)ERRORIDENTIFIER_NAMES
-							._values[ERRORIDENTIFIERS_LEXER_5],
+						(const char *)ERRORIDENTIFIER_NAMES._values[E0005],
 						stringConcatenate(2, "invalid character for ",
 										  isFloat ? "float" : "integer"),
 						lexerToken_new(LEXERTOKENS_NONE, number, startChrIndex,
@@ -1003,9 +992,7 @@ void lexer_lexNumber(struct Lexer *self) {
 		} else if (self->chr == '.') {
 			if (isFloat) {
 				lexer_error(
-					self,
-					(const char *)
-						ERRORIDENTIFIER_NAMES._values[ERRORIDENTIFIERS_LEXER_6],
+					self, (const char *)ERRORIDENTIFIER_NAMES._values[E0006],
 					"too many decimal points for float",
 					lexerToken_new(LEXERTOKENS_NONE, number, startChrIndex,
 								   self->chrIndex, self->lineIndex));
@@ -1158,8 +1145,7 @@ bool lexer_lexNext(struct Lexer *self) {
 			lexer_lexNumber(self);
 		} else {
 			lexer_error(self,
-						(const char *)ERRORIDENTIFIER_NAMES
-							._values[ERRORIDENTIFIERS_LEXER_7],
+						(const char *)ERRORIDENTIFIER_NAMES._values[E0007],
 						"unknown character", NULL);
 		}
 
