@@ -2,10 +2,10 @@
 
 This page lists all the error codes emitted by the Exeme compiler.
 
-* [E0001](E0001.md)
-* [E0002](E0002.md)
-* [E0003](E0003.md)
-* [E0004](E0004.md)
-* [E0005](E0005.md)
-* [E0006](E0006.md)
-* [E0007](E0007.md)
+* [L0001](L0001.md)
+* [L0002](L0002.md)
+* [L0003](L0003.md)
+* [L0004](L0004.md)
+* [L0005](L0005.md)
+* [L0006](L0006.md)
+* [L0007](L0007.md)
