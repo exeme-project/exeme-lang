@@ -991,7 +991,7 @@ void lexer_lexNumber(struct Lexer *self) {
 		} else if (self->chr == '.') {
 			if (isFloat) {
 				lexer_error(
-					self, (const char *)ERRORIDENTIFIER_NAMES._values[1],
+					self, (const char *)ERRORIDENTIFIER_NAMES._values[],
 					"too many decimal points for float",
 					lexerToken_new(LEXERTOKENS_NONE, number, startChrIndex,
 								   self->chrIndex, self->lineIndex));
