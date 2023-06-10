@@ -8,6 +8,7 @@
 #include "../includes.c"
 
 #include "../lexer/lexer.c"
+#include "../utils/array.c"
 #include "../utils/errors.c"
 
 /**
@@ -34,10 +35,11 @@ struct AST *ast_new(struct AST ast) {
 		panic("failed to malloc AST struct");
 	}
 
-	*self = ast; // Copy to heap
+	*self = ast; // Copy to heap from stack
 	return self;
 }
 
+/* Vararg macro to reduce boilerplate */
 #define AST_NEW(type, ...)                                                     \
 	ast_new((struct AST){type, {.type = (struct type){__VA_ARGS__}}})
 
