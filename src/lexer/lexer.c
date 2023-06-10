@@ -398,7 +398,7 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
 }
 
 /**
- * Frees an Lexer struct.
+ * Frees a Lexer struct.
  *
  * @param self The current Lexer struct.
  */
