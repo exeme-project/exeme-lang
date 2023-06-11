@@ -28,7 +28,7 @@ struct AST {
 
 #define AST_STRUCT_SIZE sizeof(struct AST)
 
-struct AST *ast_new(struct AST ast) {
+struct AST *_ast_new(struct AST ast) {
 	struct AST *self = malloc(AST_STRUCT_SIZE);
 
 	if (!self) {
@@ -40,8 +40,8 @@ struct AST *ast_new(struct AST ast) {
 }
 
 /* Vararg macro to reduce boilerplate */
-#define AST_NEW(type, ...)                                                     \
-	ast_new((struct AST){type, {.type = (struct type){__VA_ARGS__}}})
+#define ast_new(type, ...)                                                     \
+	_ast_new((struct AST){type, {.type = (struct type){__VA_ARGS__}}})
 
 /**
  * Represents a parser.
@@ -87,8 +87,4 @@ void parser_free(struct Parser *self) {
 	}
 }
 
-bool parser_parse() {
-	struct AST *term = AST_NEW(AST_VARIABLE, NULL, NULL);
-
-	return false;
-}
+bool parser_parse() { return false; }
