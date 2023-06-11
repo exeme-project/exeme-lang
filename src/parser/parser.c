@@ -47,6 +47,8 @@ struct AST *_ast_new(struct AST ast) {
  * Represents a parser.
  */
 struct Parser {
+	struct Array *lexerTokens;
+	struct AST *AST;
 	struct Lexer *lexer;
 };
 
@@ -66,6 +68,8 @@ struct Parser *parser_new(const char *FILE_PATH) {
 		panic("failed to malloc Parser struct");
 	}
 
+	self->lexerTokens = array_new();
+	self->AST = NULL;
 	self->lexer = lexer_new(FILE_PATH);
 
 	return self;
@@ -87,4 +91,4 @@ void parser_free(struct Parser *self) {
 	}
 }
 
-bool parser_parse() { return false; }
+bool parser_parse(void) { return false; }
