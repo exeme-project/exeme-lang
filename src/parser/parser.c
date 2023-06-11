@@ -20,7 +20,7 @@ struct AST {
 	} IDENTIFIER;
 	union {
 		struct AST_VARIABLE {
-			const struct LexerToken *_TOKEN;
+			const struct LexerToken *_token;
 			const struct String *NAME;
 		} AST_VARIABLE;
 	} data;
@@ -28,7 +28,7 @@ struct AST {
 
 #define AST_STRUCT_SIZE sizeof(struct AST)
 
-struct AST *_ast_new(struct AST ast) {
+struct AST *ast_new_(struct AST ast) {
 	struct AST *self = malloc(AST_STRUCT_SIZE);
 
 	if (!self) {
@@ -41,7 +41,7 @@ struct AST *_ast_new(struct AST ast) {
 
 /* Vararg macro to reduce boilerplate */
 #define ast_new(type, ...)                                                     \
-	_ast_new((struct AST){type, {.type = (struct type){__VA_ARGS__}}})
+	ast_new_((struct AST){type, {.type = (struct type){__VA_ARGS__}}})
 
 /**
  * Represents a parser.
