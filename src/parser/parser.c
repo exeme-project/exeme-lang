@@ -15,7 +15,7 @@
  * Represents an AST.
  */
 struct AST {
-	enum {
+	enum ASTIdentifiers {
 		AST_VARIABLE,
 	} IDENTIFIER;
 	union {
@@ -41,25 +41,24 @@ void ast_variable_free(struct AST_VARIABLE *self) {
 	}
 }
 
-struct AST *ast_new_(struct AST ast) {
+struct AST *ast_new_(enum ASTIdentifiers IDENTIFIER, void *data) {
 	struct AST *self = malloc(AST_STRUCT_SIZE);
 
 	if (!self) {
 		panic("failed to malloc AST struct");
 	}
 
-	self->IDENTIFIER = ast.IDENTIFIER;
+	self->IDENTIFIER = IDENTIFIER;
 
-	switch (ast.IDENTIFIER) {
+	switch (self->IDENTIFIER) {
 	case AST_VARIABLE:
-		self->data.AST_VARIABLE = malloc(AST_STRUCT_SIZE);
+		self->data.AST_VARIABLE = malloc(AST_VARIABLE_STRUCT_SIZE);
 
 		if (!self->data.AST_VARIABLE) {
 			panic("failed to malloc AST_VARIABLE struct");
 		}
 
-		memcpy(self->data.AST_VARIABLE, &ast.data.AST_VARIABLE,
-			   AST_VARIABLE_STRUCT_SIZE);
+		memcpy(self->data.AST_VARIABLE, data, AST_VARIABLE_STRUCT_SIZE);
 		break;
 	}
 
@@ -67,8 +66,7 @@ struct AST *ast_new_(struct AST ast) {
 }
 
 /* Vararg macro to reduce boilerplate */
-#define ast_new(type, ...)                                                     \
-	ast_new_((struct AST){type, {.type = (struct type){__VA_ARGS__}}})
+#define ast_new(type, ...) ast_new_(type, &(struct type){__VA_ARGS__})
 
 void ast_free(struct AST *self) {
 	if (self) {
@@ -133,4 +131,8 @@ void parser_free(struct Parser *self) {
 	}
 }
 
-bool parser_parse(void) {}
+bool parser_parse(void) {
+	struct AST *tree = ast_new(AST_VARIABLE, NULL, NULL);
+
+	return false;
+}
