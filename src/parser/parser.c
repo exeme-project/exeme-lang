@@ -141,5 +141,6 @@ void parser_free(struct Parser *self) {
 
 bool parser_parse(struct Parser *self) {
 	struct AST *tree = ast_new(AST_VARIABLE, NULL, NULL);
+
 	return false;
 }
