@@ -402,7 +402,7 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
  *
  * @param self The current Lexer struct.
  */
-void lexer_free(const struct Lexer *self) {
+void lexer_free(struct Lexer *self) {
 	if (self) {
 		if (self->filePointer) {
 			fclose(self->filePointer);
