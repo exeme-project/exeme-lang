@@ -389,7 +389,10 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
 	self->tokenUnlexes = 0;
 	self->tokens = array_new();
 
-	if (ferror(self->filePointer)) { // Probably file doesn't exist
+	if (self->filePointer ==
+			NULL || // Only POSIX requires errno is set, and so for other
+					// platforms we have to check for NULL
+		ferror(self->filePointer)) { // Probably file doesn't exist
 		panic(stringConcatenate(3, "failed to open file '", self->FILE_PATH,
 								"'"));
 	}
