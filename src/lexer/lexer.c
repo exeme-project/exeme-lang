@@ -626,8 +626,8 @@ void lexer_lexSingleLineComment(struct Lexer *self) {
 								self->chrIndex, self->lineIndex));
 }
 
-bool lexer_lexKeywordOrIdentifier_match_(const char *element,
-										 const char *match) {
+bool lexer_lexKeywordOrIdentifier_match_(const void *element,
+										 const void *match) {
 	return strcmp(element, match) == 0;
 }
 
@@ -650,8 +650,8 @@ void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
 	}
 
 	array_insert(self->tokens, self->tokens->length,
-				 lexerToken_new(array_find(&KEYWORDS,
-										   lexer_lexKeywordOrIdentifier_match_,
+				 lexerToken_new(array_find((struct Array *)&KEYWORDS,
+										   &lexer_lexKeywordOrIdentifier_match_,
 										   identifier->_value)
 									? LEXERTOKENS_KEYWORD
 									: LEXERTOKENS_IDENTIFIER,

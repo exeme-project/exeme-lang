@@ -316,7 +316,7 @@ const struct LexerToken *lexerToken_new(enum LexerTokensIdentifiers identifier,
  */
 void lexerToken_free(struct LexerToken *self) {
 	if (self) {
-		string_free(self->value);
+		string_free((struct String *)self->value);
 
 		free(self);
 		self = NULL;

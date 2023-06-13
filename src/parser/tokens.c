@@ -31,8 +31,8 @@ struct AST {
 
 void ast_variable_free(struct AST_VARIABLE *self) {
 	if (self) {
-		lexerToken_free(self->_token);
-		string_free(self->NAME);
+		lexerToken_free((struct LexerToken *)self->_token);
+		string_free((struct String *)self->NAME);
 
 		free(self);
 		self = NULL;
