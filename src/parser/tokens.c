@@ -19,6 +19,7 @@ struct AST {
 		AST_VARIABLE,
 	} IDENTIFIER;
 	union {
+		/* Represents a variable in the AST.*/
 		struct AST_VARIABLE {
 			const struct LexerToken *_token;
 			const struct String *NAME;
@@ -29,6 +30,11 @@ struct AST {
 #define AST_STRUCT_SIZE sizeof(struct AST)
 #define AST_VARIABLE_STRUCT_SIZE sizeof(struct AST_VARIABLE)
 
+/**
+ * Frees an AST Variable struct.
+ *
+ * @param self The current AST Variable struct.
+ */
 void ast_variable_free(struct AST_VARIABLE *self) {
 	if (self) {
 		lexerToken_free((struct LexerToken *)self->_token);
@@ -41,7 +47,17 @@ void ast_variable_free(struct AST_VARIABLE *self) {
 	}
 }
 
-struct AST *ast_new_(enum ASTIdentifiers IDENTIFIER, void *data) {
+/**
+ * WARNING: DO NOT USE - USE THE MACRO INSTEAD.
+ *
+ * Creates a new AST struct.
+ *
+ * @param IDENTIFIER The identifier of the AST.
+ * @param data       The data of the AST.
+ *
+ * @return The created AST struct.
+ */
+struct AST *ast_new__(enum ASTIdentifiers IDENTIFIER, void *data) {
 	struct AST *self = malloc(AST_STRUCT_SIZE);
 
 	if (!self) {
@@ -66,8 +82,13 @@ struct AST *ast_new_(enum ASTIdentifiers IDENTIFIER, void *data) {
 }
 
 /* Vararg macro to reduce boilerplate */
-#define ast_new(type, ...) ast_new_(type, &(struct type){__VA_ARGS__})
+#define ast_new(type, ...) ast_new__(type, &(struct type){__VA_ARGS__})
 
+/**
+ * Frees an AST struct.
+ *
+ * @param self The current AST struct.
+ */
 void ast_free(struct AST *self) {
 	if (self) {
 		switch (self->IDENTIFIER) {

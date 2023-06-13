@@ -65,4 +65,29 @@ void parser_free(struct Parser *self) {
 	}
 }
 
-bool parser_parse(struct Parser *self) { return false; }
+void parser_parseNext(struct Parser *self) {}
+
+/**
+ * Gets the next lexer token and parses it.
+ *
+ * @param self     The current Parser struct.
+ *
+ * @return bool Whether parsing succeeded.
+ */
+bool parser_parse(struct Parser *self) {
+	array_clear(self->lexerTokens);
+
+	if (self->AST) {
+		ast_free(self->AST);
+	}
+
+	do {
+		if (!lexer_lex(self->lexer, true)) {
+			return false;
+		}
+
+		parser_parseNext(self);
+	} while (self->AST != NULL);
+
+	return true;
+}

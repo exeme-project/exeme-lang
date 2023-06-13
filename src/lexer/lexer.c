@@ -848,7 +848,7 @@ bool lexer_lexNext(struct Lexer *self) {
 /**
  * Gets the next char and lexes it.
  *
- * @param self     The current lexer struct.
+ * @param self     The current Lexer struct.
  * @param nextLine Whether the char can be on the next line.
  *
  * @return bool Whether lexing succeeded.
