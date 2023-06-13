@@ -1,2 +1,2 @@
 CompileFlags:
-  Add: [-std=c17, -Weverything, -Wno-missing-prototypes, -Wno-empty-translation-unit]
+  Add: [-std=c17, -Weverything, -Wno-missing-prototypes, -Wno-empty-translation-unit, -Wno-cast-qual]
