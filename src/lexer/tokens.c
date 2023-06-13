@@ -314,7 +314,7 @@ const struct LexerToken *lexerToken_new(enum LexerTokensIdentifiers identifier,
  *
  * @param self The current LexerToken struct.
  */
-void lexerToken_free(const struct LexerToken *self) {
+void lexerToken_free(struct LexerToken *self) {
 	if (self) {
 		string_free(self->value);
 

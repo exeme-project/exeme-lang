@@ -122,7 +122,7 @@ void lexer_error(struct Lexer *self, const char *ERROR_MSG_NUMBER,
 	size_t lineIndex = 0, lineIndexStringLength;
 
 	while (true) {
-		char chr = fgetc(filePointer);
+		char chr = (char)fgetc(filePointer);
 
 		if (chr == '\n') {
 			if (self->lineIndex == lineIndex++) {
