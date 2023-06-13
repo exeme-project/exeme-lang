@@ -122,9 +122,7 @@ struct Parser *parser_new(const char *FILE_PATH) {
  */
 void parser_free(struct Parser *self) {
 	if (self) {
-		if (self->lexerTokens) {
-			array_free(self->lexerTokens);
-		}
+		array_free(self->lexerTokens);
 
 		if (self->AST) {
 			ast_free(self->AST);
@@ -140,7 +138,5 @@ void parser_free(struct Parser *self) {
 }
 
 bool parser_parse(struct Parser *self) {
-	struct AST *tree = ast_new(AST_VARIABLE, NULL, NULL);
-
 	return false;
 }
