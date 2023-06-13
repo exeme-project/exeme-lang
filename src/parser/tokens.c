@@ -21,6 +21,7 @@ struct AST {
 	union {
 		/* Represents a variable in the AST.*/
 		struct AST_VARIABLE {
+			const bool POINTER;
 			const struct LexerToken *_token;
 			const struct String *NAME;
 		} *AST_VARIABLE;

@@ -877,15 +877,17 @@ void lexer_unLex(struct Lexer *self) { self->tokenUnlexes++; }
  *
  * @return The retreived token.
  */
-const struct LexerToken *lexer_getToken(struct Lexer *self) {
+const struct LexerToken *lexer_getToken(struct Lexer *self, size_t *index) {
 	if (self->tokens->length == 0) {
 		return NULL;
 	} else if (self->tokenUnlexes > 0) {
-		return self->tokens
-			->_values[self->tokens->length - 1 -
-					  (self->tokenUnlexes--)]; // For future me, yes it does
-											   // decrement
+		*index = self->tokens->length - 1 - (self->tokenUnlexes--);
+
+		return self->tokens->_values[*index]; // For future me, yes it does
+											  // decrement
 	}
 
-	return self->tokens->_values[self->tokens->length - 1];
+	*index = self->tokens->length - 1;
+
+	return self->tokens->_values[*index];
 }
