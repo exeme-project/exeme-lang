@@ -29,7 +29,7 @@ enum ErrorIdentifiers {
 const struct Array ERRORIDENTIFIER_NAMES = {
 	7,
 	(const void *[]){
-		// Lexerw
+		// Lexer
 		"L0001",
 		"L0002",
 		"L0003",
@@ -39,3 +39,11 @@ const struct Array ERRORIDENTIFIER_NAMES = {
 		"L0007",
 	},
 };
+
+const char *error_get(const enum ErrorIdentifiers IDENTIFIER) {
+	if (IDENTIFIER + 1 > ERRORIDENTIFIER_NAMES.length) {
+		panic("error get index out of bounds");
+	}
+
+	return ERRORIDENTIFIER_NAMES._values[IDENTIFIER];
+}
