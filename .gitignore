@@ -34,6 +34,8 @@
 # Custom
 .cache
 build
+cmake*/
+.idea
 src/main
 src/main.ilk
 src/main.pdb
