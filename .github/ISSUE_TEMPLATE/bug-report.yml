@@ -41,8 +41,8 @@ body:
     id: environment-info
     attributes:
       label: Environment Info
-      description: What OS and Exeme version did the bug occur on?
-      placeholder: Tell us the OS and Exeme version the bug occured on.
+      description: What OS and Exeme Language version did the bug occur on?
+      placeholder: Tell us the OS and Exeme Language version the bug occured on.
     validations:
       required: true
   - type: textarea
@@ -57,7 +57,7 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: The Code of Conduct can be found [here](https://exeme-project.github.io/exeme-lang/contributing/code_of_conduct.html).
+      description: The Code of Conduct can be found [here](github.com/exeme-project/exeme-lang/blob/main/CODE_OF_CONDUCT.md).
       options:
         - label: I agree to follow this project's Code of Conduct.
           required: true

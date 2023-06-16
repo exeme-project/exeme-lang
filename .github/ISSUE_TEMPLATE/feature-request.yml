@@ -11,7 +11,7 @@ body:
     id: description
     attributes:
       label: Description
-      description: Describe the feature you would like to be added to Exeme.
+      description: Describe the feature you would like to be added to Exeme Language.
       placeholder: Tell us about your proposed feature.
   - type: textarea
     id: use-case
@@ -37,7 +37,7 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: The Code of Conduct can be found [here](https://exeme-project.github.io/exeme-lang/contributing/code_of_conduct.html).
+      description: The Code of Conduct can be found [here](github.com/exeme-project/exeme-lang/blob/main/CODE_OF_CONDUCT.md).
       options:
         - label: I agree to follow this project's Code of Conduct.
           required: true
