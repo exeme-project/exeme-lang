@@ -100,9 +100,10 @@ void parser_parseIdentifier(struct Parser *self,
  * @param self The current Parser struct.
  */
 void parser_parseAssignment(struct Parser *self) {
-    if (self->parserTokens->length > 1) {
-        // TODO: Add syntax error
-    } else if (self->parserTokens->length == 0) {}
+	if (self->parserTokens->length > 1) {
+		// TODO: Add syntax error
+	} else if (self->parserTokens->length == 0) {
+	}
 }
 
 /**
