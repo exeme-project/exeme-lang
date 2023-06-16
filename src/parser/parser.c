@@ -53,7 +53,7 @@ void parser_free(struct Parser *self) {
 		if (self->parserTokens) {
 			for (size_t index = 0; index < self->parserTokens->length;
 				 index++) {
-				free((void *)self->parserTokens->_values[index]);
+				free((void *)array_get(self->parserTokens, index));
 			}
 
 			array_free(self->parserTokens);
