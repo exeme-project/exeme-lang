@@ -1,5 +1,5 @@
 /**
- * Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
+ * Part of the Exeme Project, under the MIT license. See '/LICENSE' for
  * license information. SPDX-License-Identifier: MIT License.
  */
 
@@ -22,8 +22,8 @@ enum ErrorIdentifiers {
 	L0006,
 	L0007,
 
-    // Parser
-    P0001,
+	// Parser
+	P0001,
 };
 
 /**
@@ -41,8 +41,8 @@ const struct Array ERRORIDENTIFIER_NAMES = {
 		"L0006",
 		"L0007",
 
-        // Parser
-        "P0001",
+		// Parser
+		"P0001",
 	},
 };
 

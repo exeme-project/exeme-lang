@@ -1,4 +1,4 @@
-<!-- Part of the Exeme language project, under the MIT license. See '/LICENSE' for license information. SPDX-License-Identifier: MIT License. -->
+<!-- Part of the Exeme Project, under the MIT license. See '/LICENSE' for license information. SPDX-License-Identifier: MIT License. -->
 
 # Contributing Guidelines
 
@@ -49,7 +49,7 @@ licenses are required at the top of all non-trivial files.
 Markdown files always have at the top:
 
 ```md
-<!-- Part of the Exeme language project, under the MIT license. See '/LICENSE' for license information. SPDX-License-Identifier: MIT License. -->
+<!-- Part of the Exeme Project, under the MIT license. See '/LICENSE' for license information. SPDX-License-Identifier: MIT License. -->
 ```
 
 For example, see the top of [**this file's**](https://raw.githubusercontent.com/exeme-project/exeme-lang/main/CONTRIBUTING.md) raw contents.
@@ -59,7 +59,7 @@ For example, see the top of [**this file's**](https://raw.githubusercontent.com/
 C source code files always have at the top:
 
 ``` c
-// Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
+// Part of the Exeme Project, under the MIT license. See '/LICENSE' for
 // license information. SPDX-License-Identifier: MIT License.
 ```
 

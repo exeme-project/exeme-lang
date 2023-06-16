@@ -1,6 +1,6 @@
 
 /**
- * Part of the Exeme Language Project, under the MIT license. See '/LICENSE' for
+ * Part of the Exeme Project, under the MIT license. See '/LICENSE' for
  * license information. SPDX-License-Identifier: MIT License.
  */
 
