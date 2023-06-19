@@ -15,9 +15,9 @@
  * Represents a parser.
  */
 struct Parser {
-    struct Array *parserTokens;
-    struct AST *AST;
-    struct Lexer *lexer;
+	struct Array *parserTokens;
+	struct AST *AST;
+	struct Lexer *lexer;
 };
 
 #define PARSER_STRUCT_SIZE sizeof(struct Parser)
@@ -30,17 +30,17 @@ struct Parser {
  * @return The created Parser struct.
  */
 struct Parser *parser_new(const char *FILE_PATH) {
-    struct Parser *self = malloc(PARSER_STRUCT_SIZE);
+	struct Parser *self = malloc(PARSER_STRUCT_SIZE);
 
-    if (!self) {
-        panic("failed to malloc Parser struct");
-    }
+	if (!self) {
+		panic("failed to malloc Parser struct");
+	}
 
-    self->parserTokens = array_new();
-    self->AST = NULL;
-    self->lexer = lexer_new(FILE_PATH);
+	self->parserTokens = array_new();
+	self->AST = NULL;
+	self->lexer = lexer_new(FILE_PATH);
 
-    return self;
+	return self;
 }
 
 /**
@@ -49,27 +49,27 @@ struct Parser *parser_new(const char *FILE_PATH) {
  * @param self The current Parser struct.
  */
 void parser_free(struct Parser *self) {
-    if (self) {
-        if (self->parserTokens) {
-            for (size_t index = 0; index < self->parserTokens->length;
-                 index++) {
-                free((void *) array_get(self->parserTokens, index));
-            }
+	if (self) {
+		if (self->parserTokens) {
+			for (size_t index = 0; index < self->parserTokens->length;
+				 index++) {
+				free((void *)array_get(self->parserTokens, index));
+			}
 
-            array_free(self->parserTokens);
-        }
+			array_free(self->parserTokens);
+		}
 
-        if (self->AST) {
-            ast_free(self->AST);
-        }
+		if (self->AST) {
+			ast_free(self->AST);
+		}
 
-        lexer_free(self->lexer);
+		lexer_free(self->lexer);
 
-        free(self);
-        self = NULL;
-    } else {
-        panic("Parser struct has already been freed");
-    }
+		free(self);
+		self = NULL;
+	} else {
+		panic("Parser struct has already been freed");
+	}
 }
 
 /**
@@ -78,20 +78,20 @@ void parser_free(struct Parser *self) {
  * @param self The current Parser struct.
  */
 void parser_parseIdentifier(struct Parser *self,
-                            const struct LexerToken *lexerToken,
-                            size_t lexerTokenIndex) {
-    bool pointer = false;
+							const struct LexerToken *lexerToken,
+							size_t lexerTokenIndex) {
+	bool pointer = false;
 
-    if (self->lexer->tokens->length > 1) {
-        if (((const struct LexerToken *) array_get(self->lexer->tokens,
-                                                   lexerTokenIndex - 1))
-                    ->identifier == LEXERTOKENS_MULTIPLICATION) {
-            pointer = true;
-        }
-    }
+	if (self->lexer->tokens->length > 1) {
+		if (((const struct LexerToken *)array_get(self->lexer->tokens,
+												  lexerTokenIndex - 1))
+				->identifier == LEXERTOKENS_MULTIPLICATION) {
+			pointer = true;
+		}
+	}
 
-    array_insert(self->parserTokens, self->parserTokens->length,
-                 ast_new(AST_VARIABLE, pointer, lexerToken, lexerToken->value));
+	array_insert(self->parserTokens, self->parserTokens->length,
+				 ast_new(AST_VARIABLE, pointer, lexerToken, lexerToken->value));
 }
 
 /**
@@ -99,19 +99,20 @@ void parser_parseIdentifier(struct Parser *self,
  *
  * @param self The current Parser struct.
  */
-void parser_parseAssignment(struct Parser *self) {
-    if (self->parserTokens->length > 1) {
-        // TODO: Add syntax error
-    } else if (self->parserTokens->length == 0) {
-        // TODO: Add error
-    }
+void parser_parseAssignment(struct Parser *self,
+							const struct LexerToken *lexerToken) {
+	if (self->parserTokens->length > 1) {
+		// TODO: Add syntax error
+	} else if (self->parserTokens->length == 0) {
+		// TODO: Add error
+	}
 
-    if (((const struct AST *) array_get(self->parserTokens, 0))->type != AST_VARIABLE) {
-        // TODO: Add error
-    }
+	if (((const struct AST *)array_get(self->parserTokens, 0))->IDENTIFIER !=
+		AST_VARIABLE) {
+		// TODO: Add error
+	}
 
-    array_insert(self->parserTokens, self->parserTokens->length,
-                 ast_new(AST_ASSIGNMENT, lexerToken, NULL, NULL));
+	// TODO: Finish this
 }
 
 /**
@@ -120,21 +121,21 @@ void parser_parseAssignment(struct Parser *self) {
  * @param self The current Parser struct.
  */
 void parser_parseNext(struct Parser *self) {
-    size_t lexerTokenIndex = 0;
+	size_t lexerTokenIndex = 0;
 
-    const struct LexerToken *lexerToken =
-            lexer_getToken(self->lexer, &lexerTokenIndex);
+	const struct LexerToken *lexerToken =
+		lexer_getToken(self->lexer, &lexerTokenIndex);
 
-    switch (lexerToken->identifier) {
-        case LEXERTOKENS_IDENTIFIER:
-            parser_parseIdentifier(self, lexerToken, lexerTokenIndex);
-            break;
-        case LEXERTOKENS_ASSIGNMENT:
-            parser_parseAssignment(self);
-            break;
-        default:
-            break;
-    }
+	switch (lexerToken->identifier) {
+	case LEXERTOKENS_IDENTIFIER:
+		parser_parseIdentifier(self, lexerToken, lexerTokenIndex);
+		break;
+	case LEXERTOKENS_ASSIGNMENT:
+		parser_parseAssignment(self, lexerToken);
+		break;
+	default:
+		break;
+	}
 }
 
 /**
@@ -145,19 +146,19 @@ void parser_parseNext(struct Parser *self) {
  * @return bool Whether parsing succeeded.
  */
 bool parser_parse(struct Parser *self) {
-    array_clear(self->parserTokens);
+	array_clear(self->parserTokens);
 
-    if (self->AST) {
-        ast_free(self->AST);
-    }
+	if (self->AST) {
+		ast_free(self->AST);
+	}
 
-    do {
-        if (!lexer_lex(self->lexer, true)) {
-            return false;
-        }
+	do {
+		if (!lexer_lex(self->lexer, true)) {
+			return false;
+		}
 
-        parser_parseNext(self);
-    } while (self->AST != NULL);
+		parser_parseNext(self);
+	} while (self->AST != NULL);
 
-    return true;
+	return true;
 }
