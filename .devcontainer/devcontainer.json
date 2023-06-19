@@ -27,10 +27,6 @@
 		}
 	},
 	"features": {
-		"ghcr.io/devcontainers/features/python:1": {
-			"installTools": true,
-			"optimize": true,
-			"version": "os-provided"
-		}
+		"ghcr.io/devcontainers/features/python:1": {}
 	}
 }
