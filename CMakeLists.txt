@@ -5,4 +5,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_SOURCE_DIR}/build/bin>)
 
 project(exeme)
 
+file(REMOVE $<1:${CMAKE_SOURCE_DIR}/build/bin>)
+
 add_executable(exeme src/main.c)
