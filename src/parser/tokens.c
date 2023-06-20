@@ -7,9 +7,9 @@
 
 #include "../includes.c"
 
+#include "../errors.c"
 #include "../lexer/lexer.c"
 #include "../utils/array.c"
-#include "../utils/errors.c"
 
 /**
  * Represents an AST.
