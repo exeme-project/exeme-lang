@@ -7,9 +7,9 @@
 
 #include "../includes.c"
 
+#include "../errors.c"
 #include "../utils/array.c"
 #include "../utils/conversions.c"
-#include "../utils/errors.c"
 #include "../utils/panic.c"
 #include "../utils/string.c"
 #include "./tokens.c"
