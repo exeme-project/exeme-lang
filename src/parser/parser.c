@@ -146,7 +146,7 @@ void parser_parseNext(struct Parser *self) {
  * @return bool Whether parsing succeeded.
  */
 bool parser_parse(struct Parser *self) {
-	array_clear(self->parserTokens);
+	array_clear(self->parserTokens, NULL);
 
 	if (self->AST) {
 		ast_free(self->AST);
