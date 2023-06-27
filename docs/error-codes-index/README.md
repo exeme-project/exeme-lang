@@ -15,3 +15,4 @@ This page lists all the error codes emitted by the Exeme compiler.
 ## Parser
 
 * [P0001](P0001.md)
+* [P0002](P0002.md)

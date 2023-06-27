@@ -25,13 +25,14 @@ enum ErrorIdentifiers {
 
 	// Parser
 	P0001,
+	P0002,
 };
 
 /**
  * Contains the names of each of the error identifiers.
  */
 const struct Array ERRORIDENTIFIER_NAMES = {
-	8,
+	9,
 	(const void *[]){
 		// Lexer
 		"L0001",
@@ -44,11 +45,12 @@ const struct Array ERRORIDENTIFIER_NAMES = {
 
 		// Parser
 		"P0001",
+		"P0002",
 	},
 };
 
 const char *error_get(const enum ErrorIdentifiers IDENTIFIER) {
-	if (IDENTIFIER + 1 > ERRORIDENTIFIER_NAMES.length) {
+	if ((size_t)IDENTIFIER + 1 > ERRORIDENTIFIER_NAMES.length) {
 		panic("error get index out of bounds");
 	}
 
