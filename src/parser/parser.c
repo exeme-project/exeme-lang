@@ -9,6 +9,7 @@
 
 #include "../lexer/lexer.c"
 #include "../utils/array.c"
+#include "../utils/string.c"
 #include "./tokens.c"
 
 /**
@@ -102,7 +103,11 @@ void parser_parseIdentifier(struct Parser *self,
 void parser_parseAssignment(struct Parser *self,
 							const struct LexerToken *lexerToken) {
 	if (self->parserTokens->length > 1) {
-		// TODO: Add syntax error
+		lexer_error(self->lexer, error_get(P0001),
+					stringConcatenate(
+						2, "expected one parser token before assignment, got ",
+						ulToString(self->parserTokens->length)),
+					lexerToken);
 	} else if (self->parserTokens->length == 0) {
 		// TODO: Add error
 	}
@@ -158,7 +163,7 @@ bool parser_parse(struct Parser *self) {
 		}
 
 		parser_parseNext(self);
-	} while (self->AST != NULL);
+	} while (self->AST == NULL);
 
 	return true;
 }

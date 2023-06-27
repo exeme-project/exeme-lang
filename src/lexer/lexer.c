@@ -124,7 +124,7 @@ void lexer_error(struct Lexer *self, const char *ERROR_MSG_NUMBER,
 	while (true) {
 		char chr = (char)fgetc(filePointer);
 
-		if (chr == '\n') {
+		if (chr == '\n' || chr == EOF) {
 			if (self->lineIndex == lineIndex++) {
 				break;
 			}

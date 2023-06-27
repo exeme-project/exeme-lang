@@ -31,7 +31,7 @@ enum ErrorIdentifiers {
  * Contains the names of each of the error identifiers.
  */
 const struct Array ERRORIDENTIFIER_NAMES = {
-	7,
+	8,
 	(const void *[]){
 		// Lexer
 		"L0001",
