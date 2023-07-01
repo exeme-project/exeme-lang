@@ -230,22 +230,23 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
 			self->filePointer); // Specify cast to char to silence warnings
 		self->chrIndex++;
 
-		if (self->chr == EOF ||
-			ferror(self->filePointer) != 0) { // EOF or error
-			fclose(self->filePointer);
-			self->filePointer = NULL; // Set to NULL to prevent future errors
-
-			return false;
-		}
-
-		if (self->chr == '\n') { // EOL has been reached
+		if ((self->chr == EOF || ferror(self->filePointer) != 0) ||
+			self->chr == '\n') { // EOF / error or EOL
 			self->chr = self->prevChr;
 			self->prevChr = prevChr;
 			self->nextLine = true;
 			self->chrIndex--;
 
+			if (self->chr != '\n') { // EOF / error
+				fclose(self->filePointer);
+				self->filePointer =
+					NULL; // Set to NULL to prevent future errors
+			}
+
 			return false;
-		} else if (skipWhitespace) {   // Keep going till we encounter a chars
+		}
+
+		if (skipWhitespace) {		   // Keep going till we encounter a chars
 									   // that is not whitespace
 			if (!isspace(self->chr)) { // Not whitespace
 				break;
@@ -516,7 +517,7 @@ void lexer_lexChr(struct Lexer *self) {
 		}
 	}
 
-	lexer_error(self, error_get(L0003), "unterminated char",
+	lexer_error(self, error_get(L0003), "unterminated character literal",
 				lexerToken_new(LEXERTOKENS_NONE, chr, startChrIndex,
 							   self->chrIndex, self->lineIndex));
 }
@@ -556,7 +557,7 @@ void lexer_lexString(struct Lexer *self) {
 	}
 
 	lexer_error(
-		self, error_get(L0003), "unterminated string",
+		self, error_get(L0003), "unterminated string literal",
 		lexerToken_new(LEXERTOKENS_STRING, string,
 					   self->lineIndex == startLineIndex ? startChrIndex : 0,
 					   self->chrIndex, self->lineIndex));
