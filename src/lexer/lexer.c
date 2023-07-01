@@ -116,10 +116,10 @@ void lexer_free(struct Lexer *self) {
  */
 void lexer_error(struct Lexer *self, const char *ERROR_MSG_NUMBER,
 				 const char *ERROR_MSG, const struct LexerToken *token) {
-	const char *lineIndexString;
+	const char *lineNumberString;
 	FILE *filePointer = fopen(self->FILE_PATH, "r");
 	struct String *line = string_new("\0", true);
-	size_t lineIndex = 0, lineIndexStringLength;
+	size_t lineIndex = 0, lineNumberStringLength;
 
 	while (true) {
 		char chr = (char)fgetc(filePointer);
@@ -135,12 +135,12 @@ void lexer_error(struct Lexer *self, const char *ERROR_MSG_NUMBER,
 		}
 	}
 
-	lineIndexString = ulToString(self->lineIndex);
-	lineIndexStringLength = strlen(lineIndexString);
+	lineNumberString = ulToString(self->lineIndex + 1);
+	lineNumberStringLength = strlen(lineNumberString);
 
-	printf("-%s> %s\n%s | %s\n%s", repeatChr('-', lineIndexStringLength),
-		   self->FILE_PATH, lineIndexString, line->_value,
-		   repeatChr(' ', lineIndexStringLength + 3));
+	printf("-%s> %s\n%s | %s\n%s", repeatChr('-', lineNumberStringLength),
+		   self->FILE_PATH, lineNumberString, line->_value,
+		   repeatChr(' ', lineNumberStringLength + 3));
 
 	if (token) {
 		printf("%s%s ", repeatChr(' ', token->startChrIndex),
