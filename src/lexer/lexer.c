@@ -490,8 +490,8 @@ char lexer_escapeChr(struct Lexer *self, const size_t startChrIndex) {
  * @param self The current lexer struct.
  */
 void lexer_lexChr(struct Lexer *self) {
-	bool escapeChr = false;
 	const size_t startChrIndex = self->chrIndex;
+	size_t escapeChrIndex = negativeULL;
 	struct String *chr = string_new("\0", true);
 
 	while (lexer_getChr(self, false)) {
@@ -507,11 +507,11 @@ void lexer_lexChr(struct Lexer *self) {
 									   self->lineIndex));
 		}
 
-		if (escapeChr) {
-			string_append(chr, lexer_escapeChr(self, startChrIndex));
-			escapeChr = false;
+		if (escapeChrIndex != negativeULL) {
+			string_append(chr, lexer_escapeChr(self, escapeChrIndex));
+			escapeChrIndex = negativeULL;
 		} else if (self->chr == '\\') {
-			escapeChr = true;
+			escapeChrIndex = self->chrIndex;
 		} else {
 			string_append(chr, self->chr);
 		}
@@ -528,9 +528,9 @@ void lexer_lexChr(struct Lexer *self) {
  * @param self The current lexer struct.
  */
 void lexer_lexString(struct Lexer *self) {
-	bool escapeChr = false;
 	const size_t startChrIndex = self->chrIndex,
 				 startLineIndex = self->lineIndex;
+	size_t escapeChrIndex = negativeULL;
 	struct String *string = string_new("\0", true);
 
 	while (lexer_getLine(self, false)) {
@@ -543,11 +543,11 @@ void lexer_lexString(struct Lexer *self) {
 				return;
 			}
 
-			if (escapeChr) {
-				string_append(string, lexer_escapeChr(self, startChrIndex));
-				escapeChr = false;
+			if (escapeChrIndex != negativeULL) {
+				string_append(string, lexer_escapeChr(self, escapeChrIndex));
+				escapeChrIndex = negativeULL;
 			} else if (self->chr == '\\') {
-				escapeChr = true;
+				escapeChrIndex = self->chrIndex;
 			} else {
 				string_append(string, self->chr);
 			}
