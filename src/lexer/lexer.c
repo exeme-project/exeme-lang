@@ -268,11 +268,13 @@ void lexer_checkForContinuation(struct Lexer *self,
 								const struct LexerToken *token) {
 	if (lexer_getChr(self, false)) {
 		if (!isspace(self->chr) && !isalnum(self->chr)) {
-			lexer_error(self, error_get(L0002),
-						stringConcatenate(3,
-										  "unexpected continuation of token '",
-										  token->value->_value, "'"),
-						token);
+			lexer_error(
+				self, error_get(L0002),
+				stringConcatenate(3, "unexpected continuation of token '",
+								  token->value->_value, "'"),
+				lexerToken_new(
+					LEXERTOKENS_NONE, string_new(chrToString(self->chr), true),
+					self->chrIndex, self->chrIndex, self->lineIndex));
 		}
 
 		lexer_unGetChr(
