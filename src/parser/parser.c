@@ -109,7 +109,9 @@ void parser_parseAssignment(struct Parser *self,
 						ulToString(self->parserTokens->length)),
 					lexerToken);
 	} else if (self->parserTokens->length == 0) {
-		// TODO: Add error
+		lexer_error(self->lexer, error_get(P0001),
+					"expected one parser token before assignment, got 0",
+					lexerToken);
 	}
 
 	if (((const struct AST *)array_get(self->parserTokens, 0))->IDENTIFIER !=
