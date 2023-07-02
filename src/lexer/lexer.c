@@ -501,9 +501,9 @@ void lexer_lexChr(struct Lexer *self) {
 										self->chrIndex, self->lineIndex));
 			return;
 		} else if (chr->length == 1) {
-			lexer_error(self, error_get(L0005), "multi-character char",
+			lexer_error(self, error_get(L0005), "multi-character char literal",
 						lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
-									   startChrIndex, self->chrIndex,
+									   startChrIndex + 1, self->chrIndex,
 									   self->lineIndex));
 		}
 
