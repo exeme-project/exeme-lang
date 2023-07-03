@@ -674,7 +674,7 @@ void lexer_lexNumber(struct Lexer *self) {
 			lexer_error(self, error_get(L0006),
 						stringConcatenate(2, "invalid character for ",
 										  isFloat ? "float" : "integer"),
-						lexerToken_new(LEXERTOKENS_NONE, number, startChrIndex,
+						lexerToken_new(LEXERTOKENS_NONE, number, self->chrIndex,
 									   self->chrIndex, self->lineIndex));
 		} else if (self->chr == '.') {
 			if (isFloat) {
