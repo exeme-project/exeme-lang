@@ -98,7 +98,7 @@ enum LexerTokenIdentifiers {
  * Contains the names of each of the lexer token identifiers.
  */
 const struct Array LEXERTOKEN_NAMES = {
-	56,
+	57,
 	(const void *[]){
 		"",
 
@@ -179,6 +179,21 @@ const struct Array LEXERTOKEN_NAMES = {
 		"multi line comment",
 	},
 };
+
+/**
+ * Gets the name of a lexer token.
+ *
+ * @param IDENTIFIER The lexer token's identifier.
+ *
+ * @return The name of the lexer token.
+ */
+const char *lexerTokens_getName(const enum LexerTokenIdentifiers IDENTIFIER) {
+	if ((size_t)IDENTIFIER + 1 > LEXERTOKEN_NAMES.length) {
+		panic("LEXERTOKEN_NAMES get index out of bounds");
+	}
+
+	return LEXERTOKEN_NAMES._values[IDENTIFIER];
+}
 
 /**
  * Used to identify the precedence of different tokens. Comparison can

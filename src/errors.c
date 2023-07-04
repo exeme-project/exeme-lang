@@ -49,6 +49,13 @@ const struct Array ERRORIDENTIFIER_NAMES = {
 	},
 };
 
+/**
+ * Gets the name of an error.
+ *
+ * @param IDENTIFIER The error's identifier.
+ *
+ * @return The name of the error.
+ */
 const char *error_get(const enum ErrorIdentifiers IDENTIFIER) {
 	if ((size_t)IDENTIFIER + 1 > ERRORIDENTIFIER_NAMES.length) {
 		panic("error get index out of bounds");

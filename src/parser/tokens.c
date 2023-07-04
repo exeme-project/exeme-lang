@@ -53,6 +53,21 @@ const struct Array ASTTOKEN_NAMES = {
 	},
 };
 
+/**
+ * Gets the name of an AST token.
+ *
+ * @param IDENTIFIER The AST token's identifier.
+ *
+ * @return The name of the AST token.
+ */
+const char *astTokens_getName(const enum ASTTokenIdentifiers IDENTIFIER) {
+	if ((size_t)IDENTIFIER + 1 > ASTTOKEN_NAMES.length) {
+		panic("ASTTOKEN_NAMES get index out of bounds");
+	}
+
+	return ASTTOKEN_NAMES._values[IDENTIFIER];
+}
+
 /* Forward declarations */
 void ast_free(struct AST *self);
 
