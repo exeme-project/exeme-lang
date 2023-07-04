@@ -11,6 +11,7 @@
     "editor.fontSize": 13,
     "editor.formatOnSave": true,
     "editor.suggest.localityBonus": true,
+    "git.enableCommitSigning": true,
     "git.enableSmartCommit": true,
     "git.confirmSync": false,
     "git.autofetch": true,
