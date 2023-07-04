@@ -105,12 +105,12 @@ void parser_parseAssignment(struct Parser *self,
 	if (self->parserTokens->length > 1) {
 		lexer_error(self->lexer, error_get(P0001),
 					stringConcatenate(
-						2, "expected one parser token before assignment, got ",
+						2, "expected 1 parser token before assignment, got ",
 						ulToString(self->parserTokens->length)),
 					lexerToken);
 	} else if (self->parserTokens->length == 0) {
 		lexer_error(self->lexer, error_get(P0001),
-					"expected one parser token before assignment, got 0",
+					"expected 1 parser token before assignment, got 0",
 					lexerToken);
 	}
 
