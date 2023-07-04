@@ -9,7 +9,7 @@
 #pragma pack(1)
 
 int main(void) {
-	struct Parser *parser = parser_new("../../programs/test.exl");
+	struct Parser *parser = parser_new("main.exl");
 
 	while (parser_parse(parser)) {
 	}
