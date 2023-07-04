@@ -14,7 +14,7 @@
 /**
  * Used to identify different lexer tokens.
  */
-enum LexerTokensIdentifiers {
+enum LexerTokenIdentifiers {
 	LEXERTOKENS_NONE,
 
 	LEXERTOKENS_KEYWORD,
@@ -272,7 +272,7 @@ const struct Array LEXER_TOKEN_PRECEDENCES = {
  * Represents a lexer token.
  */
 struct LexerToken {
-	enum LexerTokensIdentifiers identifier;
+	enum LexerTokenIdentifiers identifier;
 	size_t startChrIndex, endChrIndex, lineIndex;
 	const struct String *value;
 };
@@ -290,7 +290,7 @@ struct LexerToken {
  *
  * @return The created LexerToken struct.
  */
-const struct LexerToken *lexerToken_new(enum LexerTokensIdentifiers identifier,
+const struct LexerToken *lexerToken_new(enum LexerTokenIdentifiers identifier,
 										struct String *value,
 										size_t startChrIndex,
 										size_t endChrIndex, size_t lineIndex) {

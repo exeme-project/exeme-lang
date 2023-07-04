@@ -290,7 +290,7 @@ void lexer_checkForContinuation(struct Lexer *self,
  * @param IDENTIFIER The current token's identifier.
  */
 void lexer_lexOneChar(struct Lexer *self,
-					  const enum LexerTokensIdentifiers IDENTIFIER) {
+					  const enum LexerTokenIdentifiers IDENTIFIER) {
 	const struct LexerToken *token =
 		lexerToken_new(IDENTIFIER, string_new(chrToString(self->chr), false),
 					   self->chrIndex, self->chrIndex, self->lineIndex);
@@ -307,8 +307,8 @@ void lexer_lexOneChar(struct Lexer *self,
  * @param IF_TWO     If the token is two chars.
  */
 void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR,
-					  const enum LexerTokensIdentifiers IF_ONE,
-					  const enum LexerTokensIdentifiers IF_TWO) {
+					  const enum LexerTokenIdentifiers IF_ONE,
+					  const enum LexerTokenIdentifiers IF_TWO) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
@@ -347,9 +347,9 @@ void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR,
  */
 void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR,
 					   const char OTHER_SECOND_CHR,
-					   const enum LexerTokensIdentifiers IF_ONE,
-					   const enum LexerTokensIdentifiers IF_TWO,
-					   const enum LexerTokensIdentifiers IF_OTHER_TWO) {
+					   const enum LexerTokenIdentifiers IF_ONE,
+					   const enum LexerTokenIdentifiers IF_TWO,
+					   const enum LexerTokenIdentifiers IF_OTHER_TWO) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
@@ -395,10 +395,10 @@ void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR,
  */
 void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR,
 						const char THIRD_CHR,
-						const enum LexerTokensIdentifiers IF_ONE,
-						const enum LexerTokensIdentifiers IF_TWO,
-						const enum LexerTokensIdentifiers IF_ONE_AND_ONE,
-						const enum LexerTokensIdentifiers IF_TWO_AND_ONE) {
+						const enum LexerTokenIdentifiers IF_ONE,
+						const enum LexerTokenIdentifiers IF_TWO,
+						const enum LexerTokenIdentifiers IF_ONE_AND_ONE,
+						const enum LexerTokenIdentifiers IF_TWO_AND_ONE) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
