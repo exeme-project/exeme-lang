@@ -102,6 +102,8 @@ void parser_parseIdentifier(struct Parser *self,
  */
 void parser_parseAssignment(struct Parser *self,
 							const struct LexerToken *lexerToken) {
+	struct AST *variable = NULL;
+
 	if (self->parserTokens->length > 1) {
 		lexer_error(self->lexer, error_get(P0001),
 					stringConcatenate(
@@ -114,9 +116,16 @@ void parser_parseAssignment(struct Parser *self,
 					lexerToken);
 	}
 
-	if (((const struct AST *)array_get(self->parserTokens, 0))->IDENTIFIER !=
-		AST_VARIABLE) {
-		// TODO: Add error
+	variable = (struct AST *)array_get(self->parserTokens, 0);
+
+	if (variable->IDENTIFIER != AST_VARIABLE) {
+		lexer_error(self->lexer, error_get(P0002),
+					stringConcatenate(5, "expected parser token of type '",
+									  astTokens_getName(AST_VARIABLE),
+									  "' before assignment, got '",
+									  astTokens_getName(variable->IDENTIFIER),
+									  "'"),
+					lexerToken);
 	}
 
 	// TODO: Finish this
