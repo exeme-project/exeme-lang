@@ -116,7 +116,7 @@ void ast_assignment_free(struct AST_ASSIGNMENT *self) {
  *
  * @return The created AST struct.
  */
-struct AST *ast_new__(enum ASTIdentifiers IDENTIFIER, void *data) {
+struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 	struct AST *self = malloc(AST_STRUCT_SIZE);
 
 	if (!self) {
