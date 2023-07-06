@@ -44,6 +44,9 @@ struct Parser *parser_new(const char *FILE_PATH) {
 	return self;
 }
 
+/* Forward declarations to silence warnings */
+bool parser_parse(struct Parser *self, bool freeParserTokens);
+
 /**
  * Frees a Parser struct.
  *
@@ -128,7 +131,7 @@ void parser_parseAssignment(struct Parser *self,
 					lexerToken);
 	}
 
-	// TODO: Finish this
+	parser_parse(self, false);
 }
 
 /**
@@ -157,12 +160,15 @@ void parser_parseNext(struct Parser *self) {
 /**
  * Gets the next lexer token and parses it.
  *
- * @param self     The current Parser struct.
+ * @param self             The current Parser struct.
+ * @param freeParserTokens Whether to free the parser tokens when clearing the
+ * array.
  *
  * @return bool Whether parsing succeeded.
  */
-bool parser_parse(struct Parser *self) {
-	array_clear(self->parserTokens, (void (*)(const void *))ast_free);
+bool parser_parse(struct Parser *self, bool freeParserTokens) {
+	array_clear(self->parserTokens,
+				freeParserTokens ? (void (*)(const void *))ast_free : NULL);
 
 	if (self->AST) {
 		ast_free(self->AST);

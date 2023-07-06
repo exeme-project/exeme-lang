@@ -11,7 +11,7 @@
 int main(void) {
 	struct Parser *parser = parser_new("../../programs/test.exl");
 
-	while (parser_parse(parser)) {
+	while (parser_parse(parser, true)) {
 	}
 
 	parser_free(parser);

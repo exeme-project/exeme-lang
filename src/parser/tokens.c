@@ -46,7 +46,7 @@ struct AST {
  * Contains the names of each of the AST token identifiers.
  */
 const struct Array ASTTOKEN_NAMES = {
-	56,
+	2,
 	(const void *[]){
 		"AST_VARIABLE",
 		"AST_ASSIGNMENT",
@@ -76,7 +76,7 @@ void ast_free(struct AST *self);
  *
  * @param self The current AST Variable struct.
  */
-void ast_variable_free(struct AST_VARIABLE *self) {
+void astVariable_free(struct AST_VARIABLE *self) {
 	if (self) {
 		lexerToken_free((struct LexerToken *)self->_token);
 		string_free((struct String *)self->NAME);
@@ -93,11 +93,11 @@ void ast_variable_free(struct AST_VARIABLE *self) {
  *
  * @param self The current AST Assignment struct.
  */
-void ast_assignment_free(struct AST_ASSIGNMENT *self) {
+void astAssignment_free(struct AST_ASSIGNMENT *self) {
 	if (self) {
 		lexerToken_free((struct LexerToken *)self->_token);
 		ast_free((struct AST *)self->VALUE);
-		ast_variable_free((struct AST_VARIABLE *)self->IDENTIFIER);
+		astVariable_free((struct AST_VARIABLE *)self->IDENTIFIER);
 
 		free(self);
 		self = NULL;
@@ -161,10 +161,10 @@ void ast_free(struct AST *self) {
 	if (self) {
 		switch (self->IDENTIFIER) {
 		case AST_VARIABLE:
-			ast_variable_free(self->data.AST_VARIABLE);
+			astVariable_free(self->data.AST_VARIABLE);
 			break;
 		case AST_ASSIGNMENT:
-			ast_assignment_free(self->data.AST_ASSIGNMENT);
+			astAssignment_free(self->data.AST_ASSIGNMENT);
 			break;
 		}
 
