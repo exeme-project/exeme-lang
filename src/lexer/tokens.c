@@ -201,7 +201,7 @@ const char *lexerTokens_getName(const enum LexerTokenIdentifiers IDENTIFIER) {
  * else 'false').
  */
 const struct Array LEXER_TOKEN_PRECEDENCES = {
-	56,
+	57,
 	(const void *[]){
 		"a",
 
