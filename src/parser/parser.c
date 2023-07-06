@@ -105,7 +105,7 @@ void parser_parseIdentifier(struct Parser *self,
  */
 void parser_parseAssignment(struct Parser *self,
 							const struct LexerToken *lexerToken) {
-	struct AST *variable = NULL;
+	struct AST *identifier, *value = NULL;
 
 	if (self->parserTokens->length != 1) {
 		lexer_error(self->lexer, error_get(P0001),
@@ -115,19 +115,37 @@ void parser_parseAssignment(struct Parser *self,
 					lexerToken);
 	}
 
-	variable = (struct AST *)array_get(self->parserTokens, 0);
+	identifier = (struct AST *)array_get(self->parserTokens, 0);
 
-	if (variable->IDENTIFIER != AST_VARIABLE) {
+	if (identifier->IDENTIFIER != AST_VARIABLE) {
 		lexer_error(self->lexer, error_get(P0002),
 					stringConcatenate(5, "expected parser token of type '",
 									  astTokens_getName(AST_VARIABLE),
 									  "' before assignment, got '",
-									  astTokens_getName(variable->IDENTIFIER),
+									  astTokens_getName(identifier->IDENTIFIER),
 									  "'"),
 					lexerToken);
 	}
 
 	parser_parse(self, false);
+
+	if (self->parserTokens->length != 1) {
+		lexer_error(self->lexer, error_get(P0003),
+					stringConcatenate(
+						2, "expected 1 parser token after assignment, got ",
+						ulToString(self->parserTokens->length)),
+					lexerToken);
+	}
+
+	value = (struct AST *)array_get(self->parserTokens, 0);
+
+	array_insert(
+		self->parserTokens, self->parserTokens->length,
+		ast_new(AST_ASSIGNMENT, lexerToken,
+				(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+				value));
+
+	free(identifier); // Free the struct without freeing the inner data
 }
 
 /**

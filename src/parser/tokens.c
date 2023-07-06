@@ -28,13 +28,13 @@ struct AST {
 			const bool POINTER;
 			const struct LexerToken *_token;
 			const struct String *NAME;
-		} *AST_VARIABLE;
+		} * AST_VARIABLE;
 		/* Represents an assignment in the AST */
 		struct AST_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} *AST_ASSIGNMENT;
+		} * AST_ASSIGNMENT;
 	} data;
 };
 
