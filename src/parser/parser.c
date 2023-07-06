@@ -77,6 +77,22 @@ void parser_free(struct Parser *self) {
 }
 
 /**
+ * Parses the current number.
+ *
+ * @param self The current Parser struct.
+ */
+void parser_parseNumber(struct Parser *self,
+						const struct LexerToken *lexerToken) {
+
+	void* IDENTIFIER =
+		(lexerToken->identifier == LEXERTOKENS_INTEGER) ? AST_INTEGER
+														: AST_FLOAT;
+
+	array_insert(self->parserTokens, self->parserTokens->length,
+				 ast_new(AST_INTEGER, lexerToken, 0)); // TODO: Fix wrong value
+}
+
+/**
  * Parses the current identifier.
  *
  * @param self The current Parser struct.
@@ -160,6 +176,10 @@ void parser_parseNext(struct Parser *self) {
 		lexer_getToken(self->lexer, &lexerTokenIndex);
 
 	switch (lexerToken->identifier) {
+	case LEXERTOKENS_INTEGER:
+	case LEXERTOKENS_FLOAT:
+		parser_parseNumber(self, lexerToken);
+		break;
 	case LEXERTOKENS_IDENTIFIER:
 		parser_parseIdentifier(self, lexerToken, lexerTokenIndex);
 		break;
