@@ -128,6 +128,14 @@ void parser_parseAssignment(struct Parser *self,
 	}
 
 	parser_parse(self, false);
+
+	if (self->parserTokens->length != 1) {
+		lexer_error(self->lexer, error_get(P0003),
+					stringConcatenate(
+						2, "expected 1 parser token after assignment, got ",
+						ulToString(self->parserTokens->length)),
+					lexerToken);
+	}
 }
 
 /**

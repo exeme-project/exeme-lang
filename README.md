@@ -2,6 +2,7 @@
 
 [![Licensed under the MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/skifli/exeme/blob/master/LICENSE)
 [![PR's Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/skifli/exeme/pulls)
+[![wakatime](https://wakatime.com/badge/user/b4317b02-0c6d-457b-82a4-a448b8a8d1df/project/28665d9e-a282-4be1-a18a-61e1013acf34.svg)](https://wakatime.com/badge/user/b4317b02-0c6d-457b-82a4-a448b8a8d1df/project/28665d9e-a282-4be1-a18a-61e1013acf34)
 
 - [Exeme Programming Language](#exeme-programming-language)
   - [The Exeme Project](#the-exeme-project)
