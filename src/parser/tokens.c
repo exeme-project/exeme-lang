@@ -19,39 +19,38 @@ struct AST {
 	 * Used to identify different AST tokens.
 	 */
 	enum ASTTokenIdentifiers {
-		// Tokens need to be the same as in the union below.
-		AST_INTEGER,
-		AST_FLOAT,
+		ASTTOKENS_INTEGER,
+		ASTTOKENS_FLOAT,
 
-		AST_VARIABLE,
-		AST_ASSIGNMENT,
+		ASTTOKENS_VARIABLE,
+		ASTTOKENS_ASSIGNMENT,
 	} IDENTIFIER;
 	union {
 		/* Represents an integer in the AST. */
 		struct AST_INTEGER {
 			const struct LexerToken *_token;
 			const int VALUE;
-		} * AST_INTEGER;
+		} *AST_INTEGER;
 
 		/* Represents a float in the AST. */
 		struct AST_FLOAT {
 			const struct LexerToken *_token;
 			const float VALUE;
-		} * AST_FLOAT;
+		} *AST_FLOAT;
 
 		/* Represents a variable in the AST.*/
 		struct AST_VARIABLE {
 			const bool POINTER;
 			const struct LexerToken *_token;
 			const struct String *NAME;
-		} * AST_VARIABLE;
+		} *AST_VARIABLE;
 
 		/* Represents an assignment in the AST */
 		struct AST_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_ASSIGNMENT;
+		} *AST_ASSIGNMENT;
 	} data;
 };
 
@@ -181,19 +180,19 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 	self->IDENTIFIER = IDENTIFIER;
 
 	switch (self->IDENTIFIER) {
-	case AST_INTEGER:
+	case ASTTOKENS_INTEGER:
 		astData = self->data.AST_INTEGER = malloc(AST_INTEGER_STRUCT_SIZE);
 		astDataStructSize = AST_INTEGER_STRUCT_SIZE;
 		break;
-	case AST_FLOAT:
+	case ASTTOKENS_FLOAT:
 		astData = self->data.AST_FLOAT = malloc(AST_FLOAT_STRUCT_SIZE);
 		astDataStructSize = AST_FLOAT_STRUCT_SIZE;
 		break;
-	case AST_VARIABLE:
+	case ASTTOKENS_VARIABLE:
 		astData = self->data.AST_VARIABLE = malloc(AST_VARIABLE_STRUCT_SIZE);
 		astDataStructSize = AST_VARIABLE_STRUCT_SIZE;
 		break;
-	case AST_ASSIGNMENT:
+	case ASTTOKENS_ASSIGNMENT:
 		astData = self->data.AST_ASSIGNMENT =
 			malloc(AST_ASSIGNMENT_STRUCT_SIZE);
 		astDataStructSize = AST_ASSIGNMENT_STRUCT_SIZE;
@@ -212,7 +211,8 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 }
 
 /* Vararg macro to reduce boilerplate */
-#define ast_new(type, ...) ast_new__(type, &(struct type){__VA_ARGS__})
+#define ast_new(identifier, type, ...)                                         \
+	ast_new__(identifier, &(struct type){__VA_ARGS__})
 
 /**
  * Frees an AST struct.
@@ -222,16 +222,16 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 void ast_free(struct AST *self) {
 	if (self) {
 		switch (self->IDENTIFIER) {
-		case AST_INTEGER:
+		case ASTTOKENS_INTEGER:
 			astInteger_free(self->data.AST_INTEGER);
 			break;
-		case AST_FLOAT:
+		case ASTTOKENS_FLOAT:
 			astFloat_free(self->data.AST_FLOAT);
 			break;
-		case AST_VARIABLE:
+		case ASTTOKENS_VARIABLE:
 			astVariable_free(self->data.AST_VARIABLE);
 			break;
-		case AST_ASSIGNMENT:
+		case ASTTOKENS_ASSIGNMENT:
 			astAssignment_free(self->data.AST_ASSIGNMENT);
 			break;
 		}

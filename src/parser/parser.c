@@ -83,13 +83,9 @@ void parser_free(struct Parser *self) {
  */
 void parser_parseNumber(struct Parser *self,
 						const struct LexerToken *lexerToken) {
-
-	void *IDENTIFIER = (lexerToken->identifier == LEXERTOKENS_INTEGER)
-						   ? AST_INTEGER
-						   : AST_FLOAT;
-
 	array_insert(self->parserTokens, self->parserTokens->length,
-				 ast_new(AST_INTEGER, lexerToken, 0)); // TODO: Fix wrong value
+				 ast_new(ASTTOKENS_INTEGER, AST_INTEGER, lexerToken,
+						 0)); // TODO: Fix wrong value
 }
 
 /**
@@ -111,7 +107,8 @@ void parser_parseIdentifier(struct Parser *self,
 	}
 
 	array_insert(self->parserTokens, self->parserTokens->length,
-				 ast_new(AST_VARIABLE, pointer, lexerToken, lexerToken->value));
+				 ast_new(ASTTOKENS_VARIABLE, AST_VARIABLE, pointer, lexerToken,
+						 lexerToken->value));
 }
 
 /**
@@ -133,10 +130,10 @@ void parser_parseAssignment(struct Parser *self,
 
 	identifier = (struct AST *)array_get(self->parserTokens, 0);
 
-	if (identifier->IDENTIFIER != AST_VARIABLE) {
+	if (identifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
 		lexer_error(self->lexer, error_get(P0002),
 					stringConcatenate(5, "expected parser token of type '",
-									  astTokens_getName(AST_VARIABLE),
+									  astTokens_getName(ASTTOKENS_VARIABLE),
 									  "' before assignment, got '",
 									  astTokens_getName(identifier->IDENTIFIER),
 									  "'"),
@@ -157,7 +154,7 @@ void parser_parseAssignment(struct Parser *self,
 
 	array_insert(
 		self->parserTokens, self->parserTokens->length,
-		ast_new(AST_ASSIGNMENT, lexerToken,
+		ast_new(ASTTOKENS_ASSIGNMENT, AST_ASSIGNMENT, lexerToken,
 				(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
 				value));
 
