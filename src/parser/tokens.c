@@ -8,7 +8,7 @@
 #include "../includes.c"
 
 #include "../errors.c"
-#include "../lexer/lexer.c"
+#include "../lexer/tokens.c"
 #include "../utils/array.c"
 
 /**
@@ -19,26 +19,45 @@ struct AST {
 	 * Used to identify different AST tokens.
 	 */
 	enum ASTTokenIdentifiers {
+		// Tokens need to be the same as in the union below.
+		AST_INTEGER,
+		AST_FLOAT,
+
 		AST_VARIABLE,
 		AST_ASSIGNMENT,
 	} IDENTIFIER;
 	union {
+		/* Represents an integer in the AST. */
+		struct AST_INTEGER {
+			const struct LexerToken *_token;
+			const int VALUE;
+		} * AST_INTEGER;
+
+		/* Represents a float in the AST. */
+		struct AST_FLOAT {
+			const struct LexerToken *_token;
+			const float VALUE;
+		} * AST_FLOAT;
+
 		/* Represents a variable in the AST.*/
 		struct AST_VARIABLE {
 			const bool POINTER;
 			const struct LexerToken *_token;
 			const struct String *NAME;
-		} *AST_VARIABLE;
+		} * AST_VARIABLE;
+
 		/* Represents an assignment in the AST */
 		struct AST_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} *AST_ASSIGNMENT;
+		} * AST_ASSIGNMENT;
 	} data;
 };
 
 #define AST_STRUCT_SIZE sizeof(struct AST)
+#define AST_INTEGER_STRUCT_SIZE sizeof(struct AST_INTEGER)
+#define AST_FLOAT_STRUCT_SIZE sizeof(struct AST_FLOAT)
 #define AST_VARIABLE_STRUCT_SIZE sizeof(struct AST_VARIABLE)
 #define AST_ASSIGNMENT_STRUCT_SIZE sizeof(struct AST_ASSIGNMENT)
 
@@ -46,8 +65,10 @@ struct AST {
  * Contains the names of each of the AST token identifiers.
  */
 const struct Array ASTTOKEN_NAMES = {
-	2,
+	4,
 	(const void *[]){
+		"AST_INTEGER",
+		"AST_FLOAT",
 		"AST_VARIABLE",
 		"AST_ASSIGNMENT",
 	},
@@ -72,9 +93,41 @@ const char *astTokens_getName(const enum ASTTokenIdentifiers IDENTIFIER) {
 void ast_free(struct AST *self);
 
 /**
- * Frees an AST Variable struct.
+ * Frees an AST_INTEGER struct.
  *
- * @param self The current AST Variable struct.
+ * @param self The current AST_INTEGER struct.
+ */
+void astInteger_free(struct AST_INTEGER *self) {
+	if (self) {
+		lexerToken_free((struct LexerToken *)self->_token);
+
+		free(self);
+		self = NULL;
+	} else {
+		panic("AST_INTEGER struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_FLOAT struct.
+ *
+ * @param self The current AST_FLOAT struct.
+ */
+void astFloat_free(struct AST_FLOAT *self) {
+	if (self) {
+		lexerToken_free((struct LexerToken *)self->_token);
+
+		free(self);
+		self = NULL;
+	} else {
+		panic("AST_FLOAT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_VARIABLE struct.
+ *
+ * @param self The current AST_VARIABLE struct.
  */
 void astVariable_free(struct AST_VARIABLE *self) {
 	if (self) {
@@ -89,9 +142,9 @@ void astVariable_free(struct AST_VARIABLE *self) {
 }
 
 /**
- * Frees an AST Assignment struct.
+ * Frees an AST_ASSIGNMENT struct.
  *
- * @param self The current AST Assignment struct.
+ * @param self The current AST_ASSIGNMENT struct.
  */
 void astAssignment_free(struct AST_ASSIGNMENT *self) {
 	if (self) {
@@ -118,6 +171,8 @@ void astAssignment_free(struct AST_ASSIGNMENT *self) {
  */
 struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 	struct AST *self = malloc(AST_STRUCT_SIZE);
+	void *astData = NULL;
+	size_t astDataStructSize = 0;
 
 	if (!self) {
 		panic("failed to malloc AST struct");
@@ -126,25 +181,32 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 	self->IDENTIFIER = IDENTIFIER;
 
 	switch (self->IDENTIFIER) {
+	case AST_INTEGER:
+		astData = self->data.AST_INTEGER = malloc(AST_INTEGER_STRUCT_SIZE);
+		astDataStructSize = AST_INTEGER_STRUCT_SIZE;
+		break;
+	case AST_FLOAT:
+		astData = self->data.AST_FLOAT = malloc(AST_FLOAT_STRUCT_SIZE);
+		astDataStructSize = AST_FLOAT_STRUCT_SIZE;
+		break;
 	case AST_VARIABLE:
-		self->data.AST_VARIABLE = malloc(AST_VARIABLE_STRUCT_SIZE);
-
-		if (!self->data.AST_VARIABLE) {
-			panic("failed to malloc AST_VARIABLE struct");
-		}
-
-		memcpy(self->data.AST_VARIABLE, data, AST_VARIABLE_STRUCT_SIZE);
+		astData = self->data.AST_VARIABLE = malloc(AST_VARIABLE_STRUCT_SIZE);
+		astDataStructSize = AST_VARIABLE_STRUCT_SIZE;
 		break;
 	case AST_ASSIGNMENT:
-		self->data.AST_ASSIGNMENT = malloc(AST_ASSIGNMENT_STRUCT_SIZE);
-
-		if (!self->data.AST_ASSIGNMENT) {
-			panic("failed to malloc AST_ASSIGNMENT struct");
-		}
-
-		memcpy(self->data.AST_ASSIGNMENT, data, AST_ASSIGNMENT_STRUCT_SIZE);
+		astData = self->data.AST_ASSIGNMENT =
+			malloc(AST_ASSIGNMENT_STRUCT_SIZE);
+		astDataStructSize = AST_ASSIGNMENT_STRUCT_SIZE;
 		break;
 	}
+
+	if (!astData) {
+		panic(stringConcatenate(3, "failed to malloc ",
+								astTokens_getName(self->IDENTIFIER),
+								" struct"));
+	}
+
+	memcpy(astData, data, astDataStructSize);
 
 	return self;
 }
@@ -160,6 +222,12 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 void ast_free(struct AST *self) {
 	if (self) {
 		switch (self->IDENTIFIER) {
+		case AST_INTEGER:
+			astInteger_free(self->data.AST_INTEGER);
+			break;
+		case AST_FLOAT:
+			astFloat_free(self->data.AST_FLOAT);
+			break;
 		case AST_VARIABLE:
 			astVariable_free(self->data.AST_VARIABLE);
 			break;
