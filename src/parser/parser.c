@@ -83,9 +83,10 @@ void parser_free(struct Parser *self) {
  */
 void parser_parseNumber(struct Parser *self,
 						const struct LexerToken *lexerToken) {
-	array_insert(self->parserTokens, self->parserTokens->length,
-				 ast_new(ASTTOKENS_INTEGER, AST_INTEGER, lexerToken,
-						 0)); // TODO: Fix wrong value
+	if (lexerToken->identifier == LEXERTOKENS_INTEGER) {
+		array_insert(self->parserTokens, self->parserTokens->length,
+					 ast_new(ASTTOKENS_INTEGER, AST_INTEGER, lexerToken, NULL));
+	}
 }
 
 /**
