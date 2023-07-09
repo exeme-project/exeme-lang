@@ -85,7 +85,12 @@ void parser_parseNumber(struct Parser *self,
 						const struct LexerToken *lexerToken) {
 	if (lexerToken->identifier == LEXERTOKENS_INTEGER) {
 		array_insert(self->parserTokens, self->parserTokens->length,
-					 ast_new(ASTTOKENS_INTEGER, AST_INTEGER, lexerToken, NULL));
+					 ast_new(ASTTOKENS_INTEGER, AST_INTEGER, lexerToken,
+							 lexerToken->value));
+	} else {
+		array_insert(
+			self->parserTokens, self->parserTokens->length,
+			ast_new(ASTTOKENS_FLOAT, AST_FLOAT, lexerToken, lexerToken->value));
 	}
 }
 

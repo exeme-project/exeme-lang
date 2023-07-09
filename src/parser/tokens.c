@@ -29,13 +29,13 @@ struct AST {
 		/* Represents an integer in the AST. */
 		struct AST_INTEGER {
 			const struct LexerToken *_token;
-			const int VALUE;
+			const struct String *VALUE;
 		} *AST_INTEGER;
 
 		/* Represents a float in the AST. */
 		struct AST_FLOAT {
 			const struct LexerToken *_token;
-			const float VALUE;
+			const struct String *VALUE;
 		} *AST_FLOAT;
 
 		/* Represents a variable in the AST.*/
