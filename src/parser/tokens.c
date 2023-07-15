@@ -170,8 +170,6 @@ void astAssignment_free(struct AST_ASSIGNMENT *self) {
  */
 struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 	struct AST *self = malloc(AST_STRUCT_SIZE);
-	void *astData = NULL;
-	size_t astDataStructSize = 0;
 
 	if (!self) {
 		panic("failed to malloc AST struct");
@@ -181,31 +179,22 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 
 	switch (self->IDENTIFIER) {
 	case ASTTOKENS_INTEGER:
-		astData = self->data.AST_INTEGER = malloc(AST_INTEGER_STRUCT_SIZE);
-		astDataStructSize = AST_INTEGER_STRUCT_SIZE;
+		self->data.AST_INTEGER = malloc(AST_INTEGER_STRUCT_SIZE);
+		memcpy(self->data.AST_INTEGER, data, AST_INTEGER_STRUCT_SIZE);
 		break;
 	case ASTTOKENS_FLOAT:
-		astData = self->data.AST_FLOAT = malloc(AST_FLOAT_STRUCT_SIZE);
-		astDataStructSize = AST_FLOAT_STRUCT_SIZE;
+		self->data.AST_FLOAT = malloc(AST_FLOAT_STRUCT_SIZE);
+		memcpy(self->data.AST_FLOAT, data, AST_FLOAT_STRUCT_SIZE);
 		break;
 	case ASTTOKENS_VARIABLE:
-		astData = self->data.AST_VARIABLE = malloc(AST_VARIABLE_STRUCT_SIZE);
-		astDataStructSize = AST_VARIABLE_STRUCT_SIZE;
+		self->data.AST_VARIABLE = malloc(AST_VARIABLE_STRUCT_SIZE);
+		memcpy(self->data.AST_VARIABLE, data, AST_VARIABLE_STRUCT_SIZE);
 		break;
 	case ASTTOKENS_ASSIGNMENT:
-		astData = self->data.AST_ASSIGNMENT =
-			malloc(AST_ASSIGNMENT_STRUCT_SIZE);
-		astDataStructSize = AST_ASSIGNMENT_STRUCT_SIZE;
+		self->data.AST_ASSIGNMENT = malloc(AST_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_ASSIGNMENT, data, AST_ASSIGNMENT_STRUCT_SIZE);
 		break;
 	}
-
-	if (!astData) {
-		panic(stringConcatenate(3, "failed to malloc ",
-								astTokens_getName(self->IDENTIFIER),
-								" struct"));
-	}
-
-	memcpy(astData, data, astDataStructSize);
 
 	return self;
 }

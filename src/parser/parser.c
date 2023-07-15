@@ -86,11 +86,11 @@ void parser_parseNumber(struct Parser *self,
 	if (lexerToken->identifier == LEXERTOKENS_INTEGER) {
 		array_insert(self->parserTokens, self->parserTokens->length,
 					 ast_new(ASTTOKENS_INTEGER, AST_INTEGER, lexerToken,
-							 lexerToken->value));
+							 string_new(lexerToken->value->_value, true)));
 	} else {
-		array_insert(
-			self->parserTokens, self->parserTokens->length,
-			ast_new(ASTTOKENS_FLOAT, AST_FLOAT, lexerToken, lexerToken->value));
+		array_insert(self->parserTokens, self->parserTokens->length,
+					 ast_new(ASTTOKENS_FLOAT, AST_FLOAT, lexerToken,
+							 string_new(lexerToken->value->_value, true)));
 	}
 }
 
@@ -114,7 +114,7 @@ void parser_parseIdentifier(struct Parser *self,
 
 	array_insert(self->parserTokens, self->parserTokens->length,
 				 ast_new(ASTTOKENS_VARIABLE, AST_VARIABLE, pointer, lexerToken,
-						 lexerToken->value));
+						 string_new(lexerToken->value->_value, true)));
 }
 
 /**
@@ -158,13 +158,13 @@ void parser_parseAssignment(struct Parser *self,
 
 	value = (struct AST *)array_get(self->parserTokens, 0);
 
-	array_insert(
-		self->parserTokens, self->parserTokens->length,
-		ast_new(ASTTOKENS_ASSIGNMENT, AST_ASSIGNMENT, lexerToken,
-				(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
-				value));
+	self->AST = ast_new(
+		ASTTOKENS_ASSIGNMENT, AST_ASSIGNMENT, lexerToken,
+		(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT, value);
 
 	free(identifier); // Free the struct without freeing the inner data
+	array_clear(self->parserTokens,
+				NULL); // Clear the array without freeing the inner data
 }
 
 /**

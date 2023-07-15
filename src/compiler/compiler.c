@@ -30,3 +30,43 @@ struct Compiler *compiler_new(const char *FILE_PATH) {
 
 	return compiler;
 }
+
+/**
+ * Frees the Compiler struct.
+ *
+ * @param self The current Compiler struct.
+ */
+void compiler_free(struct Compiler *self) {
+	if (self) {
+		parser_free(self->parser);
+
+		free(self);
+		self = NULL;
+	} else {
+		panic("Compiler struct has already been freed");
+	}
+}
+
+/**
+ * Calls the correct function for compiling the current parser token.
+ *
+ * @param self The current Compiler struct.
+ */
+void compiler_compileNext(struct Compiler *self) { printf("1\n"); }
+
+/**
+ * Gets the next parser token and compiles it.
+ *
+ * @param self The current Compiler struct.
+ *
+ * @return bool Whether compiling succeeded.
+ */
+bool compiler_compile(struct Compiler *self) {
+	if (!parser_parse(self->parser, true)) {
+		return false;
+	}
+
+	compiler_compileNext(self);
+
+	return true;
+}

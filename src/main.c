@@ -6,14 +6,13 @@
 #include "./compiler/compiler.c"
 #include "./includes.c"
 
-
 #pragma pack(1)
 
 int main(void) {
-	struct Parser *parser = parser_new("../../programs/test.exl");
+	struct Compiler *compiler = compiler_new("../../programs/test.exl");
 
-	while (parser_parse(parser, true)) {
+	while (compiler_compile(compiler)) {
 	}
 
-	parser_free(parser);
+	compiler_free(compiler);
 }
