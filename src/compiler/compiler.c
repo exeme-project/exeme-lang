@@ -52,7 +52,9 @@ void compiler_free(struct Compiler **self) {
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileNext(struct Compiler *self) { printf("1\n"); }
+void compiler_compileNext(struct Compiler *self) {
+	switch (self->parser->AST->IDENTIFIER) {}
+}
 
 /**
  * Gets the next parser token and compiles it.

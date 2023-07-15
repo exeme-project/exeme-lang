@@ -5,3 +5,5 @@ https://mapping-high-level-constructs-to-llvm-ir.readthedocs.io/en/latest/basic-
 https://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B#Operator_precedence
 
 https://www.quora.com/What-are-the-parts-of-the-compiler/answer/Ken-Gregg
+
+https://www.pauladamsmith.com/blog/2015/01/how-to-get-started-with-llvm-c-api.html

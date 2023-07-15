@@ -16,4 +16,6 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "llvm-c/Core.h"
+
 #include "./globals.c"
