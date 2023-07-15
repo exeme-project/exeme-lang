@@ -92,16 +92,16 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
  *
  * @param self The current Lexer struct.
  */
-void lexer_free(struct Lexer *self) {
-	if (self) {
-		if (self->filePointer) {
-			fclose(self->filePointer);
+void lexer_free(struct Lexer **self) {
+	if (self && *self) {
+		if ((*self)->filePointer) {
+			fclose((*self)->filePointer);
 		}
 
-		array_free(self->tokens);
+		array_free(&(*self)->tokens);
 
-		free(self);
-		self = NULL;
+		free(*self);
+		*self = NULL;
 	} else {
 		panic("Lexer struct has already been freed");
 	}

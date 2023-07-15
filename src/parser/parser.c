@@ -52,25 +52,30 @@ bool parser_parse(struct Parser *self, bool freeParserTokens);
  *
  * @param self The current Parser struct.
  */
-void parser_free(struct Parser *self) {
-	if (self) {
-		if (self->parserTokens) {
-			for (size_t index = 0; index < self->parserTokens->length;
+void parser_free(struct Parser **self) {
+	struct AST *parserToken = NULL;
+
+	if (self && *self) {
+		if ((*self)->parserTokens) {
+			for (size_t index = 0; index < (*self)->parserTokens->length;
 				 index++) {
-				free((void *)array_get(self->parserTokens, index));
+				parserToken =
+					(struct AST *)array_get((*self)->parserTokens, index);
+
+				ast_free(&parserToken);
 			}
 
-			array_free(self->parserTokens);
+			array_free(&(*self)->parserTokens);
 		}
 
-		if (self->AST) {
-			ast_free(self->AST);
+		if ((*self)->AST) {
+			ast_free(&(*self)->AST);
 		}
 
-		lexer_free(self->lexer);
+		lexer_free(&(*self)->lexer);
 
-		free(self);
-		self = NULL;
+		free((*self));
+		(*self) = NULL;
 	} else {
 		panic("Parser struct has already been freed");
 	}
@@ -208,7 +213,7 @@ bool parser_parse(struct Parser *self, bool freeParserTokens) {
 				freeParserTokens ? (void (*)(const void *))ast_free : NULL);
 
 	if (self->AST) {
-		ast_free(self->AST);
+		ast_free(&self->AST);
 	}
 
 	do {

@@ -36,12 +36,12 @@ struct Compiler *compiler_new(const char *FILE_PATH) {
  *
  * @param self The current Compiler struct.
  */
-void compiler_free(struct Compiler *self) {
-	if (self) {
-		parser_free(self->parser);
+void compiler_free(struct Compiler **self) {
+	if (self && *self) {
+		parser_free(&(*self)->parser);
 
-		free(self);
-		self = NULL;
+		free(*self);
+		*self = NULL;
 	} else {
 		panic("Compiler struct has already been freed");
 	}

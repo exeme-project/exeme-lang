@@ -14,5 +14,5 @@ int main(void) {
 	while (compiler_compile(compiler)) {
 	}
 
-	compiler_free(compiler);
+	compiler_free(&compiler);
 }

@@ -89,19 +89,19 @@ const char *astTokens_getName(const enum ASTTokenIdentifiers IDENTIFIER) {
 }
 
 /* Forward declarations */
-void ast_free(struct AST *self);
+void ast_free(struct AST **self);
 
 /**
  * Frees an AST_INTEGER struct.
  *
  * @param self The current AST_INTEGER struct.
  */
-void astInteger_free(struct AST_INTEGER *self) {
-	if (self) {
-		lexerToken_free((struct LexerToken *)self->_token);
+void astInteger_free(struct AST_INTEGER **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
 
-		free(self);
-		self = NULL;
+		free(*self);
+		*self = NULL;
 	} else {
 		panic("AST_INTEGER struct has already been freed");
 	}
@@ -112,12 +112,12 @@ void astInteger_free(struct AST_INTEGER *self) {
  *
  * @param self The current AST_FLOAT struct.
  */
-void astFloat_free(struct AST_FLOAT *self) {
-	if (self) {
-		lexerToken_free((struct LexerToken *)self->_token);
+void astFloat_free(struct AST_FLOAT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
 
-		free(self);
-		self = NULL;
+		free(*self);
+		*self = NULL;
 	} else {
 		panic("AST_FLOAT struct has already been freed");
 	}
@@ -128,13 +128,13 @@ void astFloat_free(struct AST_FLOAT *self) {
  *
  * @param self The current AST_VARIABLE struct.
  */
-void astVariable_free(struct AST_VARIABLE *self) {
-	if (self) {
-		lexerToken_free((struct LexerToken *)self->_token);
-		string_free((struct String *)self->NAME);
+void astVariable_free(struct AST_VARIABLE **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		string_free((struct String **)&(*self)->NAME);
 
-		free(self);
-		self = NULL;
+		free(*self);
+		*self = NULL;
 	} else {
 		panic("AST_VARIABLE struct has already been freed");
 	}
@@ -145,14 +145,14 @@ void astVariable_free(struct AST_VARIABLE *self) {
  *
  * @param self The current AST_ASSIGNMENT struct.
  */
-void astAssignment_free(struct AST_ASSIGNMENT *self) {
-	if (self) {
-		lexerToken_free((struct LexerToken *)self->_token);
-		ast_free((struct AST *)self->VALUE);
-		astVariable_free((struct AST_VARIABLE *)self->IDENTIFIER);
+void astAssignment_free(struct AST_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
 
-		free(self);
-		self = NULL;
+		free(*self);
+		*self = NULL;
 	} else {
 		panic("AST_ASSIGNMENT struct has already been freed");
 	}
@@ -208,25 +208,25 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
  *
  * @param self The current AST struct.
  */
-void ast_free(struct AST *self) {
-	if (self) {
-		switch (self->IDENTIFIER) {
+void ast_free(struct AST **self) {
+	if (self && *self) {
+		switch ((*self)->IDENTIFIER) {
 		case ASTTOKENS_INTEGER:
-			astInteger_free(self->data.AST_INTEGER);
+			astInteger_free(&(*self)->data.AST_INTEGER);
 			break;
 		case ASTTOKENS_FLOAT:
-			astFloat_free(self->data.AST_FLOAT);
+			astFloat_free(&(*self)->data.AST_FLOAT);
 			break;
 		case ASTTOKENS_VARIABLE:
-			astVariable_free(self->data.AST_VARIABLE);
+			astVariable_free(&(*self)->data.AST_VARIABLE);
 			break;
 		case ASTTOKENS_ASSIGNMENT:
-			astAssignment_free(self->data.AST_ASSIGNMENT);
+			astAssignment_free(&(*self)->data.AST_ASSIGNMENT);
 			break;
 		}
 
-		free(self);
-		self = NULL;
+		free(*self);
+		*self = NULL;
 	} else {
 		panic("AST struct has already been freed");
 	}

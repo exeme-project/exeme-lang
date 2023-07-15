@@ -329,12 +329,12 @@ const struct LexerToken *lexerToken_new(enum LexerTokenIdentifiers identifier,
  *
  * @param self The current LexerToken struct.
  */
-void lexerToken_free(struct LexerToken *self) {
-	if (self) {
-		string_free((struct String *)self->value);
+void lexerToken_free(struct LexerToken **self) {
+	if (self && *self) {
+		string_free((struct String **)&(*self)->value);
 
-		free(self);
-		self = NULL;
+		free(*self);
+		*self = NULL;
 	} else {
 		panic("LexerToken struct has already been freed");
 	}
