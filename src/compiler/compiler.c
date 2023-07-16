@@ -52,7 +52,9 @@ void compiler_free(struct Compiler **self) {
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileAssignment(struct Compiler *self) {}
+void compiler_compileAssignment(struct Compiler *self) {
+	printf("compiling assignment\n");
+}
 
 /**
  * Calls the correct function for compiling the current parser token.

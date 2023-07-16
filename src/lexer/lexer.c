@@ -76,8 +76,7 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
 	self->tokenUnlexes = 0;
 	self->tokens = array_new();
 
-	if (self->filePointer ==
-			NULL || // Only POSIX requires errno is set, and so for other
+	if (!self->filePointer || // Only POSIX requires errno is set, and so for other
 					// platforms we have to check for NULL
 		ferror(self->filePointer)) { // Probably file doesn't exist
 		panic(stringConcatenate(3, "failed to open file '", self->FILE_PATH,
@@ -865,11 +864,11 @@ bool lexer_lex(struct Lexer *self, bool nextLine) {
 void lexer_unLex(struct Lexer *self) { self->tokenUnlexes++; }
 
 /**
- * Retreives the last token.
+ * Retrieves the last token.
  *
  * @param self The current lexer struct.
  *
- * @return The retreived token.
+ * @return The retrieved token.
  */
 const struct LexerToken *lexer_getToken(struct Lexer *self, size_t *index) {
 	if (self->tokens->length == 0) {
