@@ -1,9 +1,11 @@
 https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html
 https://llvm.org/docs/LangRef.html#abstract
-https://mapping-high-level-constructs-to-llvm-ir.readthedocs.io/en/latest/basic-constructs/global-variables.html
+https://mapping-high-level-constructs-to-llvm-ir.readthedocs.io/en/latest/index.html
 
 https://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B#Operator_precedence
 
 https://www.quora.com/What-are-the-parts-of-the-compiler/answer/Ken-Gregg
 
 https://www.pauladamsmith.com/blog/2015/01/how-to-get-started-with-llvm-c-api.html
+
+https://blog.exaloop.io/python-llvm/

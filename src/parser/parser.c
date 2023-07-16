@@ -195,6 +195,8 @@ void parser_parseNext(struct Parser *self) {
 		parser_parseAssignment(self, lexerToken);
 		break;
 	default:
+		printf("unsupported lexer token for parser: %s\n",
+			   lexerTokens_getName(lexerToken->identifier));
 		break;
 	}
 }

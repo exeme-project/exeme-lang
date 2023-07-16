@@ -48,12 +48,27 @@ void compiler_free(struct Compiler **self) {
 }
 
 /**
+ * Compiles the current assignment.
+ *
+ * @param self The current Compiler struct.
+ */
+void compiler_compileAssignment(struct Compiler *self) {}
+
+/**
  * Calls the correct function for compiling the current parser token.
  *
  * @param self The current Compiler struct.
  */
 void compiler_compileNext(struct Compiler *self) {
-	switch (self->parser->AST->IDENTIFIER) {}
+	switch (self->parser->AST->IDENTIFIER) {
+	case ASTTOKENS_ASSIGNMENT:
+		compiler_compileAssignment(self);
+		break;
+	default:
+		printf("unsupported parser token for compiler: %s\n",
+			   astTokens_getName(self->parser->AST->IDENTIFIER));
+		break;
+	}
 }
 
 /**
