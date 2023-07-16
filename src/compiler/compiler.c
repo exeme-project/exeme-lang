@@ -81,7 +81,7 @@ void compiler_compileNext(struct Compiler *self) {
  * @return bool Whether compiling succeeded.
  */
 bool compiler_compile(struct Compiler *self) {
-	if (!parser_parse(self->parser, true)) {
+	if (!parser_parse(self->parser, true, true)) {
 		return false;
 	}
 

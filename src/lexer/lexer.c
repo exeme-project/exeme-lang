@@ -76,8 +76,8 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
 	self->tokenUnlexes = 0;
 	self->tokens = array_new();
 
-	if (!self->filePointer || // Only POSIX requires errno is set, and so for other
-					// platforms we have to check for NULL
+	if (!self->filePointer || // Only POSIX requires errno is set, and so for
+							  // other platforms we have to check for NULL
 		ferror(self->filePointer)) { // Probably file doesn't exist
 		panic(stringConcatenate(3, "failed to open file '", self->FILE_PATH,
 								"'"));
@@ -199,7 +199,7 @@ bool lexer_unGetChr(struct Lexer *self) {
 	self->prevChr = '\0'; // We don't know what it was before this
 	self->chrIndex--;
 
-	if (ferror(self->filePointer) != 0) {
+	if (ferror(self->filePointer)) {
 		fclose(self->filePointer);
 		self->filePointer = NULL; // Set to NULL to prevent future errors
 
@@ -229,24 +229,26 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
 			self->filePointer); // Specify cast to char to silence warnings
 		self->chrIndex++;
 
-		if ((self->chr == EOF || ferror(self->filePointer) != 0) ||
-			self->chr == '\n') { // EOF / error or EOL
-			self->chr = self->prevChr;
-			self->prevChr = prevChr;
-			self->nextLine = true;
-			self->chrIndex--;
-
+		if (self->chr == EOF || ferror(self->filePointer) ||
+			self->chr == '\n') {	 // EOF / error or EOL
 			if (self->chr != '\n') { // EOF / error
 				fclose(self->filePointer);
 				self->filePointer =
 					NULL; // Set to NULL to prevent future errors
 			}
 
+			// Doing the following before checking for an EOL would break the
+			// code
+			self->chr = self->prevChr;
+			self->prevChr = prevChr;
+			self->nextLine = true;
+			self->chrIndex--;
+
 			return false;
 		}
 
-		if (skipWhitespace) {		   // Keep going till we encounter a chars
-									   // that is not whitespace
+		if (skipWhitespace) { // Keep going till we encounter a char that is not
+							  // whitespace
 			if (!isspace(self->chr)) { // Not whitespace
 				break;
 			}

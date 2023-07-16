@@ -45,7 +45,7 @@ struct Parser *parser_new(const char *FILE_PATH) {
 }
 
 /* Forward declarations to silence warnings */
-bool parser_parse(struct Parser *self, bool freeParserTokens);
+bool parser_parse(struct Parser *self, bool freeParserTokens, bool nextLine);
 
 /**
  * Frees a Parser struct.
@@ -151,7 +151,7 @@ void parser_parseAssignment(struct Parser *self,
 					lexerToken);
 	}
 
-	parser_parse(self, false);
+	parser_parse(self, false, false);
 
 	if (self->parserTokens->length != 1) {
 		lexer_error(self->lexer, error_get(P0003),
@@ -210,7 +210,7 @@ void parser_parseNext(struct Parser *self) {
  *
  * @return bool Whether parsing succeeded.
  */
-bool parser_parse(struct Parser *self, bool freeParserTokens) {
+bool parser_parse(struct Parser *self, bool freeParserTokens, bool nextLine) {
 	array_clear(self->parserTokens,
 				freeParserTokens ? (void (*)(const void *))ast_free : NULL);
 
@@ -219,7 +219,7 @@ bool parser_parse(struct Parser *self, bool freeParserTokens) {
 	}
 
 	do {
-		if (!lexer_lex(self->lexer, true)) {
+		if (!lexer_lex(self->lexer, nextLine)) {
 			return false;
 		}
 
