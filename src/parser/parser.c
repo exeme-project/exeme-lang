@@ -207,6 +207,7 @@ void parser_parseNext(struct Parser *self) {
  * @param self             The current Parser struct.
  * @param freeParserTokens Whether to free the parser tokens when clearing the
  * array.
+ * @param nextLine         Whether to get the next line from the lexer.
  *
  * @return bool Whether parsing succeeded.
  */
