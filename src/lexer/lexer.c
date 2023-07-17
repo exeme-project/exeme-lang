@@ -230,8 +230,8 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
 		self->chrIndex++;
 
 		if (self->chr == EOF || ferror(self->filePointer) ||
-			self->chr == '\n') {	 // EOF / error or EOL
-			if (self->chr != '\n') { // EOF / error
+			self->chr == '\n') { // EOF / error or EOL
+			if (self->chr == EOF || ferror(self->filePointer)) { // EOF / error
 				fclose(self->filePointer);
 				self->filePointer =
 					NULL; // Set to NULL to prevent future errors
