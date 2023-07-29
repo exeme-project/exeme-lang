@@ -19,6 +19,8 @@ struct AST {
 	 * Used to identify different AST tokens.
 	 */
 	enum ASTTokenIdentifiers {
+		ASTTOKENS_CHR,
+		ASTTOKENS_STRING,
 		ASTTOKENS_INTEGER,
 		ASTTOKENS_FLOAT,
 
@@ -26,6 +28,18 @@ struct AST {
 		ASTTOKENS_ASSIGNMENT,
 	} IDENTIFIER;
 	union {
+		/* Represents a character in the AST. */
+		struct AST_CHR {
+			const struct LexerToken *_token;
+			const struct String *VALUE;
+		} *AST_CHR;
+
+		/* Represents a string in the AST. */
+		struct AST_STRING {
+			const struct LexerToken *_token;
+			const struct String *VALUE;
+		} *AST_STRING;
+
 		/* Represents an integer in the AST. */
 		struct AST_INTEGER {
 			const struct LexerToken *_token;
@@ -55,6 +69,8 @@ struct AST {
 };
 
 #define AST_STRUCT_SIZE sizeof(struct AST)
+#define AST_CHR_STRUCT_SIZE sizeof(struct AST_CHR)
+#define AST_STRING_STRUCT_SIZE sizeof(struct AST_STRING)
 #define AST_INTEGER_STRUCT_SIZE sizeof(struct AST_INTEGER)
 #define AST_FLOAT_STRUCT_SIZE sizeof(struct AST_FLOAT)
 #define AST_VARIABLE_STRUCT_SIZE sizeof(struct AST_VARIABLE)
@@ -63,9 +79,11 @@ struct AST {
 /**
  * Contains the names of each of the AST token identifiers.
  */
-const struct Array ASTTOKEN_NAMES = {
-	4,
+static const struct Array ASTTOKEN_NAMES = {
+	6,
 	(const void *[]){
+		"AST_CHR",
+		"AST_STRING",
 		"AST_INTEGER",
 		"AST_FLOAT",
 		"AST_VARIABLE",
@@ -90,6 +108,40 @@ const char *astTokens_getName(const enum ASTTokenIdentifiers IDENTIFIER) {
 
 /* Forward declarations */
 void ast_free(struct AST **self);
+
+/**
+ * Frees an AST_CHR struct.
+ *
+ * @param self The current AST_CHR struct.
+ */
+void astChr_free(struct AST_CHR **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		string_free((struct String **)&(*self)->VALUE);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_CHR struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_STRING struct.
+ *
+ * @param self The current AST_STRING struct.
+ */
+void astString_free(struct AST_STRING **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		string_free((struct String **)&(*self)->VALUE);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_STRING struct has already been freed");
+	}
+}
 
 /**
  * Frees an AST_INTEGER struct.
@@ -178,6 +230,14 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 	self->IDENTIFIER = IDENTIFIER;
 
 	switch (self->IDENTIFIER) {
+	case ASTTOKENS_CHR:
+		self->data.AST_CHR = malloc(AST_CHR_STRUCT_SIZE);
+		memcpy(self->data.AST_CHR, data, AST_CHR_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_STRING:
+		self->data.AST_STRING = malloc(AST_STRING_STRUCT_SIZE);
+		memcpy(self->data.AST_STRING, data, AST_STRING_STRUCT_SIZE);
+		break;
 	case ASTTOKENS_INTEGER:
 		self->data.AST_INTEGER = malloc(AST_INTEGER_STRUCT_SIZE);
 		memcpy(self->data.AST_INTEGER, data, AST_INTEGER_STRUCT_SIZE);
@@ -211,6 +271,12 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 void ast_free(struct AST **self) {
 	if (self && *self) {
 		switch ((*self)->IDENTIFIER) {
+		case ASTTOKENS_CHR:
+			astChr_free(&(*self)->data.AST_CHR);
+			break;
+		case ASTTOKENS_STRING:
+			astString_free(&(*self)->data.AST_STRING);
+			break;
 		case ASTTOKENS_INTEGER:
 			astInteger_free(&(*self)->data.AST_INTEGER);
 			break;

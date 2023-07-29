@@ -97,7 +97,7 @@ enum LexerTokenIdentifiers {
 /**
  * Contains the names of each of the lexer token identifiers.
  */
-const struct Array LEXERTOKEN_NAMES = {
+static const struct Array LEXERTOKEN_NAMES = {
 	57,
 	(const void *[]){
 		"",

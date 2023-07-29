@@ -82,6 +82,24 @@ void parser_free(struct Parser **self) {
 }
 
 /**
+ * Parses the current chr or string.
+ *
+ * @param self The current Parser struct.
+ */
+void parser_parseChrOrString(struct Parser *self,
+							 const struct LexerToken *lexerToken) {
+	if (lexerToken->identifier == LEXERTOKENS_CHR) {
+		array_insert(self->parserTokens, self->parserTokens->length,
+					 ast_new(ASTTOKENS_CHR, AST_CHR, lexerToken,
+							 string_new(lexerToken->value->_value, true)));
+	} else {
+		array_insert(self->parserTokens, self->parserTokens->length,
+					 ast_new(ASTTOKENS_STRING, AST_STRING, lexerToken,
+							 string_new(lexerToken->value->_value, true)));
+	}
+}
+
+/**
  * Parses the current number.
  *
  * @param self The current Parser struct.
@@ -184,6 +202,10 @@ void parser_parseNext(struct Parser *self) {
 		lexer_getToken(self->lexer, &lexerTokenIndex);
 
 	switch (lexerToken->identifier) {
+	case LEXERTOKENS_CHR:
+	case LEXERTOKENS_STRING:
+		parser_parseChrOrString(self, lexerToken);
+		break;
 	case LEXERTOKENS_INTEGER:
 	case LEXERTOKENS_FLOAT:
 		parser_parseNumber(self, lexerToken);
