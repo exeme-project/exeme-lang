@@ -26,6 +26,19 @@ struct AST {
 
 		ASTTOKENS_VARIABLE,
 		ASTTOKENS_ASSIGNMENT,
+		ASTTOKENS_MODULO_ASSIGNMENT,
+		ASTTOKENS_MULTIPLICATION_ASSIGNMENT,
+		ASTTOKENS_EXPONENT_ASSIGNMENT,
+		ASTTOKENS_DIVISION_ASSIGNMENT,
+		ASTTOKENS_FLOOR_DIVISION_ASSIGNMENT,
+		ASTTOKENS_ADDITION_ASSIGNMENT,
+		ASTTOKENS_SUBTRACTION_ASSIGNMENT,
+		ASTTOKENS_BITWISE_AND_ASSIGNMENT,
+		ASTTOKENS_BITWISE_OR_ASSIGNMENT,
+		ASTTOKENS_BITWISE_XOR_ASSIGNMENT,
+		ASTTOKENS_BITWISE_NOT_ASSIGNMENT,
+		ASTTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT,
+		ASTTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT,
 	} IDENTIFIER;
 	union {
 		/* Represents a character in the AST. */
@@ -65,6 +78,97 @@ struct AST {
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
 		} *AST_ASSIGNMENT;
+
+		/* Represents a modulo assignment in the AST */
+		struct AST_MODULO_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_MODULO_ASSIGNMENT;
+
+		/* Represents a multiplication assignment in the AST */
+		struct AST_MULTIPLICATION_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_MULTIPLICATION_ASSIGNMENT;
+
+		/* Represents an exponent assignment in the AST */
+		struct AST_EXPONENT_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_EXPONENT_ASSIGNMENT;
+
+		/* Represents a division assignment in the AST */
+		struct AST_DIVISION_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_DIVISION_ASSIGNMENT;
+
+		/* Represents a floor divison assignment in the AST */
+		struct AST_FLOOR_DIVISION_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_FLOOR_DIVISION_ASSIGNMENT;
+
+		/* Represents an addition assignment in the AST */
+		struct AST_ADDITION_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_ADDITION_ASSIGNMENT;
+
+		/* Represents a subtraction assignment in the AST */
+		struct AST_SUBTRACTION_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_SUBTRACTION_ASSIGNMENT;
+
+		/* Represents a bitwise	and assignment in the AST */
+		struct AST_BITWISE_AND_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_BITWISE_AND_ASSIGNMENT;
+
+		/* Represents a bitwise or assignment in the AST */
+		struct AST_BITWISE_OR_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_BITWISE_OR_ASSIGNMENT;
+
+		/* Represents a bitwise xor assignment in the AST */
+		struct AST_BITWISE_XOR_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_BITWISE_XOR_ASSIGNMENT;
+
+		/* Represents a bitwise not assignment in the AST */
+		struct AST_BITWISE_NOT_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_BITWISE_NOT_ASSIGNMENT;
+
+		/* Represents a bitwise left shift assignment in the AST */
+		struct AST_BITWISE_LEFT_SHIFT_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_BITWISE_LEFT_SHIFT_ASSIGNMENT;
+
+		/* Represents a bitwise right shift assignment in the AST */
+		struct AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT {
+			const struct LexerToken *_token;
+			const struct AST_VARIABLE *IDENTIFIER;
+			const struct AST *VALUE;
+		} *AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT;
 	} data;
 };
 
@@ -75,12 +179,37 @@ struct AST {
 #define AST_FLOAT_STRUCT_SIZE sizeof(struct AST_FLOAT)
 #define AST_VARIABLE_STRUCT_SIZE sizeof(struct AST_VARIABLE)
 #define AST_ASSIGNMENT_STRUCT_SIZE sizeof(struct AST_ASSIGNMENT)
+#define AST_MODULO_ASSIGNMENT_STRUCT_SIZE sizeof(struct AST_MODULO_ASSIGNMENT)
+#define AST_MULTIPLICATION_ASSIGNMENT_STRUCT_SIZE                              \
+	sizeof(struct AST_MULTIPLICATION_ASSIGNMENT)
+#define AST_EXPONENT_ASSIGNMENT_STRUCT_SIZE                                    \
+	sizeof(struct AST_EXPONENT_ASSIGNMENT)
+#define AST_DIVISION_ASSIGNMENT_STRUCT_SIZE                                    \
+	sizeof(struct AST_DIVISION_ASSIGNMENT)
+#define AST_FLOOR_DIVISION_ASSIGNMENT_STRUCT_SIZE                              \
+	sizeof(struct AST_FLOOR_DIVISION_ASSIGNMENT)
+#define AST_ADDITION_ASSIGNMENT_STRUCT_SIZE                                    \
+	sizeof(struct AST_ADDITION_ASSIGNMENT)
+#define AST_SUBTRACTION_ASSIGNMENT_STRUCT_SIZE                                 \
+	sizeof(struct AST_SUBTRACTION_ASSIGNMENT)
+#define AST_BITWISE_AND_ASSIGNMENT_STRUCT_SIZE                                 \
+	sizeof(struct AST_BITWISE_AND_ASSIGNMENT)
+#define AST_BITWISE_OR_ASSIGNMENT_STRUCT_SIZE                                  \
+	sizeof(struct AST_BITWISE_OR_ASSIGNMENT)
+#define AST_BITWISE_XOR_ASSIGNMENT_STRUCT_SIZE                                 \
+	sizeof(struct AST_BITWISE_XOR_ASSIGNMENT)
+#define AST_BITWISE_NOT_ASSIGNMENT_STRUCT_SIZE                                 \
+	sizeof(struct AST_BITWISE_NOT_ASSIGNMENT)
+#define AST_BITWISE_LEFT_SHIFT_ASSIGNMENT_STRUCT_SIZE                          \
+	sizeof(struct AST_BITWISE_LEFT_SHIFT_ASSIGNMENT)
+#define AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT_STRUCT_SIZE                         \
+	sizeof(struct AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT)
 
 /**
  * Contains the names of each of the AST token identifiers.
  */
 static const struct Array ASTTOKEN_NAMES = {
-	6,
+	19,
 	(const void *[]){
 		"AST_CHR",
 		"AST_STRING",
@@ -88,6 +217,19 @@ static const struct Array ASTTOKEN_NAMES = {
 		"AST_FLOAT",
 		"AST_VARIABLE",
 		"AST_ASSIGNMENT",
+		"AST_MODULO_ASSIGNMENT",
+		"AST_MULTIPLICATION_ASSIGNMENT",
+		"AST_EXPONENT_ASSIGNMENT",
+		"AST_DIVISION_ASSIGNMENT",
+		"AST_FLOOR_DIVISION_ASSIGNMENT",
+		"AST_ADDITION_ASSIGNMENT",
+		"AST_SUBTRACTION_ASSIGNMENT",
+		"AST_BITWISE_AND_ASSIGNMENT",
+		"AST_BITWISE_OR_ASSIGNMENT",
+		"AST_BITWISE_XOR_ASSIGNMENT",
+		"AST_BITWISE_NOT_ASSIGNMENT",
+		"AST_BITWISE_LEFT_SHIFT_ASSIGNMENT",
+		"AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT",
 	},
 };
 
@@ -211,6 +353,246 @@ void astAssignment_free(struct AST_ASSIGNMENT **self) {
 }
 
 /**
+ * Frees an AST_MODULO_ASSIGNMENT struct.
+ *
+ * @param self The current AST_MODULO_ASSIGNMENT struct.
+ */
+void astModuloAssignment_free(struct AST_MODULO_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_MODULO_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_MULTIPLICATION_ASSIGNMENT struct.
+ *
+ * @param self The current AST_MULTIPLICATION_ASSIGNMENT struct.
+ */
+void astMultiplicationAssignment_free(
+	struct AST_MULTIPLICATION_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_MULTIPLICATION_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_EXPONENT_ASSIGNMENT struct.
+ *
+ * @param self The current AST_EXPONENT_ASSIGNMENT struct.
+ */
+void astExponentAssignment_free(struct AST_EXPONENT_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_EXPONENT_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_DIVISION_ASSIGNMENT struct.
+ *
+ * @param self The current AST_DIVISION_ASSIGNMENT struct.
+ */
+void astDivisionAssignment_free(struct AST_DIVISION_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_DIVISION_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_FLOOR_DIVISION_ASSIGNMENT struct.
+ *
+ * @param self The current AST_FLOOR_DIVISION_ASSIGNMENT struct.
+ */
+void astFloorDivisionAssignment_free(
+	struct AST_FLOOR_DIVISION_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_FLOOR_DIVISION_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_ADDITION_ASSIGNMENT struct.
+ *
+ * @param self The current AST_ADDITION_ASSIGNMENT struct.
+ */
+void astAdditionAssignment_free(struct AST_ADDITION_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_ADDITION_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_SUBTRACTION_ASSIGNMENT struct.
+ *
+ * @param self The current AST_SUBTRACTION_ASSIGNMENT struct.
+ */
+void astSubtractionAssignment_free(struct AST_SUBTRACTION_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_SUBTRACTION_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_BITWISE_AND_ASSIGNMENT struct.
+ *
+ * @param self The current AST_BITWISE_AND_ASSIGNMENT struct.
+ */
+void astBitwiseAndAssignment_free(struct AST_BITWISE_AND_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_BITWISE_AND_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_BITWISE_OR_ASSIGNMENT struct.
+ *
+ * @param self The current AST_BITWISE_OR_ASSIGNMENT struct.
+ */
+void astBitwiseOrAssignment_free(struct AST_BITWISE_OR_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_BITWISE_OR_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_BITWISE_XOR_ASSIGNMENT struct.
+ *
+ * @param self The current AST_BITWISE_XOR_ASSIGNMENT struct.
+ */
+void astBitwiseXorAssignment_free(struct AST_BITWISE_XOR_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_BITWISE_XOR_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_BITWISE_NOT_ASSIGNMENT struct.
+ *
+ * @param self The current AST_BITWISE_NOT_ASSIGNMENT struct.
+ */
+void astBitwiseNotAssignment_free(struct AST_BITWISE_NOT_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_BITWISE_NOT_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_BITWISE_LEFT_SHIFT_ASSIGNMENT struct.
+ *
+ * @param self The current AST_BITWISE_LEFT_SHIFT_ASSIGNMENT struct.
+ */
+void astBitwiseLeftShiftAssignment_free(
+	struct AST_BITWISE_LEFT_SHIFT_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic(
+			"AST_BITWISE_LEFT_SHIFT_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT struct.
+ *
+ * @param self The current AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT struct.
+ */
+void astBitwiseRightShiftAssignment_free(
+	struct AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+		ast_free((struct AST **)&(*self)->VALUE);
+		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic(
+			"AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT struct has already been freed");
+	}
+}
+
+/**
  * WARNING: DO NOT USE - USE THE MACRO INSTEAD.
  *
  * Creates a new AST struct.
@@ -254,6 +636,84 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 		self->data.AST_ASSIGNMENT = malloc(AST_ASSIGNMENT_STRUCT_SIZE);
 		memcpy(self->data.AST_ASSIGNMENT, data, AST_ASSIGNMENT_STRUCT_SIZE);
 		break;
+	case ASTTOKENS_MODULO_ASSIGNMENT:
+		self->data.AST_MODULO_ASSIGNMENT =
+			malloc(AST_MODULO_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_MODULO_ASSIGNMENT, data,
+			   AST_MODULO_ASSIGNMENT_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_MULTIPLICATION_ASSIGNMENT:
+		self->data.AST_MULTIPLICATION_ASSIGNMENT =
+			malloc(AST_MULTIPLICATION_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_MULTIPLICATION_ASSIGNMENT, data,
+			   AST_MULTIPLICATION_ASSIGNMENT_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_EXPONENT_ASSIGNMENT:
+		self->data.AST_EXPONENT_ASSIGNMENT =
+			malloc(AST_EXPONENT_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_EXPONENT_ASSIGNMENT, data,
+			   AST_EXPONENT_ASSIGNMENT_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_DIVISION_ASSIGNMENT:
+		self->data.AST_DIVISION_ASSIGNMENT =
+			malloc(AST_DIVISION_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_DIVISION_ASSIGNMENT, data,
+			   AST_DIVISION_ASSIGNMENT_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_FLOOR_DIVISION_ASSIGNMENT:
+		self->data.AST_FLOOR_DIVISION_ASSIGNMENT =
+			malloc(AST_FLOOR_DIVISION_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_FLOOR_DIVISION_ASSIGNMENT, data,
+			   AST_FLOOR_DIVISION_ASSIGNMENT_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_ADDITION_ASSIGNMENT:
+		self->data.AST_ADDITION_ASSIGNMENT =
+			malloc(AST_ADDITION_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_ADDITION_ASSIGNMENT, data,
+			   AST_ADDITION_ASSIGNMENT_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_SUBTRACTION_ASSIGNMENT:
+		self->data.AST_SUBTRACTION_ASSIGNMENT =
+			malloc(AST_SUBTRACTION_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_SUBTRACTION_ASSIGNMENT, data,
+			   AST_SUBTRACTION_ASSIGNMENT_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_BITWISE_AND_ASSIGNMENT:
+		self->data.AST_BITWISE_AND_ASSIGNMENT =
+			malloc(AST_BITWISE_AND_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_BITWISE_AND_ASSIGNMENT, data,
+			   AST_BITWISE_AND_ASSIGNMENT_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_BITWISE_OR_ASSIGNMENT:
+		self->data.AST_BITWISE_OR_ASSIGNMENT =
+			malloc(AST_BITWISE_OR_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_BITWISE_OR_ASSIGNMENT, data,
+			   AST_BITWISE_OR_ASSIGNMENT_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_BITWISE_XOR_ASSIGNMENT:
+		self->data.AST_BITWISE_XOR_ASSIGNMENT =
+			malloc(AST_BITWISE_XOR_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_BITWISE_XOR_ASSIGNMENT, data,
+			   AST_BITWISE_XOR_ASSIGNMENT_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_BITWISE_NOT_ASSIGNMENT:
+		self->data.AST_BITWISE_NOT_ASSIGNMENT =
+			malloc(AST_BITWISE_NOT_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_BITWISE_NOT_ASSIGNMENT, data,
+			   AST_BITWISE_NOT_ASSIGNMENT_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
+		self->data.AST_BITWISE_LEFT_SHIFT_ASSIGNMENT =
+			malloc(AST_BITWISE_LEFT_SHIFT_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_BITWISE_LEFT_SHIFT_ASSIGNMENT, data,
+			   AST_BITWISE_LEFT_SHIFT_ASSIGNMENT_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
+		self->data.AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT =
+			malloc(AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT_STRUCT_SIZE);
+		memcpy(self->data.AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT, data,
+			   AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT_STRUCT_SIZE);
+		break;
 	}
 
 	return self;
@@ -288,6 +748,54 @@ void ast_free(struct AST **self) {
 			break;
 		case ASTTOKENS_ASSIGNMENT:
 			astAssignment_free(&(*self)->data.AST_ASSIGNMENT);
+			break;
+		case ASTTOKENS_MODULO_ASSIGNMENT:
+			astModuloAssignment_free(&(*self)->data.AST_MODULO_ASSIGNMENT);
+			break;
+		case ASTTOKENS_MULTIPLICATION_ASSIGNMENT:
+			astMultiplicationAssignment_free(
+				&(*self)->data.AST_MULTIPLICATION_ASSIGNMENT);
+			break;
+		case ASTTOKENS_EXPONENT_ASSIGNMENT:
+			astExponentAssignment_free(&(*self)->data.AST_EXPONENT_ASSIGNMENT);
+			break;
+		case ASTTOKENS_DIVISION_ASSIGNMENT:
+			astDivisionAssignment_free(&(*self)->data.AST_DIVISION_ASSIGNMENT);
+			break;
+		case ASTTOKENS_FLOOR_DIVISION_ASSIGNMENT:
+			astFloorDivisionAssignment_free(
+				&(*self)->data.AST_FLOOR_DIVISION_ASSIGNMENT);
+			break;
+		case ASTTOKENS_ADDITION_ASSIGNMENT:
+			astAdditionAssignment_free(&(*self)->data.AST_ADDITION_ASSIGNMENT);
+			break;
+		case ASTTOKENS_SUBTRACTION_ASSIGNMENT:
+			astSubtractionAssignment_free(
+				&(*self)->data.AST_SUBTRACTION_ASSIGNMENT);
+			break;
+		case ASTTOKENS_BITWISE_AND_ASSIGNMENT:
+			astBitwiseAndAssignment_free(
+				&(*self)->data.AST_BITWISE_AND_ASSIGNMENT);
+			break;
+		case ASTTOKENS_BITWISE_OR_ASSIGNMENT:
+			astBitwiseOrAssignment_free(
+				&(*self)->data.AST_BITWISE_OR_ASSIGNMENT);
+			break;
+		case ASTTOKENS_BITWISE_XOR_ASSIGNMENT:
+			astBitwiseXorAssignment_free(
+				&(*self)->data.AST_BITWISE_XOR_ASSIGNMENT);
+			break;
+		case ASTTOKENS_BITWISE_NOT_ASSIGNMENT:
+			astBitwiseNotAssignment_free(
+				&(*self)->data.AST_BITWISE_NOT_ASSIGNMENT);
+			break;
+		case ASTTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
+			astBitwiseLeftShiftAssignment_free(
+				&(*self)->data.AST_BITWISE_LEFT_SHIFT_ASSIGNMENT);
+			break;
+		case ASTTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
+			astBitwiseRightShiftAssignment_free(
+				&(*self)->data.AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT);
 			break;
 		}
 

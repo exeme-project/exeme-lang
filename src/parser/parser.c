@@ -181,9 +181,101 @@ void parser_parseAssignment(struct Parser *self,
 
 	value = (struct AST *)array_get(self->parserTokens, 0);
 
-	self->AST = ast_new(
-		ASTTOKENS_ASSIGNMENT, AST_ASSIGNMENT, lexerToken,
-		(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT, value);
+	switch (lexerToken->identifier) {
+	case LEXERTOKENS_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_ASSIGNMENT, AST_ASSIGNMENT, lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_MODULO_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_MODULO_ASSIGNMENT, AST_MODULO_ASSIGNMENT, lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_MULTIPLICATION_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_MULTIPLICATION_ASSIGNMENT, AST_MULTIPLICATION_ASSIGNMENT,
+			lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_EXPONENT_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_EXPONENT_ASSIGNMENT, AST_EXPONENT_ASSIGNMENT, lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_DIVISION_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_DIVISION_ASSIGNMENT, AST_DIVISION_ASSIGNMENT, lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_FLOOR_DIVISION_ASSIGNMENT, AST_FLOOR_DIVISION_ASSIGNMENT,
+			lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_ADDITION_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_ADDITION_ASSIGNMENT, AST_ADDITION_ASSIGNMENT, lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_SUBTRACTION_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_SUBTRACTION_ASSIGNMENT, AST_SUBTRACTION_ASSIGNMENT,
+			lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_BITWISE_AND_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_BITWISE_AND_ASSIGNMENT, AST_BITWISE_AND_ASSIGNMENT,
+			lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_BITWISE_OR_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_BITWISE_OR_ASSIGNMENT, AST_BITWISE_OR_ASSIGNMENT,
+			lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_BITWISE_XOR_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_BITWISE_XOR_ASSIGNMENT, AST_BITWISE_XOR_ASSIGNMENT,
+			lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_BITWISE_NOT_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_BITWISE_NOT_ASSIGNMENT, AST_BITWISE_NOT_ASSIGNMENT,
+			lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT,
+			AST_BITWISE_LEFT_SHIFT_ASSIGNMENT, lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	case LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
+		self->AST = ast_new(
+			ASTTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT,
+			AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT, lexerToken,
+			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
+			value);
+		break;
+	}
 
 	free(identifier); // Free the struct without freeing the inner data
 	array_clear(self->parserTokens,
@@ -214,6 +306,19 @@ void parser_parseNext(struct Parser *self) {
 		parser_parseIdentifier(self, lexerToken, lexerTokenIndex);
 		break;
 	case LEXERTOKENS_ASSIGNMENT:
+	case LEXERTOKENS_MODULO_ASSIGNMENT:
+	case LEXERTOKENS_MULTIPLICATION_ASSIGNMENT:
+	case LEXERTOKENS_EXPONENT_ASSIGNMENT:
+	case LEXERTOKENS_DIVISION_ASSIGNMENT:
+	case LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT:
+	case LEXERTOKENS_ADDITION_ASSIGNMENT:
+	case LEXERTOKENS_SUBTRACTION_ASSIGNMENT:
+	case LEXERTOKENS_BITWISE_AND_ASSIGNMENT:
+	case LEXERTOKENS_BITWISE_OR_ASSIGNMENT:
+	case LEXERTOKENS_BITWISE_XOR_ASSIGNMENT:
+	case LEXERTOKENS_BITWISE_NOT_ASSIGNMENT:
+	case LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
+	case LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
 		parser_parseAssignment(self, lexerToken);
 		break;
 	default:
@@ -227,8 +332,8 @@ void parser_parseNext(struct Parser *self) {
  * Gets the next lexer token and parses it.
  *
  * @param self             The current Parser struct.
- * @param freeParserTokens Whether to free the parser tokens when clearing the
- * array.
+ * @param freeParserTokens Whether to free the parser tokens when clearing
+ * the array.
  * @param nextLine         Whether to get the next line from the lexer.
  *
  * @return bool Whether parsing succeeded.
