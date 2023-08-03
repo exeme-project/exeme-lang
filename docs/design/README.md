@@ -25,10 +25,10 @@ import "std.io"
 
 using io::out
 
-# Returns whether `n` itself is prime.
+; Returns whether `n` itself is prime.
 fn isPrime(n: i32) -> bool {
-    for _, d = range(2, n) { # '_' is the index, but it is not needed
-        if (n % d == 0) { # Can be divided without a remainder
+    for _, d = range(2, n) { ; '_' is the index, but it is not needed
+        if (n % d == 0) { ; Can be divided without a remainder
             return false
         }
     }
