@@ -29,7 +29,7 @@ namespace exeme {
 To reference a member of a namespace, use the **`::`** operator. The left side of the operator must be a valid namespace identifier, and the right side must be a valid identifier.
 
 > [!NOTE]\
-> Namespaces can be nested infinitely. In that case, use the **`::`** operator to reference the nested namespace.
+> Namespaces can be nested infinitely. In that case, use the **`::`** operator to reference the nested namespace(s).
 
 ### Example
 
