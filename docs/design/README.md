@@ -13,7 +13,7 @@ This documentation is an overview of the Exeme project in its current state, and
 ## Important Notice
 
 > [!IMPORTANT]\
-> This document is **not** a complete programming manual. It does not provide a detailed and comprehensive justification for design decisions. See the linked pages for more detailed justifications.
+> This document is **not** a complete programming manual. It does not provide a detailed and comprehensive justification for design decisions. See the sub-folders and linked pages for more detailed justifications.
 
 ## The Basics
 

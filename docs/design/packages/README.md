@@ -57,7 +57,7 @@ fn main() {
 ```
 
 > [!NOTE]\
-> Use '.' to represent folders in the package identifier. For example, if you have a package called **`github`** with a sub-package called **`auth`**, you would use **`github.auth`** to import the **`auth`** package.
+> Use `.` to represent folders in the package identifier. For example, if you have a package called **`github`** with a sub-package called **`auth`**, you would use **`github.auth`** to import the **`auth`** package.
 
 ## Implicit Package Declaration
 
