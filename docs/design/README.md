@@ -4,7 +4,7 @@
   - [Introduction](#introduction)
   - [Important Notice](#important-notice)
   - [The Basics](#the-basics)
-    - [**`import`** declaration](#import-declaration)
+    - [**`import`** declaration - *Packages*](#import-declaration---packages)
 
 ## Introduction
 
@@ -41,7 +41,7 @@ fn main() {
 }
 ```
 
-### **`import`** declaration
+### **`import`** declaration - [*Packages*](packages/README.md)
 
 The *`import`* declaration is used to import packages. The *`import`* declaration is a top-level declaration, and must be the first declaration in a file (after the optional package declaration). In this example it imports the *`io`* subpackage from the *`std`* package.
 
