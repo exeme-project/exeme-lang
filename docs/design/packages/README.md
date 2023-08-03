@@ -23,7 +23,7 @@ To declare a folder is a package, use the **`package`** keyword followed by the 
 package exeme
 
 fn main() {
-  // ...
+  ; ...
 }
 ```
 
@@ -61,7 +61,7 @@ When you import a package, it automatically is assigned its own namespace. Pleas
 ```
 
 ```exeme
-// main.exl
+; main.exl
 
 import "github"
 

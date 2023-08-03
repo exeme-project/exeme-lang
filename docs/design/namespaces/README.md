@@ -6,7 +6,9 @@
     - [Namespace Declaration](#namespace-declaration)
   - [Referencing Namespaces' Members](#referencing-namespaces-members)
     - [Example](#example)
-  - [Using Namespaces / Their Members](#using-namespaces--their-members)
+  - [Scoping of Namespaces / Their Members](#scoping-of-namespaces--their-members)
+    - [Example with Namespace](#example-with-namespace)
+    - [Example with Namespace Member](#example-with-namespace-member)
 
 ## Overview
 
@@ -36,7 +38,7 @@ To reference a member of a namespace, use the **`::`** operator. The left side o
 ```exeme
 namespace github {
   fn auth() {
-    // ...
+    ; ...
   }
 }
 
@@ -45,5 +47,33 @@ fn main() {
 }
 ```
 
+## Scoping of Namespaces / Their Members
 
-## Using Namespaces / Their Members
+Namespaces and their members can be brought into the global scope using the **`using`** keyword. This is useful for shortening the code.
+
+> [!NOTE]\
+> If there are multiple namespaces with overlapping members, upon bringing the second one into scope the compiler will emit an error.
+
+### Example with Namespace
+
+```exeme
+import "github"
+
+using github ; the contents from the github namespace are brought into the global scope
+
+fn main() {
+  auth()
+}
+```
+
+### Example with Namespace Member
+
+```exeme
+import "github"
+
+using github::auth ; the auth function from the github namespace is brought into the global scope
+
+fn main() {
+  auth()
+}
+```
