@@ -22,7 +22,6 @@ static const struct Array KEYWORDS = {
 	(const void *[]){
 		"break",
 		"case",
-		"class",
 		"else",
 		"elif",
 		"enum",
@@ -33,6 +32,7 @@ static const struct Array KEYWORDS = {
 		"match",
 		"pass",
 		"return",
+		"struct",
 		"using",
 		"while",
 	},

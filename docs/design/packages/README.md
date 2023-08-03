@@ -21,6 +21,10 @@ To declare a folder is a package, use the **`package`** keyword followed by the 
 
 ```exeme
 package exeme
+
+fn main() {
+  // ...
+}
 ```
 
 By default, no functions or variables are exported from a package. To export a function or variable, it has to be declared in the **`package.exl`** file. See [Example](#example) for more information.
@@ -40,11 +44,11 @@ To use a package, use the **`import`** keyword followed by the package identifie
 
 When you import a package, it automatically is assigned its own namespace. Please note that this is based on the package's name, and is irrespective of whether it is a subpackage. For example, if you import the **`github.auth`** package, it will be assigned the namespace **`auth`**, not **`github_auth`**.
 
-> [!NOTE]\
-> You can use the **`using`** keyword to change its scope. To learn more, see [Namespaces](../namespaces/README.md).
-
 > [!IMPORTANT]\
 > The standard library takes precedence over user-defined packages. For example if there is a package in the current folder called **`std`**, it will not be imported if you use **`import "std"`**.
+
+> [!NOTE]\
+> You can use the **`using`** keyword to change its scope. To learn more, see [Namespaces](../namespaces/README.md).
 
 ### Example
 
