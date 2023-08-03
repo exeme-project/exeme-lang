@@ -577,7 +577,7 @@ void lexer_lexMultiLineComment(struct Lexer *self, const size_t startChrIndex) {
 		while (lexer_getChr(self, true)) {
 			if (self->chr == '=') {
 				if (lexer_getChr(self, false)) {
-					if (self->chr == '#') {
+					if (self->chr == ';') {
 						array_insert(
 							self->tokens, self->tokens->length,
 							lexerToken_new(LEXERTOKENS_MULTI_LINE_COMMENT,
@@ -822,7 +822,7 @@ bool lexer_lexNext(struct Lexer *self) {
 		lexer_lexTwoChar(self, self->chr, LEXERTOKENS_COLON,
 						 LEXERTOKENS_SCOPE_RESOLUTION);
 		break;
-	case '#':
+	case ';':
 		lexer_lexSingleLineComment(self);
 		break;
 	default:

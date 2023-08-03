@@ -65,8 +65,8 @@ b
 :
 ::
 
-# Comment
+; Comment
 
-#= A
+;= A
 multi-line
-comment =#
+comment =;
