@@ -25,7 +25,7 @@ package exeme
 
 By default, no functions or variables are exported from a package. To export a function or variable, it has to be declared in the **`package.exl`** file. See [Example](#example) for more information.
 
-> [!NOTE]\
+> [!IMPORTANT]\
 > Package declarations must be the first statement in a file. They are however optional (see [Implicit Package Declaration](#implicit-package-declaration)).
 
 > [!IMPORTANT]\
