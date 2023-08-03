@@ -29,7 +29,7 @@ Basically speed in both development and execution, while having a simple yet pow
 
 ## Project Status
 
-Exeme is currently in the early stages of development. The language is still being designed, and the compiler is still being written. The language is not yet ready for use. However, if you are interested in contributing, please feel free to do so :). There are contributions guidelines in the **[CONTRIBUTING.md](CONTRIBUTING.md)** file, and a code of conduct in the **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** file.
+Exeme is currently in the early stages of development. The language is still being designed, and the compiler is still being written, and so is not yet ready for use. However, if you are interested in contributing, please feel free to do so :). There are contributions guidelines in the **[CONTRIBUTING.md](CONTRIBUTING.md)** file, and a code of conduct in the **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** file.
 
 ## Roadmap
 
