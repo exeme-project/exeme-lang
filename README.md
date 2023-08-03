@@ -7,6 +7,8 @@
 - [Exeme Programming Language](#exeme-programming-language)
   - [The Exeme Project](#the-exeme-project)
   - [Goals](#goals)
+  - [Project Status](#project-status)
+  - [Roadmap](#roadmap)
 
 
 ## The Exeme Project
@@ -24,3 +26,11 @@ Exeme is designed to have:
 * Support for **all modern OS platforms**, and **OS-independent APIs**.
 
 Basically speed in both development and execution, while having a simple yet powerful syntax. For me it is a mash up of C, Python, and Go. Speed, simplicity, and powerful developer tools.
+
+## Project Status
+
+Exeme is currently in the early stages of development. The language is still being designed, and the compiler is still being written. The language is not yet ready for use. However, if you are interested in contributing, please feel free to do so :). There are contributions guidelines in the **[CONTRIBUTING.md](CONTRIBUTING.md)** file, and a code of conduct in the **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** file.
+
+## Roadmap
+
+The roadmap can be found in the **[ROADMAP.md](ROADMAP.md)** file.
