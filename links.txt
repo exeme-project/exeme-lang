@@ -9,3 +9,5 @@ https://www.quora.com/What-are-the-parts-of-the-compiler/answer/Ken-Gregg
 https://www.pauladamsmith.com/blog/2015/01/how-to-get-started-with-llvm-c-api.html
 
 https://blog.exaloop.io/python-llvm/
+
+https://github.com/exeme-project/exeme-lang/tree/b5680f31a7558fe7868b08a88fca2e5da1ba82ed/docs

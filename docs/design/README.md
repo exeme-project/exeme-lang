@@ -4,6 +4,7 @@
   - [Introduction](#introduction)
   - [Important Notice](#important-notice)
   - [The Basics](#the-basics)
+    - [**`import`** declaration](#import-declaration)
 
 ## Introduction
 
@@ -39,3 +40,10 @@ fn main() {
     out(isPrime(100))
 }
 ```
+
+### **`import`** declaration
+
+The *`import`* declaration is used to import modules. The *`import`* declaration is a top-level declaration, and must be the first declaration in a file.
+
+> [!NOTE]\
+> To find out more about modules, see the **[Modules file](modules/README.md)**.
