@@ -46,4 +46,4 @@ fn main() {
 The *`import`* declaration is used to import modules / libraries. The *`import`* declaration is a top-level declaration, and must be the first declaration in a file. In this example it imports the *`io`* module from the *`std`* library.
 
 > [!NOTE]\
-> To find out more about modules, see the **[`libraries/README.md`](libraries/README.md)**.
+> To find out more about modules, see **[`libraries/README.md`](libraries/README.md)**.
