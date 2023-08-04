@@ -50,7 +50,7 @@ When you import a package, it automatically is assigned its own namespace. Pleas
 > The standard library takes precedence over user-defined packages. For example if there is a package in a sub-folder of the current folder called **`std`**, it will not be imported if you use **`import "std"`**.
 
 > [!NOTE]\
-> You can use the **`using`** keyword to change its scope. To learn more, see [**`../namespaces/README.md`**](../namespaces/README.md).
+> You can use the **`using`** keyword to change the scope of the imported package / its members. To learn more, see [**`../namespaces/README.md`**](../namespaces/README.md).
 
 ### Example
 
