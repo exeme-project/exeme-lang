@@ -9,6 +9,7 @@
   - [Scoping of Namespaces / Their Members](#scoping-of-namespaces--their-members)
     - [Example with Namespace](#example-with-namespace)
     - [Example with Namespace Member](#example-with-namespace-member)
+  - [Generic Notes](#generic-notes)
 
 ## Overview
 
@@ -77,3 +78,7 @@ fn main() {
   auth()
 }
 ```
+
+## Generic Notes
+
+* Whenever you import a package, the compiler will automatically assign the imported code to a namespace with the same name as the package.
