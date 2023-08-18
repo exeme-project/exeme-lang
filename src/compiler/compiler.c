@@ -224,7 +224,7 @@ void compiler_compileNext(struct Compiler *self) {
 		break;
 	default:
 		printf("unsupported parser token for compiler: %s\n",
-			   astTokens_getName(self->parser->AST->IDENTIFIER));
+			   astTokens_getName(self->parser->AST->IDENTIFIER)); // TODO: fix
 		break;
 	}
 }

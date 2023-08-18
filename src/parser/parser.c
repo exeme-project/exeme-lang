@@ -124,6 +124,15 @@ void parser_parseNumber(struct Parser *self,
  *
  * @param self The current Parser struct.
  */
+void parser_parseKeyword(struct Parser *self,
+						 const struct LexerToken *lexerToken) {
+	if (strcmp(lexerToken->value->_value, "import") == 0) {
+
+	} else {
+		printf("unsupported keyword for parser's keyword parser: %s\n",
+			   lexerToken->value->_value); // TODO: Fix
+	}
+}
 
 /**
  * Parses the current identifier.
@@ -285,6 +294,10 @@ void parser_parseAssignment(struct Parser *self,
 			AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT, lexerToken,
 			(const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT,
 			value);
+		break;
+	default:
+		printf("unsupported lexer token for parser: %s\n",
+			   lexerTokens_getName(lexerToken->identifier)); // TODO: Fix
 		break;
 	}
 
