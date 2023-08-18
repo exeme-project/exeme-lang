@@ -85,6 +85,7 @@ void parser_free(struct Parser **self) {
  * Parses the current chr or string.
  *
  * @param self The current Parser struct.
+ * @param lexerToken The current lexer token.
  */
 void parser_parseChrOrString(struct Parser *self,
 							 const struct LexerToken *lexerToken) {
@@ -103,6 +104,7 @@ void parser_parseChrOrString(struct Parser *self,
  * Parses the current number.
  *
  * @param self The current Parser struct.
+ * @param lexerToken The current lexer token.
  */
 void parser_parseNumber(struct Parser *self,
 						const struct LexerToken *lexerToken) {
@@ -118,9 +120,17 @@ void parser_parseNumber(struct Parser *self,
 }
 
 /**
+ * Parses the current keyword.
+ *
+ * @param self The current Parser struct.
+ */
+
+/**
  * Parses the current identifier.
  *
  * @param self The current Parser struct.
+ * @param lexerToken The current lexer token.
+ * @param lexerTokenIndex The current lexer token's index.
  */
 void parser_parseIdentifier(struct Parser *self,
 							const struct LexerToken *lexerToken,
@@ -144,6 +154,7 @@ void parser_parseIdentifier(struct Parser *self,
  * Parses the current assignment.
  *
  * @param self The current Parser struct.
+ * @param lexerToken The current lexer token.
  */
 void parser_parseAssignment(struct Parser *self,
 							const struct LexerToken *lexerToken) {
@@ -301,6 +312,9 @@ void parser_parseNext(struct Parser *self) {
 	case LEXERTOKENS_INTEGER:
 	case LEXERTOKENS_FLOAT:
 		parser_parseNumber(self, lexerToken);
+		break;
+	case LEXERTOKENS_KEYWORD:
+		parser_parseKeyword(self, lexerToken);
 		break;
 	case LEXERTOKENS_IDENTIFIER:
 		parser_parseIdentifier(self, lexerToken, lexerTokenIndex);
