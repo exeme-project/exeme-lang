@@ -50,11 +50,9 @@ To use a package, use the **`import`** keyword followed by the package identifie
 
 > [!IMPORTANT]\
 > Use `.` to represent folders in the package identifier. For example, if you have a package called **`github`** with a sub-package called **`auth`**, you would use **`github.auth`** to import the **`auth`** package.
-
-> [!IMPORTANT]\
+> 
 > When you import a package, it automatically is assigned its own namespace. Please note that this is based on the package's name, and is irrespective of whether it is a subpackage. For example, if you import the **`github.auth`** package, it will be assigned the namespace **`auth`**, not **`github_auth`**.
-
-> [!IMPORTANT]\
+>
 > The standard library takes precedence over user-defined packages. For example if there is a package in a sub-folder of the current folder called **`std`**, it will not be imported if you use **`import "std"`**.
 
 > [!NOTE]\
