@@ -25,6 +25,7 @@ static const struct Array KEYWORDS = {
 		"else",
 		"elif",
 		"enum",
+		"export",
 		"for",
 		"func",
 		"if",
