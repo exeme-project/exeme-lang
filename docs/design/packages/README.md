@@ -4,9 +4,13 @@
   - [Overview](#overview)
   - [Syntax](#syntax)
     - [Package Declaration](#package-declaration)
+    - [Package Requirements](#package-requirements)
     - [Importing Packages](#importing-packages)
     - [Example](#example)
       - [File Structure](#file-structure)
+        - [`main.exl`](#mainexl)
+        - [`github/package.exlp`](#githubpackageexlp)
+        - [`github/github.exl`](#githubgithubexl)
 
 ## Overview
 
@@ -25,6 +29,20 @@ package github
 ```
 
 By default, no functions or variables are exported from a package. To export a function or variable, it has to be declared with the **`extern`** keyword. See [Example](#example) for more information.
+
+### Package Requirements
+
+Packages may have external requirements. To declare a package requirement, use the **`require`** keyword followed by the package identifier, and the package version. The package identifier must be a valid link to a valid repository (that can be understood by **`git`**), that is a valid package. The package version must be a valid tag.
+
+```exeme
+; package.exlp
+
+package github
+
+require (
+  github.com/exeme-project/example-package v1.0.0
+)
+```
 
 ### Importing Packages
 
@@ -53,9 +71,9 @@ To use a package, use the **`import`** keyword followed by the package identifie
   - github.exl
 ```
 
-```exeme
-; main.exl
+##### `main.exl`
 
+```exeme
 import "github"
 
 fn main() {
@@ -63,15 +81,19 @@ fn main() {
 }
 ```
 
-```exeme
-; github/package.exlp
+##### `github/package.exlp`
 
+```exeme
 package github
+
+require (
+  github.com/exeme-project/example-package v1.0.0
+)
 ```
 
-```exeme
-; github/github.exl
+##### `github/github.exl`
 
+```exeme
 extern fn auth() {
   ; ...
 }
