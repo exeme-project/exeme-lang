@@ -22,6 +22,7 @@
         "vadimcn.vscode-lldb",
         "wakatime.vscode-wakatime",
         "xaver.clang-format",
+        "yzhang.markdown-all-in-one",
     ],
     "unwantedRecommendations": [
         "ms-vscode.cpptools-extension-pack",

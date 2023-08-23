@@ -4,10 +4,9 @@
   - [Overview](#overview)
   - [Syntax](#syntax)
     - [Package Declaration](#package-declaration)
-  - [Importing Packages](#importing-packages)
+    - [Importing Packages](#importing-packages)
     - [Example](#example)
       - [File Structure](#file-structure)
-  - [Implicit Package Declaration](#implicit-package-declaration)
 
 ## Overview
 
@@ -27,7 +26,7 @@ package github
 
 By default, no functions or variables are exported from a package. To export a function or variable, it has to be declared with the **`extern`** keyword. See [Example](#example) for more information.
 
-## Importing Packages
+### Importing Packages
 
 To use a package, use the **`import`** keyword followed by the package identifier. The package identifier must be a valid string literal.
 

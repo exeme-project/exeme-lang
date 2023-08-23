@@ -24,7 +24,8 @@
 				"twxs.cmake",
 				"vadimcn.vscode-lldb",
 				"wakatime.vscode-wakatime",
-				"xaver.clang-format"
+				"xaver.clang-format",
+				"yzhang.markdown-all-in-one",
 			]
 		}
 	},
