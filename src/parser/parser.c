@@ -120,15 +120,36 @@ void parser_parseNumber(struct Parser *self,
 }
 
 /**
+ * Parses the current function.
+ *
+ * @param self The current Parser struct.
+ * @param lexerToken The current lexer token.
+ */
+void parser_parseKeyword_func(struct Parser *self,
+							  const struct LexerToken *lexerToken) {
+	struct AST *identifier = NULL;
+
+	if (self->lexer->tokens->length != 1) {
+		lexer_error(
+			self->lexer, error_get(P0001),
+			stringConcatenate(2, "expected 1 lexer token before function, got ",
+							  ulToString(self->lexer->tokens->length)),
+			lexerToken);
+	}
+}
+
+/**
  * Parses the current keyword.
  *
  * @param self The current Parser struct.
  */
 void parser_parseKeyword(struct Parser *self,
 						 const struct LexerToken *lexerToken) {
-	if (strcmp(lexerToken->value->_value, "import") == 0) {
-
-	} else {
+	if (strcmp(lexerToken->value->_value, "func") == 0) {
+		parser_parseKeyword_func(self, lexerToken);
+	} else if (strcmp(lexerToken->value->_value, "import") == 0) {
+		// TODO: Add import handling logic
+	} else { // TODO: Add support for all keywords
 		printf("unsupported keyword for parser's keyword parser: %s\n",
 			   lexerToken->value->_value); // TODO: Fix
 	}
@@ -167,7 +188,7 @@ void parser_parseIdentifier(struct Parser *self,
  */
 void parser_parseAssignment(struct Parser *self,
 							const struct LexerToken *lexerToken) {
-	struct AST *identifier, *value = NULL;
+	struct AST *identifier = NULL, *value = NULL;
 
 	if (self->parserTokens->length != 1) {
 		lexer_error(self->lexer, error_get(P0001),
@@ -192,7 +213,7 @@ void parser_parseAssignment(struct Parser *self,
 	parser_parse(self, false, false);
 
 	if (self->parserTokens->length != 1) {
-		lexer_error(self->lexer, error_get(P0003),
+		lexer_error(self->lexer, error_get(P0001),
 					stringConcatenate(
 						2, "expected 1 parser token after assignment, got ",
 						ulToString(self->parserTokens->length)),
