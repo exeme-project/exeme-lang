@@ -210,7 +210,12 @@ void parser_parseAssignment(struct Parser *self,
 					lexerToken);
 	}
 
-	parser_parse(self, false, false);
+	if (!parser_parse(self, false, false)) {
+		lexer_error(self->lexer, error_get(P0001),
+					"expected 1 parser token after assignment, got 0",
+					lexerToken);
+		return;
+	}
 
 	if (self->parserTokens->length != 1) {
 		lexer_error(self->lexer, error_get(P0001),
