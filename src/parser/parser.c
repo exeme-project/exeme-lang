@@ -82,6 +82,13 @@ void parser_free(struct Parser **self) {
 }
 
 /**
+ */
+
+void parser_error(struct Parser *self,
+				  const enum ErrorIdentifiers ERROR_MSG_NUMBER,
+				  const char *ERROR_MSG, const struct AST *token) {}
+
+/**
  * Parses the current chr or string.
  *
  * @param self The current Parser struct.
@@ -125,36 +132,7 @@ void parser_parseNumber(struct Parser *self,
  * @param self The current Parser struct.
  * @param lexerToken The current lexer token.
  */
-void parser_parseKeyword_func(struct Parser *self,
-							  const struct LexerToken *lexerToken) {
-	struct AST *identifier = NULL;
-
-	if (self->parserTokens->length != 1) {
-		lexer_error(self->lexer, error_get(P0001),
-					stringConcatenate(
-						2, "expected 0 parser tokens before function, got ",
-						ulToString(self->lexer->tokens->length)),
-					lexerToken);
-	}
-
-	if (!parser_parse(self, false, false)) {
-		lexer_error(self->lexer, error_get(P0001),
-					"expected 1 parser token after function, got 0",
-					lexerToken);
-	}
-
-	identifier = (struct AST *)array_get(self->lexer->tokens, 1);
-
-	if (identifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
-		lexer_error(self->lexer, error_get(P0002),
-					stringConcatenate(5, "expected parser token of type '",
-									  astTokens_getName(ASTTOKENS_VARIABLE),
-									  "' after function, got '",
-									  astTokens_getName(identifier->IDENTIFIER),
-									  "'"),
-					lexerToken);
-	}
-}
+void parser_parseKeyword_func(struct Parser *self) {}
 
 /**
  * Parses the current keyword.
@@ -164,7 +142,7 @@ void parser_parseKeyword_func(struct Parser *self,
 void parser_parseKeyword(struct Parser *self,
 						 const struct LexerToken *lexerToken) {
 	if (strcmp(lexerToken->value->_value, "func") == 0) {
-		parser_parseKeyword_func(self, lexerToken);
+		parser_parseKeyword_func(self);
 	} else if (strcmp(lexerToken->value->_value, "import") == 0) {
 		// TODO: Add import handling logic
 	} else { // TODO: Add support for all keywords
@@ -209,37 +187,37 @@ void parser_parseAssignment(struct Parser *self,
 	struct AST *identifier = NULL, *value = NULL;
 
 	if (self->parserTokens->length != 1) {
-		lexer_error(self->lexer, error_get(P0001),
-					stringConcatenate(
-						2, "expected 1 parser token before assignment, got ",
-						ulToString(self->parserTokens->length)),
-					lexerToken);
+		parser_error(self, P0001,
+					 stringConcatenate(
+						 2, "expected 1 parser token before assignment, got ",
+						 ulToString(self->parserTokens->length)),
+					 lexerToken);
 	}
 
 	identifier = (struct AST *)array_get(self->parserTokens, 0);
 
 	if (identifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
-		lexer_error(self->lexer, error_get(P0002),
-					stringConcatenate(5, "expected parser token of type '",
-									  astTokens_getName(ASTTOKENS_VARIABLE),
-									  "' before assignment, got '",
-									  astTokens_getName(identifier->IDENTIFIER),
-									  "'"),
-					lexerToken);
+		parser_error(
+			self, P0002,
+			stringConcatenate(5, "expected parser token of type '",
+							  astTokens_getName(ASTTOKENS_VARIABLE),
+							  "' before assignment, got '",
+							  astTokens_getName(identifier->IDENTIFIER), "'"),
+			lexerToken);
 	}
 
 	if (!parser_parse(self, false, false)) {
-		lexer_error(self->lexer, error_get(P0001),
-					"expected 1 parser token after assignment, got 0",
-					lexerToken);
+		parser_error(self, P0001,
+					 "expected 1 parser token after assignment, got 0",
+					 lexerToken);
 	}
 
 	if (self->parserTokens->length != 1) {
-		lexer_error(self->lexer, error_get(P0001),
-					stringConcatenate(
-						2, "expected 1 parser token after assignment, got ",
-						ulToString(self->parserTokens->length)),
-					lexerToken);
+		parser_error(self, P0001,
+					 stringConcatenate(
+						 2, "expected 1 parser token after assignment, got ",
+						 ulToString(self->parserTokens->length)),
+					 lexerToken);
 	}
 
 	value = (struct AST *)array_get(self->parserTokens, 0);

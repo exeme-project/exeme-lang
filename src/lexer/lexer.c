@@ -114,7 +114,8 @@ void lexer_free(struct Lexer **self) {
  * @param ERROR_MSG The error message.
  * @param token     The erroneous token.
  */
-void lexer_error(struct Lexer *self, const char *ERROR_MSG_NUMBER,
+void lexer_error(struct Lexer *self,
+				 const enum ErrorIdentifiers ERROR_MSG_NUMBER,
 				 const char *ERROR_MSG, const struct LexerToken *token) {
 	const char *lineNumberString;
 	FILE *filePointer = fopen(self->FILE_PATH, "r");
@@ -149,8 +150,8 @@ void lexer_error(struct Lexer *self, const char *ERROR_MSG_NUMBER,
 		printf("%s^ ", repeatChr(' ', self->chrIndex));
 	}
 
-	printf("%serror[%s]:%s %s\n", F_BRIGHT_RED, ERROR_MSG_NUMBER, S_RESET,
-		   ERROR_MSG);
+	printf("%serror[%s]:%s %s\n", F_BRIGHT_RED, error_get(ERROR_MSG_NUMBER),
+		   S_RESET, ERROR_MSG);
 
 	exit(EXIT_FAILURE);
 }
@@ -272,7 +273,7 @@ void lexer_checkForContinuation(struct Lexer *self,
 	if (lexer_getChr(self, false)) {
 		if (!isspace(self->chr) && !isalnum(self->chr)) {
 			lexer_error(
-				self, error_get(L0002),
+				self, L0002,
 				stringConcatenate(3, "unexpected continuation of token '",
 								  token->value->_value, "'"),
 				lexerToken_new(
@@ -479,7 +480,7 @@ char lexer_escapeChr(struct Lexer *self, const size_t startChrIndex) {
 		return '\\';
 	}
 
-	lexer_error(self, error_get(L0004), "invalid escape sequence",
+	lexer_error(self, L0004, "invalid escape sequence",
 				lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
 							   startChrIndex, self->chrIndex, self->lineIndex));
 
@@ -503,7 +504,7 @@ void lexer_lexChr(struct Lexer *self) {
 										self->chrIndex, self->lineIndex));
 			return;
 		} else if (chr->length == 1) {
-			lexer_error(self, error_get(L0005), "multi-character char literal",
+			lexer_error(self, L0005, "multi-character char literal",
 						lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
 									   startChrIndex + 1, self->chrIndex,
 									   self->lineIndex));
@@ -519,7 +520,7 @@ void lexer_lexChr(struct Lexer *self) {
 		}
 	}
 
-	lexer_error(self, error_get(L0003), "unterminated character literal",
+	lexer_error(self, L0003, "unterminated character literal",
 				lexerToken_new(LEXERTOKENS_NONE, chr, startChrIndex,
 							   self->chrIndex, self->lineIndex));
 }
@@ -559,7 +560,7 @@ void lexer_lexString(struct Lexer *self) {
 	}
 
 	lexer_error(
-		self, error_get(L0003), "unterminated string literal",
+		self, L0003, "unterminated string literal",
 		lexerToken_new(LEXERTOKENS_STRING, string,
 					   self->lineIndex == startLineIndex ? startChrIndex : 0,
 					   self->chrIndex, self->lineIndex));
@@ -595,7 +596,7 @@ void lexer_lexMultiLineComment(struct Lexer *self, const size_t startChrIndex) {
 	}
 
 	lexer_error(
-		self, error_get(L0003), "unterminated multi-line comment",
+		self, L0003, "unterminated multi-line comment",
 		lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
 					   self->lineIndex == startLineIndex ? startChrIndex : 0,
 					   self->chrIndex, self->lineIndex));
@@ -673,17 +674,17 @@ void lexer_lexNumber(struct Lexer *self) {
 		if (isspace(self->chr)) {
 			break;
 		} else if (isalpha(self->chr)) {
-			lexer_error(self, error_get(L0006),
+			lexer_error(self, L0006,
 						stringConcatenate(2, "invalid character for ",
 										  isFloat ? "float" : "integer"),
 						lexerToken_new(LEXERTOKENS_NONE, number, self->chrIndex,
 									   self->chrIndex, self->lineIndex));
 		} else if (self->chr == '.') {
 			if (isFloat) {
-				lexer_error(
-					self, error_get(L0007), "too many decimal points for float",
-					lexerToken_new(LEXERTOKENS_NONE, number, self->chrIndex,
-								   self->chrIndex, self->lineIndex));
+				lexer_error(self, L0007, "too many decimal points for float",
+							lexerToken_new(LEXERTOKENS_NONE, number,
+										   self->chrIndex, self->chrIndex,
+										   self->lineIndex));
 			} else {
 				isFloat = true;
 			}
@@ -832,7 +833,7 @@ bool lexer_lexNext(struct Lexer *self) {
 		} else if (isdigit(self->chr)) {
 			lexer_lexNumber(self);
 		} else {
-			lexer_error(self, error_get(L0001), "unknown character", NULL);
+			lexer_error(self, L0001, "unknown character", NULL);
 		}
 
 		break;
