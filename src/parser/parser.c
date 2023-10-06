@@ -86,7 +86,10 @@ void parser_free(struct Parser **self) {
 
 void parser_error(struct Parser *self,
 				  const enum ErrorIdentifiers ERROR_MSG_NUMBER,
-				  const char *ERROR_MSG, const struct AST *token) {}
+				  const char *ERROR_MSG, const struct AST *token) {
+	printf("error - %s\n", ERROR_MSG); // TODO Make pretty print
+	exit(1);
+}
 
 /**
  * Parses the current chr or string.
@@ -127,12 +130,33 @@ void parser_parseNumber(struct Parser *self,
 }
 
 /**
+ * Parses a function.
+ *
+ * @param self The current Parser struct.
+ * @param lexerToken The current lexer token.
+ */
+void parser_parseFunction(struct Parser *self,
+						  const struct LexerToken *lexerToken) {
+	struct AST *identifier = NULL,
+			   *arguments = NULL; // arguments are placeholders, so its better
+								  // to use that word rather than parameters
+
+	if (!parser_parse(self, true, false)) {
+		lexer_error(self->lexer, P0001,
+					"expected 1 parser token after 'func', got 0", lexerToken);
+	}
+}
+
+/**
  * Parses the current function.
  *
  * @param self The current Parser struct.
  * @param lexerToken The current lexer token.
  */
-void parser_parseKeyword_func(struct Parser *self) {}
+void parser_parseKeyword_func(struct Parser *self,
+							  const struct LexerToken *lexerToken) {
+	parser_parseFunction(self, lexerToken);
+}
 
 /**
  * Parses the current keyword.
@@ -142,7 +166,7 @@ void parser_parseKeyword_func(struct Parser *self) {}
 void parser_parseKeyword(struct Parser *self,
 						 const struct LexerToken *lexerToken) {
 	if (strcmp(lexerToken->value->_value, "func") == 0) {
-		parser_parseKeyword_func(self);
+		parser_parseKeyword_func(self, lexerToken);
 	} else if (strcmp(lexerToken->value->_value, "import") == 0) {
 		// TODO: Add import handling logic
 	} else { // TODO: Add support for all keywords
@@ -187,11 +211,11 @@ void parser_parseAssignment(struct Parser *self,
 	struct AST *identifier = NULL, *value = NULL;
 
 	if (self->parserTokens->length != 1) {
-		parser_error(self, P0001,
-					 stringConcatenate(
-						 2, "expected 1 parser token before assignment, got ",
-						 ulToString(self->parserTokens->length)),
-					 lexerToken);
+		lexer_error(self->lexer, P0001,
+					stringConcatenate(
+						2, "expected 1 parser token before assignment, got ",
+						ulToString(self->parserTokens->length)),
+					lexerToken);
 	}
 
 	identifier = (struct AST *)array_get(self->parserTokens, 0);
@@ -203,26 +227,29 @@ void parser_parseAssignment(struct Parser *self,
 							  astTokens_getName(ASTTOKENS_VARIABLE),
 							  "' before assignment, got '",
 							  astTokens_getName(identifier->IDENTIFIER), "'"),
-			lexerToken);
+			identifier);
 	}
 
+	array_clear(self->parserTokens,
+				NULL); // Clear the array without freeing the inner data
+
 	if (!parser_parse(self, false, false)) {
-		parser_error(self, P0001,
-					 "expected 1 parser token after assignment, got 0",
-					 lexerToken);
+		lexer_error(self->lexer, P0001,
+					"expected 1 parser token after assignment, got 0",
+					lexerToken);
 	}
 
 	if (self->parserTokens->length != 1) {
-		parser_error(self, P0001,
-					 stringConcatenate(
-						 2, "expected 1 parser token after assignment, got ",
-						 ulToString(self->parserTokens->length)),
-					 lexerToken);
+		lexer_error(self->lexer, P0001,
+					stringConcatenate(
+						2, "expected 1 parser token after assignment, got ",
+						ulToString(self->parserTokens->length)),
+					lexerToken);
 	}
 
 	value = (struct AST *)array_get(self->parserTokens, 0);
 
-	switch (lexerToken->identifier) {
+	switch (lexerToken->identifier) { //  for the different types of assignment
 	case LEXERTOKENS_ASSIGNMENT:
 		self->AST = ast_new(
 			ASTTOKENS_ASSIGNMENT, AST_ASSIGNMENT, lexerToken,
@@ -322,7 +349,8 @@ void parser_parseAssignment(struct Parser *self,
 		break;
 	}
 
-	free(identifier); // Free the struct without freeing the inner data
+	free(identifier); // Free the identifier of the assignment, which is not
+					  // needed anymore
 	array_clear(self->parserTokens,
 				NULL); // Clear the array without freeing the inner data
 }
@@ -396,6 +424,12 @@ bool parser_parse(struct Parser *self, bool freeParserTokens, bool nextLine) {
 
 	do {
 		if (!lexer_lex(self->lexer, nextLine)) {
+			if (!nextLine && self->parserTokens->length !=
+								 0) { // if not allowed to go to next line and
+									  // there has been a parser token parsed
+				return true;
+			}
+
 			return false;
 		}
 
