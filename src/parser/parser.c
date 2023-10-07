@@ -188,6 +188,8 @@ void parser_parseFunction(struct Parser *self,
 							 "'"),
 						 openingBrackets);
 		}
+
+		printf("yes\n");
 	}
 }
 
@@ -495,10 +497,11 @@ bool parser_parse(struct Parser *self, bool freeParserTokens, bool nextLine) {
 		}
 
 		parser_parseNext(self);
-	} while (self->AST == NULL ||
-			 (self->inParsing &&
-			  self->parserTokens->length !=
-				  0)); // TODO: Fix this breh. The in parsing thing.
+
+		if (old_inParsing && self->parserTokens->length > 0) {
+			return true;
+		}
+	} while (self->AST == NULL);
 
 	self->inParsing = old_inParsing;
 	return true;
