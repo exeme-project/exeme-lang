@@ -39,6 +39,9 @@ struct AST {
 		ASTTOKENS_BITWISE_NOT_ASSIGNMENT,
 		ASTTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT,
 		ASTTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT,
+
+		ASTTOKENS_OPEN_BRACE,
+		ASTTOKENS_CLOSE_BRACE,
 	} IDENTIFIER;
 	union {
 		/* Represents a character in the AST. */
@@ -169,6 +172,16 @@ struct AST {
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
 		} * AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT;
+
+		/* Represents an open brace in the AST. */
+		struct AST_OPEN_BRACE {
+			const struct LexerToken *_token;
+		} * AST_OPEN_BRACE;
+
+		/* Represents a close brace in the AST. */
+		struct AST_CLOSE_BRACE {
+			const struct LexerToken *_token;
+		} * AST_CLOSE_BRACE;
 	} data;
 };
 
@@ -204,6 +217,8 @@ struct AST {
 	sizeof(struct AST_BITWISE_LEFT_SHIFT_ASSIGNMENT)
 #define AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT_STRUCT_SIZE                         \
 	sizeof(struct AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT)
+#define AST_OPEN_BRACE_STRUCT_SIZE sizeof(struct AST_OPEN_BRACE)
+#define AST_CLOSE_BRACE_STRUCT_SIZE sizeof(struct AST_CLOSE_BRACE)
 
 /**
  * Contains the names of each of the AST token identifiers.
@@ -230,6 +245,8 @@ static const struct Array ASTTOKEN_NAMES = {
 		"AST_BITWISE_NOT_ASSIGNMENT",
 		"AST_BITWISE_LEFT_SHIFT_ASSIGNMENT",
 		"AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT",
+		"AST_OPEN_BRACE",
+		"AST_CLOSE_BRACE",
 	},
 };
 
@@ -593,6 +610,38 @@ void astBitwiseRightShiftAssignment_free(
 }
 
 /**
+ * Frees an AST_OPEN_BRACE struct.
+ *
+ * @param self The current AST_OPEN_BRACE struct.
+ */
+void astOpenBrace_free(struct AST_OPEN_BRACE **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_OPEN_BRACE struct has already been freed");
+	}
+}
+
+/**
+ * Frees an AST_CLOSE_BRACE struct.
+ *
+ * @param self The current AST_CLOSE_BRACE struct.
+ */
+void astCloseBrace_free(struct AST_CLOSE_BRACE **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_CLOSE_BRACE struct has already been freed");
+	}
+}
+
+/**
  * WARNING: DO NOT USE - USE THE MACRO INSTEAD.
  *
  * Creates a new AST struct.
@@ -714,6 +763,14 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 		memcpy(self->data.AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT, data,
 			   AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT_STRUCT_SIZE);
 		break;
+	case ASTTOKENS_OPEN_BRACE:
+		self->data.AST_OPEN_BRACE = malloc(AST_OPEN_BRACE_STRUCT_SIZE);
+		memcpy(self->data.AST_OPEN_BRACE, data, AST_OPEN_BRACE_STRUCT_SIZE);
+		break;
+	case ASTTOKENS_CLOSE_BRACE:
+		self->data.AST_CLOSE_BRACE = malloc(AST_CLOSE_BRACE_STRUCT_SIZE);
+		memcpy(self->data.AST_CLOSE_BRACE, data, AST_CLOSE_BRACE_STRUCT_SIZE);
+		break;
 	}
 
 	return self;
@@ -796,6 +853,12 @@ void ast_free(struct AST **self) {
 		case ASTTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
 			astBitwiseRightShiftAssignment_free(
 				&(*self)->data.AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT);
+			break;
+		case ASTTOKENS_OPEN_BRACE:
+			astOpenBrace_free(&(*self)->data.AST_OPEN_BRACE);
+			break;
+		case ASTTOKENS_CLOSE_BRACE:
+			astCloseBrace_free(&(*self)->data.AST_CLOSE_BRACE);
 			break;
 		}
 

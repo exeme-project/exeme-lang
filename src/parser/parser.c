@@ -16,6 +16,7 @@
  * Represents a parser.
  */
 struct Parser {
+	bool inParsing;
 	struct Array *parserTokens;
 	struct AST *AST;
 	struct Lexer *lexer;
@@ -36,6 +37,8 @@ struct Parser *parser_new(const char *FILE_PATH) {
 	if (!self) {
 		panic("failed to malloc Parser struct");
 	}
+
+	self->inParsing = false;
 
 	self->parserTokens = array_new();
 	self->AST = NULL;
@@ -136,14 +139,55 @@ void parser_parseNumber(struct Parser *self,
  * @param lexerToken The current lexer token.
  */
 void parser_parseFunction(struct Parser *self,
-						  const struct LexerToken *lexerToken) {
-	struct AST *identifier = NULL,
-			   *arguments = NULL; // arguments are placeholders, so its better
-								  // to use that word rather than parameters
+						  const struct LexerToken *lexerToken,
+						  struct AST *parsedIdentifier) {
+	struct AST *identifier = NULL, *openingBrackets = NULL, *arguments = NULL,
+			   *closingBrackets =
+				   NULL; // arguments are placeholders, so its better
+						 // to use that word rather than parameters
 
-	if (!parser_parse(self, true, false)) {
-		lexer_error(self->lexer, P0001,
-					"expected 1 parser token after 'func', got 0", lexerToken);
+	if (parsedIdentifier) { // if this is a function call
+		identifier = parsedIdentifier;
+	} else {
+		if (!parser_parse(self, false, false)) {
+			lexer_error(self->lexer, P0001,
+						"expected 1 parser token after 'func', got 0",
+						lexerToken);
+		}
+
+		identifier = (struct AST *)array_get(self->parserTokens, 0);
+	}
+
+	if (identifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
+		parser_error(
+			self, P0002,
+			stringConcatenate(5, "expected parser token of type '",
+							  astTokens_getName(ASTTOKENS_VARIABLE),
+							  "' after 'func' keyword, got '",
+							  astTokens_getName(identifier->IDENTIFIER), "'"),
+			identifier);
+	}
+
+	if (!parsedIdentifier) { // if this is a function declaration
+		if (!parser_parse(self, false, false)) {
+			parser_error(self, P0001,
+						 "expected 1 parser token after function identifier, "
+						 "got 0",
+						 identifier);
+		}
+
+		openingBrackets = (struct AST *)array_get(self->parserTokens, 0);
+
+		if (openingBrackets->IDENTIFIER != ASTTOKENS_OPEN_BRACE) {
+			parser_error(self, P0002,
+						 stringConcatenate(
+							 5, "expected parser token of type '",
+							 astTokens_getName(ASTTOKENS_OPEN_BRACE),
+							 "' after function identifier, got '",
+							 astTokens_getName(openingBrackets->IDENTIFIER),
+							 "'"),
+						 openingBrackets);
+		}
 	}
 }
 
@@ -155,7 +199,7 @@ void parser_parseFunction(struct Parser *self,
  */
 void parser_parseKeyword_func(struct Parser *self,
 							  const struct LexerToken *lexerToken) {
-	parser_parseFunction(self, lexerToken);
+	parser_parseFunction(self, lexerToken, NULL);
 }
 
 /**
@@ -397,6 +441,15 @@ void parser_parseNext(struct Parser *self) {
 	case LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
 		parser_parseAssignment(self, lexerToken);
 		break;
+	case LEXERTOKENS_OPEN_BRACE:
+		array_insert(self->parserTokens, self->parserTokens->length,
+					 ast_new(ASTTOKENS_OPEN_BRACE, AST_OPEN_BRACE, lexerToken));
+		break;
+	case LEXERTOKENS_CLOSE_BRACE:
+		array_insert(
+			self->parserTokens, self->parserTokens->length,
+			ast_new(ASTTOKENS_CLOSE_BRACE, AST_CLOSE_BRACE, lexerToken));
+		break;
 	default:
 		printf("unsupported lexer token for parser: %s\n",
 			   lexerTokens_getName(lexerToken->identifier));
@@ -415,6 +468,12 @@ void parser_parseNext(struct Parser *self) {
  * @return bool Whether parsing succeeded.
  */
 bool parser_parse(struct Parser *self, bool freeParserTokens, bool nextLine) {
+	bool old_inParsing = self->inParsing;
+
+	if (!self->inParsing) {
+		self->inParsing = true;
+	}
+
 	array_clear(self->parserTokens,
 				freeParserTokens ? (void (*)(const void *))ast_free : NULL);
 
@@ -424,6 +483,8 @@ bool parser_parse(struct Parser *self, bool freeParserTokens, bool nextLine) {
 
 	do {
 		if (!lexer_lex(self->lexer, nextLine)) {
+			self->inParsing = old_inParsing;
+
 			if (!nextLine && self->parserTokens->length !=
 								 0) { // if not allowed to go to next line and
 									  // there has been a parser token parsed
@@ -434,7 +495,11 @@ bool parser_parse(struct Parser *self, bool freeParserTokens, bool nextLine) {
 		}
 
 		parser_parseNext(self);
-	} while (self->AST == NULL);
+	} while (self->AST == NULL ||
+			 (self->inParsing &&
+			  self->parserTokens->length !=
+				  0)); // TODO: Fix this breh. The in parsing thing.
 
+	self->inParsing = old_inParsing;
 	return true;
 }
