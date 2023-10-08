@@ -141,10 +141,12 @@ void parser_parseNumber(struct Parser *self,
 void parser_parseFunction(struct Parser *self,
 						  const struct LexerToken *lexerToken,
 						  struct AST *parsedIdentifier) {
-	struct AST *identifier = NULL, *openingBrackets = NULL, *arguments = NULL,
-			   *closingBrackets =
-				   NULL; // arguments are placeholders, so its better
-						 // to use that word rather than parameters
+	struct AST *function = NULL, *identifier = NULL, *openingBrackets = NULL,
+			   *arguments = NULL, *argumentIdentifier = NULL,
+			   *argumentTypeSeparator = NULL, *argumentType = NULL,
+			   *closingBrackets = NULL,
+			   *lastToken; // arguments are placeholders, so its better
+						   // to use that word rather than parameters
 
 	if (parsedIdentifier) { // if this is a function call
 		identifier = parsedIdentifier;
@@ -189,7 +191,38 @@ void parser_parseFunction(struct Parser *self,
 						 openingBrackets);
 		}
 
-		printf("yes\n");
+		lastToken = openingBrackets;
+	}
+
+	while (true) {
+		if (!parser_parse(self, false, true)) {
+			parser_error(
+				self, P0001,
+				stringConcatenate(3, "expected parser token of type '",
+								  astTokens_getName(ASTTOKENS_CLOSE_BRACE),
+								  "' after function arguments, got 'EOF'"),
+				lastToken);
+		}
+
+		argumentIdentifier = (struct AST *)array_get(self->parserTokens, 0);
+
+		if (argumentIdentifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
+			parser_error(self, P0002,
+						 stringConcatenate(
+							 5, "expected parser token of type '",
+							 astTokens_getName(ASTTOKENS_VARIABLE),
+							 "' for function argument, got '",
+							 astTokens_getName(argumentIdentifier->IDENTIFIER),
+							 "'"),
+						 argumentIdentifier);
+		}
+
+		if (!parser_parse(self, false, true)) {
+			parser_error(self, P0001,
+						 "expected 1 parser token after function argument, "
+						 "got 0",
+						 identifier);
+		}
 	}
 }
 
