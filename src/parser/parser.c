@@ -90,8 +90,167 @@ void parser_free(struct Parser **self) {
 void parser_error(struct Parser *self,
 				  const enum ErrorIdentifiers ERROR_MSG_NUMBER,
 				  const char *ERROR_MSG, const struct AST *token) {
-	printf("error - %s\n", ERROR_MSG); // TODO Make pretty print
-	exit(1);
+	bool warning = false;
+	const char *lineNumberString;
+	FILE *filePointer = fopen(self->lexer->FILE_PATH, "r");
+	struct String *line = string_new("\0", true);
+	size_t lineIndex = 0, lineNumberStringLength, startChrIndex = 0,
+		   endChrIndex = 0;
+
+	while (true) {
+		char chr = (char)fgetc(filePointer);
+
+		if (chr == '\n' || chr == EOF) {
+			if (self->lexer->lineIndex == lineIndex++) {
+				break;
+			}
+
+			string_clear(line);
+		} else if (lineIndex == self->lexer->lineIndex) {
+			string_append(line, chr);
+		}
+	}
+
+	lineNumberString = ulToString(self->lexer->lineIndex + 1);
+	lineNumberStringLength = strlen(lineNumberString);
+
+	printf("-%s> %s\n%s | %s\n%s", repeatChr('-', lineNumberStringLength),
+		   self->lexer->FILE_PATH, lineNumberString, line->_value,
+		   repeatChr(' ', lineNumberStringLength + 3));
+
+	switch (token->IDENTIFIER) {
+	case ASTTOKENS_CHR:
+		startChrIndex = token->data.AST_CHR->_token->startChrIndex;
+		endChrIndex = token->data.AST_CHR->_token->endChrIndex;
+		break;
+	case ASTTOKENS_STRING:
+		startChrIndex = token->data.AST_STRING->_token->startChrIndex;
+		endChrIndex = token->data.AST_STRING->_token->endChrIndex;
+		break;
+	case ASTTOKENS_INTEGER:
+		startChrIndex = token->data.AST_INTEGER->_token->startChrIndex;
+		endChrIndex = token->data.AST_INTEGER->_token->endChrIndex;
+		break;
+	case ASTTOKENS_FLOAT:
+		startChrIndex = token->data.AST_FLOAT->_token->startChrIndex;
+		endChrIndex = token->data.AST_FLOAT->_token->endChrIndex;
+		break;
+
+	case ASTTOKENS_VARIABLE:
+		startChrIndex = token->data.AST_VARIABLE->_token->startChrIndex;
+		endChrIndex = token->data.AST_VARIABLE->_token->endChrIndex;
+		break;
+	case ASTTOKENS_ASSIGNMENT:
+		startChrIndex = token->data.AST_ASSIGNMENT->_token->startChrIndex;
+		endChrIndex = token->data.AST_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_MODULO_ASSIGNMENT:
+		startChrIndex =
+			token->data.AST_MODULO_ASSIGNMENT->_token->startChrIndex;
+		endChrIndex = token->data.AST_MODULO_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_MULTIPLICATION_ASSIGNMENT:
+		startChrIndex =
+			token->data.AST_MULTIPLICATION_ASSIGNMENT->_token->startChrIndex;
+		endChrIndex =
+			token->data.AST_MULTIPLICATION_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_EXPONENT_ASSIGNMENT:
+		startChrIndex =
+			token->data.AST_EXPONENT_ASSIGNMENT->_token->startChrIndex;
+		endChrIndex = token->data.AST_EXPONENT_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_DIVISION_ASSIGNMENT:
+		startChrIndex =
+			token->data.AST_DIVISION_ASSIGNMENT->_token->startChrIndex;
+		endChrIndex = token->data.AST_DIVISION_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_FLOOR_DIVISION_ASSIGNMENT:
+		startChrIndex =
+			token->data.AST_FLOOR_DIVISION_ASSIGNMENT->_token->startChrIndex;
+		endChrIndex =
+			token->data.AST_FLOOR_DIVISION_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_ADDITION_ASSIGNMENT:
+		startChrIndex =
+			token->data.AST_ADDITION_ASSIGNMENT->_token->startChrIndex;
+		endChrIndex = token->data.AST_ADDITION_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_SUBTRACTION_ASSIGNMENT:
+		startChrIndex =
+			token->data.AST_SUBTRACTION_ASSIGNMENT->_token->startChrIndex;
+		endChrIndex =
+			token->data.AST_SUBTRACTION_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_BITWISE_AND_ASSIGNMENT:
+		startChrIndex =
+			token->data.AST_BITWISE_AND_ASSIGNMENT->_token->startChrIndex;
+		endChrIndex =
+			token->data.AST_BITWISE_AND_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_BITWISE_OR_ASSIGNMENT:
+		startChrIndex =
+			token->data.AST_BITWISE_OR_ASSIGNMENT->_token->startChrIndex;
+		endChrIndex =
+			token->data.AST_BITWISE_OR_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_BITWISE_XOR_ASSIGNMENT:
+		startChrIndex =
+			token->data.AST_BITWISE_XOR_ASSIGNMENT->_token->startChrIndex;
+		endChrIndex =
+			token->data.AST_BITWISE_XOR_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_BITWISE_NOT_ASSIGNMENT:
+		startChrIndex =
+			token->data.AST_BITWISE_NOT_ASSIGNMENT->_token->startChrIndex;
+		endChrIndex =
+			token->data.AST_BITWISE_NOT_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
+		startChrIndex = token->data.AST_BITWISE_LEFT_SHIFT_ASSIGNMENT->_token
+							->startChrIndex;
+		endChrIndex =
+			token->data.AST_BITWISE_LEFT_SHIFT_ASSIGNMENT->_token->endChrIndex;
+		break;
+	case ASTTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
+		startChrIndex = token->data.AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT->_token
+							->startChrIndex;
+		endChrIndex =
+			token->data.AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT->_token->endChrIndex;
+		break;
+
+	case ASTTOKENS_OPEN_BRACE:
+		startChrIndex = token->data.AST_OPEN_BRACE->_token->startChrIndex;
+		endChrIndex = token->data.AST_OPEN_BRACE->_token->endChrIndex;
+		break;
+	case ASTTOKENS_CLOSE_BRACE:
+		startChrIndex = token->data.AST_CLOSE_BRACE->_token->startChrIndex;
+		endChrIndex = token->data.AST_CLOSE_BRACE->_token->endChrIndex;
+		break;
+	default:
+		warning = true;
+	}
+
+	if (token) {
+		printf("%s%s ", repeatChr(' ', startChrIndex),
+			   repeatChr('^', endChrIndex - startChrIndex + 1));
+	} else {
+		printf("%s^ ", repeatChr(' ', self->lexer->chrIndex));
+	}
+
+	printf("%serror[%s]:%s %s\n", F_BRIGHT_RED, error_get(ERROR_MSG_NUMBER),
+		   S_RESET, ERROR_MSG);
+
+	if (warning) {
+		printf(
+			"%s       ^ parser error received a token with an identifier it "
+			"doesn not "
+			"support yet. defaulting to 0 index.\n",
+			repeatChr(' ', lineNumberStringLength + 3)); // TODO: Add support
+														 // for all identifiers.
+	}
+
+	exit(EXIT_FAILURE);
 }
 
 /**

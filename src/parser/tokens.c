@@ -187,7 +187,7 @@ struct AST {
 
 		/* Represents a function definition in the AST. */
 		struct AST_FUNCTION_DEFINITION {
-			const struct LexerToken *_keyword;
+			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST_OPEN_BRACE *OPEN_BRACE;
 			const struct Array *ARGUMENTS;
@@ -663,7 +663,7 @@ void astCloseBrace_free(struct AST_CLOSE_BRACE **self) {
  */
 void astFunctionDefinition_free(struct AST_FUNCTION_DEFINITION **self) {
 	if (self && *self) {
-		lexerToken_free((struct LexerToken **)&(*self)->_keyword);
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
 		astVariable_free((struct AST_VARIABLE **)&(*self)->IDENTIFIER);
 		astOpenBrace_free((struct AST_OPEN_BRACE **)&(*self)->OPEN_BRACE);
 		array_free((struct Array **)&(*self)->ARGUMENTS);
