@@ -42,6 +42,7 @@ struct AST {
 
 		ASTTOKENS_OPEN_BRACE,
 		ASTTOKENS_CLOSE_BRACE,
+		ASTTOKENS_COLON,
 
 		ASTTOKENS_FUNCTION_DEFINITION,
 	} IDENTIFIER;
@@ -185,6 +186,11 @@ struct AST {
 			const struct LexerToken *_token;
 		} * AST_CLOSE_BRACE;
 
+		/* Represents a colon in the AST. */
+		struct AST_COLON {
+			const struct LexerToken *_token;
+		} * AST_COLON;
+
 		/* Represents a function definition in the AST. */
 		struct AST_FUNCTION_DEFINITION {
 			const struct LexerToken *_token;
@@ -231,6 +237,7 @@ struct AST {
 	sizeof(struct AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT)
 #define AST_OPEN_BRACE_STRUCT_SIZE sizeof(struct AST_OPEN_BRACE)
 #define AST_CLOSE_BRACE_STRUCT_SIZE sizeof(struct AST_CLOSE_BRACE)
+#define AST_COLON_STRUCT_SIZE sizeof(struct AST_COLON)
 #define AST_FUNCTION_DEFINITION_STRUCT_SIZE                                    \
 	sizeof(struct AST_FUNCTION_DEFINITION)
 
@@ -261,6 +268,7 @@ static const struct Array ASTTOKEN_NAMES = {
 		"AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT",
 		"AST_OPEN_BRACE",
 		"AST_CLOSE_BRACE",
+		"AST_COLON",
 		"AST_FUNCTION_DEFINITION",
 	},
 };
@@ -657,6 +665,22 @@ void astCloseBrace_free(struct AST_CLOSE_BRACE **self) {
 }
 
 /**
+ * Frees an AST_COLON struct.
+ *
+ * @param self The current AST_COLON struct.
+ */
+void astColon_free(struct AST_COLON **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_COLON struct has already been freed");
+	}
+}
+
+/**
  * Frees an AST_FUNCTION_DEFINITION struct.
  *
  * @param self The current AST_FUNCTION_DEFINITION struct.
@@ -807,6 +831,10 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 		self->data.AST_CLOSE_BRACE = malloc(AST_CLOSE_BRACE_STRUCT_SIZE);
 		memcpy(self->data.AST_CLOSE_BRACE, data, AST_CLOSE_BRACE_STRUCT_SIZE);
 		break;
+	case ASTTOKENS_COLON:
+		self->data.AST_COLON = malloc(AST_COLON_STRUCT_SIZE);
+		memcpy(self->data.AST_COLON, data, AST_COLON_STRUCT_SIZE);
+		break;
 	case ASTTOKENS_FUNCTION_DEFINITION:
 		self->data.AST_FUNCTION_DEFINITION =
 			malloc(AST_FUNCTION_DEFINITION_STRUCT_SIZE);
@@ -901,6 +929,9 @@ void ast_free(struct AST **self) {
 			break;
 		case ASTTOKENS_CLOSE_BRACE:
 			astCloseBrace_free(&(*self)->data.AST_CLOSE_BRACE);
+			break;
+		case ASTTOKENS_COLON:
+			astColon_free(&(*self)->data.AST_COLON);
 			break;
 		case ASTTOKENS_FUNCTION_DEFINITION:
 			astFunctionDefinition_free(&(*self)->data.AST_FUNCTION_DEFINITION);

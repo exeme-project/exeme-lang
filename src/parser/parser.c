@@ -218,7 +218,6 @@ void parser_error(struct Parser *self,
 		endChrIndex =
 			token->data.AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT->_token->endChrIndex;
 		break;
-
 	case ASTTOKENS_OPEN_BRACE:
 		startChrIndex = token->data.AST_OPEN_BRACE->_token->startChrIndex;
 		endChrIndex = token->data.AST_OPEN_BRACE->_token->endChrIndex;
@@ -226,6 +225,15 @@ void parser_error(struct Parser *self,
 	case ASTTOKENS_CLOSE_BRACE:
 		startChrIndex = token->data.AST_CLOSE_BRACE->_token->startChrIndex;
 		endChrIndex = token->data.AST_CLOSE_BRACE->_token->endChrIndex;
+		break;
+	case ASTTOKENS_COLON:
+		startChrIndex = token->data.AST_COLON->_token->startChrIndex;
+		endChrIndex = token->data.AST_COLON->_token->endChrIndex;
+		break;
+	case ASTTOKENS_FUNCTION_DEFINITION:
+		startChrIndex =
+			token->data.AST_FUNCTION_DEFINITION->_token->startChrIndex;
+		endChrIndex = token->data.AST_FUNCTION_DEFINITION->_token->endChrIndex;
 		break;
 	default:
 		warning = true;
@@ -365,7 +373,11 @@ void parser_parseFunction(struct Parser *self,
 
 		argumentIdentifier = (struct AST *)array_get(self->parserTokens, 0);
 
-		if (argumentIdentifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
+		if (argumentIdentifier->IDENTIFIER == ASTTOKENS_CLOSE_BRACE) {
+			closingBrackets =
+				argumentIdentifier; // TODO: You know... do stuff here.
+			break;
+		} else if (argumentIdentifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
 			parser_error(self, P0002,
 						 stringConcatenate(
 							 5, "expected parser token of type '",
@@ -380,8 +392,44 @@ void parser_parseFunction(struct Parser *self,
 			parser_error(self, P0001,
 						 "expected 1 parser token after function argument, "
 						 "got 0",
-						 identifier);
+						 argumentIdentifier);
 		}
+
+		argumentTypeSeparator = (struct AST *)array_get(self->parserTokens, 0);
+
+		if (argumentTypeSeparator->IDENTIFIER != ASTTOKENS_COLON) {
+			parser_error(
+				self, P0002,
+				stringConcatenate(
+					5, "expected parser token of type '",
+					astTokens_getName(ASTTOKENS_COLON),
+					"' after function argument, got '",
+					astTokens_getName(argumentTypeSeparator->IDENTIFIER), "'"),
+				argumentTypeSeparator);
+		}
+
+		if (!parser_parse(self, false, true)) {
+			parser_error(self, P0001,
+						 "expected 1 parser token after function argument "
+						 "type separator, got 0",
+						 argumentTypeSeparator);
+		}
+
+		argumentType = (struct AST *)array_get(self->parserTokens, 0);
+
+		if (argumentType->IDENTIFIER != ASTTOKENS_VARIABLE) {
+			parser_error(self, P0002,
+						 stringConcatenate(
+							 5, "expected parser token of type '",
+							 astTokens_getName(ASTTOKENS_VARIABLE),
+							 "' for function argument type, got '",
+							 astTokens_getName(argumentType->IDENTIFIER), "'"),
+						 argumentType);
+		}
+
+		// TODO: You know... work out if it is actually a type.
+
+		lastToken = argumentType;
 	}
 }
 
@@ -643,6 +691,10 @@ void parser_parseNext(struct Parser *self) {
 		array_insert(
 			self->parserTokens, self->parserTokens->length,
 			ast_new(ASTTOKENS_CLOSE_BRACE, AST_CLOSE_BRACE, lexerToken));
+		break;
+	case LEXERTOKENS_COLON:
+		array_insert(self->parserTokens, self->parserTokens->length,
+					 ast_new(ASTTOKENS_COLON, AST_COLON, lexerToken));
 		break;
 	default:
 		printf("unsupported lexer token for parser: %s\n",
