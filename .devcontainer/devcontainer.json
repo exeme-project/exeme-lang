@@ -1,5 +1,5 @@
 {
-	"image": "mcr.microsoft.com/devcontainers/cpp",
+	"image": "mcr.microsoft.com/devcontainers/universal",
 	"customizations": {
 		"vscode": {
 			"extensions": [
