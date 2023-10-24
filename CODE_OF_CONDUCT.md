@@ -21,7 +21,8 @@ Exeme's community aims to to be welcoming and friendly. To make sure this doesn'
 * Be considerate, and
 * Have patience.
 
-> **Note** This is *not* a comprehensive list. Rather, take it in the spirit in which it's intended - a guide to to making communication and participation easier in the community.
+> [!NOTE]\
+> This is *not* a comprehensive list. Rather, take it in the spirit in which it's intended - a guide to to making communication and participation easier in the community.
 
 This code of conduct applies to all spaces managed by the Exeme Project (*not just the Exeme language*). This includes communication systems, forums, emails, issues trackers, and any other spaces the community uses for communication. It applies to all your communication and conduct in these spaces, including things you say, emails, chats, slides, videos, posters, and signs you display in these spaces.
  
