@@ -1,9 +1,9 @@
 {
-	"image": "mcr.microsoft.com/devcontainers/universal",
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				// Update `../.vscode/extensions.json` as well.
+				"aaron-bond.better-comments",
 				"albert.tabout",
 				"alexanderte.dainty-one-dark-pro-vscode",
 				"github.copilot",
@@ -12,12 +12,14 @@
 				"llvm-vs-code-extensions.vscode-clangd",
 				"ms-vscode.cmake-tools",
 				"pkief.material-icon-theme",
-				"revng.llvm-ir",
+				"rreverser.llvm",
+				"streetsidesoftware.code-spell-checker",
+				"streetsidesoftware.code-spell-checker-british-english",
 				"twxs.cmake",
 				"vadimcn.vscode-lldb",
 				"wakatime.vscode-wakatime",
 				"xaver.clang-format",
-				"yzhang.markdown-all-in-one",
+				"yzhang.markdown-all-in-one"
 			]
 		}
 	},

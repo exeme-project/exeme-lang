@@ -18,10 +18,11 @@
  * Used to identify keywords.
  */
 static const struct Array KEYWORDS = {
-	15,
+	16,
 	(const void *[]){
 		"break",
 		"case",
+		"class",
 		"else",
 		"elif",
 		"enum",
