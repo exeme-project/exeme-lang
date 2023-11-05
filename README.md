@@ -2,6 +2,7 @@
 
 [![Licensed under the MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/skifli/exeme/blob/master/LICENSE)
 [![OSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/exeme-project/exeme-lang?label=openssf%20scorecard&style=flat)](https://api.securityscorecards.dev/projects/github.com/exeme-project/exeme-lang)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/8038/badge)](https://www.bestpractices.dev/projects/8038)
 
 - [Exeme Programming Language](#exeme-programming-language)
   - [The Exeme Project](#the-exeme-project)
