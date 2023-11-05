@@ -13,7 +13,7 @@
 
 ## The Exeme Project
 
-Hi so this is a random pet project of mine :3, feel free to stick around and star the repository if you like it! It is my view on what a perfect programming language would be for me, but with that being said nothing is perfect so I am open to suggestions and contributions.
+C but better. It is my view on what a perfect programming language would be for me, but with that being said nothing is perfect so I am open to suggestions and contributions.
 
 ## Goals
 
