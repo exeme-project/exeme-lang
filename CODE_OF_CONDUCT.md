@@ -25,7 +25,7 @@ Exeme's community aims to to be welcoming and friendly. To make sure this doesn'
 > This is *not* a comprehensive list. Rather, take it in the spirit in which it's intended - a guide to to making communication and participation easier in the community.
 
 This code of conduct applies to all spaces managed by the Exeme Project (*not just the Exeme language*). This includes communication systems, forums, emails, issues trackers, and any other spaces the community uses for communication. It applies to all your communication and conduct in these spaces, including things you say, emails, chats, slides, videos, posters, and signs you display in these spaces.
- 
+
 Our standards for acceptable behavior should be upheld by all community members, regardless of their status. Everyone is encouraged to speak up in response to any behavior they believe is inappropriate, threatening, offensive or harmful.
 
 ## Detailed guidance
