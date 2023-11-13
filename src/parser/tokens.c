@@ -51,145 +51,145 @@ struct AST {
 		struct AST_CHR {
 			const struct LexerToken *_token;
 			const struct String *VALUE;
-		} * AST_CHR;
+		} *AST_CHR;
 
 		/* Represents a string in the AST. */
 		struct AST_STRING {
 			const struct LexerToken *_token;
 			const struct String *VALUE;
-		} * AST_STRING;
+		} *AST_STRING;
 
 		/* Represents an integer in the AST. */
 		struct AST_INTEGER {
 			const struct LexerToken *_token;
 			const struct String *VALUE;
-		} * AST_INTEGER;
+		} *AST_INTEGER;
 
 		/* Represents a float in the AST. */
 		struct AST_FLOAT {
 			const struct LexerToken *_token;
 			const struct String *VALUE;
-		} * AST_FLOAT;
+		} *AST_FLOAT;
 
 		/* Represents a variable in the AST.*/
 		struct AST_VARIABLE {
 			const bool POINTER;
 			const struct LexerToken *_token;
 			const struct String *NAME;
-		} * AST_VARIABLE;
+		} *AST_VARIABLE;
 
 		/* Represents an assignment in the AST */
 		struct AST_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_ASSIGNMENT;
+		} *AST_ASSIGNMENT;
 
 		/* Represents a modulo assignment in the AST */
 		struct AST_MODULO_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_MODULO_ASSIGNMENT;
+		} *AST_MODULO_ASSIGNMENT;
 
 		/* Represents a multiplication assignment in the AST */
 		struct AST_MULTIPLICATION_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_MULTIPLICATION_ASSIGNMENT;
+		} *AST_MULTIPLICATION_ASSIGNMENT;
 
 		/* Represents an exponent assignment in the AST */
 		struct AST_EXPONENT_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_EXPONENT_ASSIGNMENT;
+		} *AST_EXPONENT_ASSIGNMENT;
 
 		/* Represents a division assignment in the AST */
 		struct AST_DIVISION_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_DIVISION_ASSIGNMENT;
+		} *AST_DIVISION_ASSIGNMENT;
 
 		/* Represents a floor divison assignment in the AST */
 		struct AST_FLOOR_DIVISION_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_FLOOR_DIVISION_ASSIGNMENT;
+		} *AST_FLOOR_DIVISION_ASSIGNMENT;
 
 		/* Represents an addition assignment in the AST */
 		struct AST_ADDITION_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_ADDITION_ASSIGNMENT;
+		} *AST_ADDITION_ASSIGNMENT;
 
 		/* Represents a subtraction assignment in the AST */
 		struct AST_SUBTRACTION_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_SUBTRACTION_ASSIGNMENT;
+		} *AST_SUBTRACTION_ASSIGNMENT;
 
 		/* Represents a bitwise	and assignment in the AST */
 		struct AST_BITWISE_AND_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_BITWISE_AND_ASSIGNMENT;
+		} *AST_BITWISE_AND_ASSIGNMENT;
 
 		/* Represents a bitwise or assignment in the AST */
 		struct AST_BITWISE_OR_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_BITWISE_OR_ASSIGNMENT;
+		} *AST_BITWISE_OR_ASSIGNMENT;
 
 		/* Represents a bitwise xor assignment in the AST */
 		struct AST_BITWISE_XOR_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_BITWISE_XOR_ASSIGNMENT;
+		} *AST_BITWISE_XOR_ASSIGNMENT;
 
 		/* Represents a bitwise not assignment in the AST */
 		struct AST_BITWISE_NOT_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_BITWISE_NOT_ASSIGNMENT;
+		} *AST_BITWISE_NOT_ASSIGNMENT;
 
 		/* Represents a bitwise left shift assignment in the AST */
 		struct AST_BITWISE_LEFT_SHIFT_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_BITWISE_LEFT_SHIFT_ASSIGNMENT;
+		} *AST_BITWISE_LEFT_SHIFT_ASSIGNMENT;
 
 		/* Represents a bitwise right shift assignment in the AST */
 		struct AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT {
 			const struct LexerToken *_token;
 			const struct AST_VARIABLE *IDENTIFIER;
 			const struct AST *VALUE;
-		} * AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT;
+		} *AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT;
 
 		/* Represents an open brace in the AST. */
 		struct AST_OPEN_BRACE {
 			const struct LexerToken *_token;
-		} * AST_OPEN_BRACE;
+		} *AST_OPEN_BRACE;
 
 		/* Represents a close brace in the AST. */
 		struct AST_CLOSE_BRACE {
 			const struct LexerToken *_token;
-		} * AST_CLOSE_BRACE;
+		} *AST_CLOSE_BRACE;
 
 		/* Represents a colon in the AST. */
 		struct AST_COLON {
 			const struct LexerToken *_token;
-		} * AST_COLON;
+		} *AST_COLON;
 
 		/* Represents a function definition in the AST. */
 		struct AST_FUNCTION_DEFINITION {
@@ -199,7 +199,7 @@ struct AST {
 			const struct Array *ARGUMENTS;
 			const struct Array *ARGUMENT_TYPES;
 			const struct AST_CLOSE_BRACE *CLOSE_BRACE;
-		} * AST_FUNCTION_DEFINITION;
+		} *AST_FUNCTION_DEFINITION;
 	} data;
 };
 

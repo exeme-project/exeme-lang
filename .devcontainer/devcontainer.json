@@ -1,28 +1,28 @@
 {
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				// Update `../.vscode/extensions.json` as well.
-				"aaron-bond.better-comments",
-				"albert.tabout",
-				"alexanderte.dainty-one-dark-pro-vscode",
-				"github.copilot",
-				"gruntfuggly.todo-tree",
-				"leonardssh.vscord",
-				"llvm-vs-code-extensions.vscode-clangd",
-				"ms-vscode.cmake-tools",
-				"pkief.material-icon-theme",
-				"rreverser.llvm",
-				"streetsidesoftware.code-spell-checker",
-				"streetsidesoftware.code-spell-checker-british-english",
-				"twxs.cmake",
-				"vadimcn.vscode-lldb",
-				"wakatime.vscode-wakatime",
-				"xaver.clang-format",
-				"yzhang.markdown-all-in-one"
-			]
-		}
-	},
-	"onCreateCommand": "git submodule update --init --recursive",
-	"postStartCommand": "sudo apt update && sudo apt install clang-format -y && sudo apt-get -y install ninja-build"
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Update `../.vscode/extensions.json` as well.
+        "aaron-bond.better-comments",
+        "albert.tabout",
+        "alexanderte.dainty-one-dark-pro-vscode",
+        "github.copilot",
+        "gruntfuggly.todo-tree",
+        "leonardssh.vscord",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "ms-vscode.cmake-tools",
+        "pkief.material-icon-theme",
+        "rreverser.llvm",
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-british-english",
+        "twxs.cmake",
+        "vadimcn.vscode-lldb",
+        "wakatime.vscode-wakatime",
+        "xaver.clang-format",
+        "yzhang.markdown-all-in-one"
+      ]
+    }
+  },
+  "onCreateCommand": "git submodule update --init --recursive",
+  "postStartCommand": "sudo apt update && sudo apt install clang-format -y && sudo apt-get -y install ninja-build"
 }

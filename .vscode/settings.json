@@ -1,20 +1,20 @@
 {
-    "[c]": {
-        "editor.defaultFormatter": "xaver.clang-format"
-    },
-    "cmake.preferredGenerators": [
-        "Ninja",
-        "Visual Studio 17 2022",
-    ],
-    "editor.fontFamily": "Fira Code",
-    "editor.fontLigatures": true,
-    "editor.fontSize": 13,
-    "editor.formatOnSave": true,
-    "editor.suggest.localityBonus": true,
-    "git.enableCommitSigning": true,
-    "git.enableSmartCommit": true,
-    "git.confirmSync": false,
-    "git.autofetch": true,
-    "workbench.colorTheme": "Dainty – One Dark Pro (chroma 0, lightness 1)",
-    "workbench.iconTheme": "material-icon-theme",
+  "[c]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "cmake.preferredGenerators": [
+    "Ninja",
+    "Visual Studio 17 2022",
+  ],
+  "editor.fontFamily": "Fira Code",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 13,
+  "editor.formatOnSave": true,
+  "editor.suggest.localityBonus": true,
+  "git.enableCommitSigning": true,
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "git.autofetch": true,
+  "workbench.colorTheme": "Dainty – One Dark Pro (chroma 0, lightness 1)",
+  "workbench.iconTheme": "material-icon-theme",
 }
