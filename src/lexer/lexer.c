@@ -347,7 +347,7 @@ void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR,
  * @param OTHER_SECOND_CHR The other second char to check for.
  * @param IF_ONE           If the token is one char.
  * @param IF_TWO           If the token is two chars with SECOND_CHR.
- * @param IF_OTHER_TWO     If the token is two chars with OTEHR_SECOND_CHR.
+ * @param IF_OTHER_TWO     If the token is two chars with OTHER_SECOND_CHR.
  */
 void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR,
 					   const char OTHER_SECOND_CHR,
@@ -708,7 +708,7 @@ void lexer_lexNumber(struct Lexer *self) {
  *
  * @param self The current lexer struct.
  *
- * @return bool - Whether lexing succeeded.
+ * @return Whether lexing succeeded.
  */
 bool lexer_lexNext(struct Lexer *self) {
 	switch (self->chr) {
@@ -849,7 +849,7 @@ bool lexer_lexNext(struct Lexer *self) {
  * @param self     The current Lexer struct.
  * @param nextLine Whether the char can be on the next line.
  *
- * @return bool Whether lexing succeeded.
+ * @return Whether lexing succeeded.
  */
 bool lexer_lex(struct Lexer *self, bool nextLine) {
 	while (!lexer_getChr(self, true)) { // EOL has been reached

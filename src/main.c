@@ -3,12 +3,15 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
+#include "./args/args.c"
 #include "./compiler/compiler.c"
 #include "./includes.c"
 
 #pragma pack(1)
 
-int main(void) {
+int main(int argc, char **argv) {
+	struct Args *args = args_new(argc, argv);
+
 	struct Compiler *compiler = compiler_new("../../programs/test.exl");
 
 	while (compiler_compile(compiler)) {

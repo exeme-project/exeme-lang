@@ -85,8 +85,13 @@ void parser_free(struct Parser **self) {
 }
 
 /**
+ * Prints a parsing error and exits.
+ *
+ * @param self             The current Parser struct.
+ * @param ERROR_MSG_NUMBER The error message number.
+ * @param ERROR_MSG        The error message.
+ * @param token            The erroneous token.
  */
-
 void parser_error(struct Parser *self,
 				  const enum ErrorIdentifiers ERROR_MSG_NUMBER,
 				  const char *ERROR_MSG, const struct AST *token) {
@@ -264,7 +269,7 @@ void parser_error(struct Parser *self,
 /**
  * Parses the current chr or string.
  *
- * @param self The current Parser struct.
+ * @param self       The current Parser struct.
  * @param lexerToken The current lexer token.
  */
 void parser_parseChrOrString(struct Parser *self,
@@ -302,7 +307,7 @@ void parser_parseNumber(struct Parser *self,
 /**
  * Parses a function.
  *
- * @param self The current Parser struct.
+ * @param self       The current Parser struct.
  * @param lexerToken The current lexer token.
  */
 void parser_parseFunction(struct Parser *self,
@@ -436,7 +441,7 @@ void parser_parseFunction(struct Parser *self,
 /**
  * Parses the current function.
  *
- * @param self The current Parser struct.
+ * @param self       The current Parser struct.
  * @param lexerToken The current lexer token.
  */
 void parser_parseKeyword_func(struct Parser *self,
@@ -464,8 +469,8 @@ void parser_parseKeyword(struct Parser *self,
 /**
  * Parses the current identifier.
  *
- * @param self The current Parser struct.
- * @param lexerToken The current lexer token.
+ * @param self            The current Parser struct.
+ * @param lexerToken      The current lexer token.
  * @param lexerTokenIndex The current lexer token's index.
  */
 void parser_parseIdentifier(struct Parser *self,
@@ -489,7 +494,7 @@ void parser_parseIdentifier(struct Parser *self,
 /**
  * Parses the current assignment.
  *
- * @param self The current Parser struct.
+ * @param self       The current Parser struct.
  * @param lexerToken The current lexer token.
  */
 void parser_parseAssignment(struct Parser *self,

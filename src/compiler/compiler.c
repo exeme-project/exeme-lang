@@ -234,7 +234,7 @@ void compiler_compileNext(struct Compiler *self) {
  *
  * @param self The current Compiler struct.
  *
- * @return bool Whether compiling succeeded.
+ * @return Whether compiling succeeded.
  */
 bool compiler_compile(struct Compiler *self) {
 	if (!parser_parse(self->parser, true, true)) {
