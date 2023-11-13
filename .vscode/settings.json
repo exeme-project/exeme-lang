@@ -6,6 +6,9 @@
     "Ninja",
     "Visual Studio 17 2022",
   ],
+  "cSpell.words": [
+    "Exeme"
+  ],
   "editor.fontFamily": "Fira Code",
   "editor.fontLigatures": true,
   "editor.fontSize": 13,

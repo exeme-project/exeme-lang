@@ -6,6 +6,7 @@
 #include "../includes.c"
 
 #include "../utils/panic.c"
+#include "./config.c"
 
 /**
  * Represents arguments.
@@ -41,6 +42,20 @@ struct Args *args_new(int argc, char **argv) {
 	args_parse(self);
 
 	return self;
+}
+
+/**
+ * Frees an Args struct.
+ *
+ * @param self The current Args struct.
+ */
+void args_free(struct Args **self) {
+	if (self && *self) {
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("Args struct has already been freed");
+	}
 }
 
 void args_parse(struct Args *self) {}
