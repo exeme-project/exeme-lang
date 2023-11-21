@@ -23,5 +23,5 @@
       ]
     }
   },
-  "onCreateCommand": "git submodule update --init --recursive && sudo apt update && sudo apt install clang-format -y && sudo apt-get -y install ninja-build && pip install -r ./requirements.txt && pre-commit install",
+  "onCreateCommand": "git submodule update --init --recursive && sudo apt update && sudo apt install clang-format -y && sudo apt-get -y install ninja-build && pip install -r ./requirements.txt && pre-commit install"
 }
