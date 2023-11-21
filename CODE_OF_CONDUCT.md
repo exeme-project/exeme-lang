@@ -1,10 +1,10 @@
 <!-- Part of the Exeme Project, under the MIT license. See '/LICENSE' for license information. SPDX-License-Identifier: MIT License. -->
 
-# Code of Conduct
+# 🤝 Code of Conduct
 
-- [Code of Conduct](#code-of-conduct)
-  - [Guidelines](#guidelines)
-  - [Detailed guidance](#detailed-guidance)
+- [🤝 Code of Conduct](#-code-of-conduct)
+  - [📑 Guidelines](#-guidelines)
+  - [🔍 Detailed guidance](#-detailed-guidance)
     - [Be welcoming](#be-welcoming)
     - [Be friendly and patient](#be-friendly-and-patient)
     - [Be considerate](#be-considerate)
@@ -12,7 +12,7 @@
     - [Be careful in the words that we choose](#be-careful-in-the-words-that-we-choose)
     - [When we disagree, we try to understand why](#when-we-disagree-we-try-to-understand-why)
 
-## Guidelines
+## 📑 Guidelines
 
 Exeme's community aims to to be welcoming and friendly. To make sure this doesn't change as we grow and evolve, we have a few ground rules that we ask all community members to follow:
 
@@ -24,11 +24,11 @@ Exeme's community aims to to be welcoming and friendly. To make sure this doesn'
 > [!NOTE]\
 > This is *not* a comprehensive list. Rather, take it in the spirit in which it's intended - a guide to to making communication and participation easier in the community.
 
-This code of conduct applies to all spaces managed by the Exeme Project (*not just the Exeme language*). This includes communication systems, forums, emails, issues trackers, and any other spaces the community uses for communication. It applies to all your communication and conduct in these spaces, including things you say, emails, chats, slides, videos, posters, and signs you display in these spaces.
+This code of conduct applies to all spaces managed by the Exeme Project. This includes communication systems, forums, emails, issues trackers, and any other spaces the community uses for communication. It applies to all your communication and conduct in these spaces, including things you say, emails, chats, slides, videos, posters, and signs you display in these spaces.
 
 Our standards for acceptable behavior should be upheld by all community members, regardless of their status. Everyone is encouraged to speak up in response to any behavior they believe is inappropriate, threatening, offensive or harmful.
 
-## Detailed guidance
+## 🔍 Detailed guidance
 
 ### Be welcoming
 

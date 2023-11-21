@@ -1,6 +1,6 @@
 <!-- Part of the Exeme Project, under the MIT license. See '/LICENSE' for license information. SPDX-License-Identifier: MIT License. -->
 
-# Contributors
+# 👤 Contributors
 
 This is the **official list of people who have contributed** to the Exeme Language in some way.
 

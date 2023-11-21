@@ -1,8 +1,14 @@
-# Error Codes Index
+<!-- Part of the Exeme Project, under the MIT license. See '/LICENSE' for license information. SPDX-License-Identifier: MIT License. -->
+
+# 📚 Error Codes Index
+
+- [📚 Error Codes Index](#-error-codes-index)
+  - [📖 Lexer](#-lexer)
+  - [🔎 Parser](#-parser)
 
 This page lists all the error codes emitted by the Exeme compiler.
 
-## Lexer
+## 📖 Lexer
 
 * [L0001](L0001.md)
 * [L0002](L0002.md)
@@ -12,7 +18,7 @@ This page lists all the error codes emitted by the Exeme compiler.
 * [L0006](L0006.md)
 * [L0007](L0007.md)
 
-## Parser
+## 🔎 Parser
 
 * [P0001](P0001.md)
 * [P0002](P0002.md)
