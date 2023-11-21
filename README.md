@@ -13,7 +13,7 @@
   - [👤 User Documentation](#-user-documentation)
   - [✨ Inspiration](#-inspiration)
 
-The Exeme Language (from [**exeme**](https://www.collinsdictionary.com/dictionary/english/exeme)), is an optimised, elegant, and compiled programming language.
+The Exeme Language (from [**exeme**](https://www.collinsdictionary.com/dictionary/english/exeme)), is an *optimised*, *elegant*, and *compiled* programming language.
 
 ## 🎯 Goals
 
