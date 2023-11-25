@@ -1,3 +1,5 @@
+<!-- Part of the Exeme Project, under the MIT license. See '/LICENSE' for license information. SPDX-License-Identifier: MIT License. -->
+
 # Exeme Programming Language
 
 [![OSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/exeme-project/exeme-lang?label=openssf%20scorecard&style=flat)](https://api.securityscorecards.dev/projects/github.com/exeme-project/exeme-lang)
