@@ -1,6 +1,7 @@
 BasedOnStyle: LLVM
-ColumnLimit: 80
-ReflowComments: true
 IndentWidth: 4
-TabWidth: 4
-UseTab: Always
+UseTab: Never
+ColumnLimit: 125
+ReflowComments: true
+BreakBeforeBraces: Attach
+AllowShortIfStatementsOnASingleLine: Never
