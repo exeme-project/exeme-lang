@@ -42,6 +42,7 @@ struct AST {
 
 		ASTTOKENS_OPEN_BRACE,
 		ASTTOKENS_CLOSE_BRACE,
+		ASTTOKENS_COMMA,
 		ASTTOKENS_COLON,
 
 		ASTTOKENS_FUNCTION_DEFINITION,
@@ -186,6 +187,11 @@ struct AST {
 			const struct LexerToken *_token;
 		} *AST_CLOSE_BRACE;
 
+		/* Represents a comma in the AST. */
+		struct AST_COMMA {
+			const struct LexerToken *_token;
+		} *AST_COMMA;
+
 		/* Represents a colon in the AST. */
 		struct AST_COLON {
 			const struct LexerToken *_token;
@@ -237,6 +243,7 @@ struct AST {
 	sizeof(struct AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT)
 #define AST_OPEN_BRACE_STRUCT_SIZE sizeof(struct AST_OPEN_BRACE)
 #define AST_CLOSE_BRACE_STRUCT_SIZE sizeof(struct AST_CLOSE_BRACE)
+#define AST_COMMA_STRUCT_SIZE sizeof(struct AST_COMMA)
 #define AST_COLON_STRUCT_SIZE sizeof(struct AST_COLON)
 #define AST_FUNCTION_DEFINITION_STRUCT_SIZE                                    \
 	sizeof(struct AST_FUNCTION_DEFINITION)
@@ -245,7 +252,7 @@ struct AST {
  * Contains the names of each of the AST token identifiers.
  */
 static const struct Array ASTTOKEN_NAMES = {
-	22,
+	23,
 	(const void *[]){
 		"AST_CHR",
 		"AST_STRING",
@@ -268,9 +275,10 @@ static const struct Array ASTTOKEN_NAMES = {
 		"AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT",
 		"AST_OPEN_BRACE",
 		"AST_CLOSE_BRACE",
+		"AST_COMMA",
 		"AST_COLON",
 		"AST_FUNCTION_DEFINITION",
-	},
+	}, // WARNING: REMEMBER TO UPDATE LENGTH
 };
 
 /**
@@ -665,6 +673,22 @@ void astCloseBrace_free(struct AST_CLOSE_BRACE **self) {
 }
 
 /**
+ * Frees an AST_COMMA struct.
+ *
+ * @param self The current AST_COMMA struct.
+ */
+void astComma_free(struct AST_COMMA **self) {
+	if (self && *self) {
+		lexerToken_free((struct LexerToken **)&(*self)->_token);
+
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("AST_COMMA struct has already been freed");
+	}
+}
+
+/**
  * Frees an AST_COLON struct.
  *
  * @param self The current AST_COLON struct.
@@ -831,6 +855,10 @@ struct AST *ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void *data) {
 		self->data.AST_CLOSE_BRACE = malloc(AST_CLOSE_BRACE_STRUCT_SIZE);
 		memcpy(self->data.AST_CLOSE_BRACE, data, AST_CLOSE_BRACE_STRUCT_SIZE);
 		break;
+	case ASTTOKENS_COMMA:
+		self->data.AST_COMMA = malloc(AST_COMMA_STRUCT_SIZE);
+		memcpy(self->data.AST_COMMA, data, AST_COMMA_STRUCT_SIZE);
+		break;
 	case ASTTOKENS_COLON:
 		self->data.AST_COLON = malloc(AST_COLON_STRUCT_SIZE);
 		memcpy(self->data.AST_COLON, data, AST_COLON_STRUCT_SIZE);
@@ -929,6 +957,9 @@ void ast_free(struct AST **self) {
 			break;
 		case ASTTOKENS_CLOSE_BRACE:
 			astCloseBrace_free(&(*self)->data.AST_CLOSE_BRACE);
+			break;
+		case ASTTOKENS_COMMA:
+			astComma_free(&(*self)->data.AST_COMMA);
 			break;
 		case ASTTOKENS_COLON:
 			astColon_free(&(*self)->data.AST_COLON);

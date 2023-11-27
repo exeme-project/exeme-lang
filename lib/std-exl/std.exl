@@ -3,7 +3,7 @@ class str {
     _length: i64,
 
     func __init__(self: *str) -> NULL {
-        self._char_buf = NULL;
-        self.length = 0;
+        self._char_buf = NULL
+        self.length = 0
     }
 }
