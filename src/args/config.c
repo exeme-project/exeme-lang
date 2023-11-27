@@ -13,28 +13,27 @@ extern const struct Array CONFIG;
  * Represents an argument.
  */
 struct Arg {
-	bool required;
-	char *description, *name, *flagShort, *flagLong;
+    bool required;
+    char *description, *name, *flagShort, *flagLong;
 };
 
 /*
  * Represents the config for parsing arguments.
  */
 const struct Array CONFIG = {
-	1,
-	(const void *[]){
-		&(struct Arg){
-			true,
-			"The path of the file to compile",
-			"file",
-			NULL,
-			NULL,
-		},
-		&(struct Arg){
-			false,
-			"The path to the folder containing the standard library",
-			"stdlib",
-			"-s",
-			"--stdlib",
-		}},
+    1,
+    (const void *[]){&(struct Arg){
+                         true,
+                         "The path of the file to compile",
+                         "file",
+                         NULL,
+                         NULL,
+                     },
+                     &(struct Arg){
+                         false,
+                         "The path to the folder containing the standard library",
+                         "stdlib",
+                         "-s",
+                         "--stdlib",
+                     }},
 };

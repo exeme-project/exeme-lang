@@ -6,7 +6,7 @@
 #pragma once
 
 #define _CRT_SECURE_NO_WARNINGS // What is deprecated on Windows isn't always on
-								// other OSes.
+                                // other OSes.
 
 #include <ctype.h>
 #include <malloc.h>

@@ -10,12 +10,12 @@
 #pragma pack(1)
 
 int main(int argc, char **argv) {
-	struct Args *args = args_new(argc, argv);
+    struct Args *args = args_new(argc, argv);
 
-	struct Compiler *compiler = compiler_new("../../programs/test.exl");
+    struct Compiler *compiler = compiler_new("../../programs/test.exl");
 
-	while (compiler_compile(compiler)) {
-	}
+    while (compiler_compile(compiler)) {
+    }
 
-	compiler_free(&compiler);
+    compiler_free(&compiler);
 }
