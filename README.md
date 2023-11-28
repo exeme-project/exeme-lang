@@ -48,7 +48,7 @@ To learn more about contributing to The Exeme Language, please read the [**Contr
 
 ### 🛠️ Developer Documentation
 
-To learn more about the The Exeme Language codebase, please read [**docs/developers/README.md**](docs/developers/README.md). It includes guides on how to set up your development environment, how to build the project, and how to contribute to the project.
+To learn more about the The Exeme Language codebase, please read [**docs/developers/**](docs/developers/). It includes guides on how to set up your development environment, how to build the project, and how to contribute to the project.
 
 ## 👤 User Documentation
 

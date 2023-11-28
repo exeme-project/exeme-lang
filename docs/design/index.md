@@ -14,13 +14,15 @@ This documentation is an overview of the Exeme project in its current state, and
 
 ## Important Notice
 
-> [!IMPORTANT]\
-> This document is **not** a complete programming manual. It does not provide a detailed and comprehensive justification for design decisions. See the sub-folders and linked pages for more detailed justifications.
+::: info
+This document is **not** a complete programming manual. It does not provide a detailed and comprehensive justification for design decisions. See the sub-folders and linked pages for more detailed justifications.
+:::
 
 ## The Basics
 
-> [!NOTE]\
-> This section does not provide in-depth knowledge into the language's constructs, but instead provides an overview. If you want more to know more about certain constructs, there are links to more detailed descriptions.
+::: tip
+This section does not provide in-depth knowledge into the language's constructs, but instead provides an overview. If you want more to know more about certain constructs, there are links to more detailed descriptions.
+:::
 
 ```exeme
 import "std.io"
@@ -43,9 +45,10 @@ fn main() {
 }
 ```
 
-### **`import`** declaration - [*Packages*](packages/README.md)
+### **`import`** declaration - [*Packages*](packages/)
 
 The *`import`* declaration is used to import packages. The *`import`* declaration is a top-level declaration, and must be the first declaration in a file (after the optional package declaration). In this example it imports the *`io`* subpackage from the *`std`* package.
 
-> [!NOTE]\
-> To find out more about packages, see **[`packages/README.md`](packages/README.md)**.
+::: tip
+To find out more about packages, see **[`packages/`](packages/)**.
+:::

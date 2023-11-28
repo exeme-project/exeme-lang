@@ -39,3 +39,8 @@ cmake*/
 src/main
 src/main.ilk
 src/main.pdb
+
+node_modules
+
+docs/.vitepress/dist
+docs/.vitepress/cache

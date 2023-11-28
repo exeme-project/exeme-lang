@@ -33,8 +33,9 @@ namespace exeme {
 
 To reference a member of a namespace, use the **`::`** operator. The left side of the operator must be a valid namespace identifier, and the right side must be a valid identifier.
 
-> [!NOTE]\
-> Namespaces can be nested infinitely. In that case, use the **`::`** operator to reference the nested namespace(s).
+::: tip
+Namespaces can be nested infinitely. In that case, use the **`::`** operator to reference the nested namespace(s).
+:::
 
 ### Example
 
@@ -54,8 +55,9 @@ fn main() {
 
 Namespaces and their members can be brought into the global scope using the **`using`** keyword. This is useful for shortening the code.
 
-> [!NOTE]\
-> If there are multiple namespaces with overlapping members, upon bringing the second one into scope the compiler will emit an error.
+::: warning
+If there are multiple namespaces with overlapping members, upon bringing the second one into scope the compiler will emit an error.
+:::
 
 ### Example with Namespace
 
@@ -83,4 +85,6 @@ fn main() {
 
 ## Generic Notes
 
+::: tip
 * Whenever you import a package, the compiler will automatically assign the imported code to a namespace with the same name as the package.
+:::

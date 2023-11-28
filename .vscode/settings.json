@@ -14,6 +14,10 @@
   "editor.fontSize": 13,
   "editor.formatOnSave": true,
   "editor.suggest.localityBonus": true,
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/package*json*": true,
+  },
   "git.enableCommitSigning": true,
   "git.enableSmartCommit": true,
   "git.confirmSync": false,

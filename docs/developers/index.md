@@ -10,8 +10,9 @@
 
 ## 🖥️ Environment Setup
 
-> [!IMPORTANT]\
-> GitHub Codespaces uses devcontainers to setup development environments. If you are using GitHub Codespaces, you can skip this section. This is because we have a devcontainer setup ready.
+::: info
+GitHub Codespaces uses devcontainers to setup development environments. If you are using GitHub Codespaces, you can skip this section. This is because we have a devcontainer setup ready.
+:::
 
 Requirements to setup the development environment for The Exeme Language:
 
@@ -36,7 +37,8 @@ To setup *pre-commit*, run the following command:
 python -m pip -r requirements.txt && pre-commit install
 ```
 
-> [!NOTE]\
-> If the command fails, try replacing **`python`** with **`python3`**.
+::: tip
+If the command fails, try replacing **`python`** with **`python3`**.
+:::
 
 ## Making Changes
