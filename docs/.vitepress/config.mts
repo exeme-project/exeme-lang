@@ -4,7 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "The Exeme Language",
   description: "An optimised, elegant, and compiled programming language.",
-  base: '/exeme-language/',
+  base: '/exeme-lang/',
 
   lastUpdated: true,
   cleanUrls: true,
