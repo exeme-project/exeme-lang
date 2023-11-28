@@ -1,5 +1,7 @@
 import { defineConfig } from 'vitepress'
 
+import pkg from '../../package.json'
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "The Exeme Language",
@@ -22,7 +24,20 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Design', link: '/design/' },
       { text: 'Developers', link: '/developers/' },
-      { text: 'Guide', link: '/guide/' }
+      { text: 'Guide', link: '/guide/' },
+      {
+        text: pkg.version,
+        items: [
+          {
+            text: 'Changelog',
+            link: 'https://github.com/exeme-project/exeme-lang/blob/main/CHANGELOG.md'
+          },
+          {
+            text: 'Contributing',
+            link: 'https://github.com/exeme-project/exeme-lang/blob/main/CONTRIBUTING.md'
+          }
+        ]
+      }
     ],
     sidebar: [
       {

@@ -1,4 +1,5 @@
 {
+  "version": "0.0.1-alpha",
   "devDependencies": {
     "vitepress": "^1.0.0-rc.31"
   },
