@@ -2,6 +2,8 @@
 
 # 🛠️ Developer Documentation
 
+This folder contains all documentation related to the development of the Exeme language. This includes guides on how to set up your development environment, how to build the project, and how to contribute to the project.
+
 ## 🖥️ Environment Setup
 
 ::: info

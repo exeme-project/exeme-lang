@@ -72,7 +72,7 @@ fn main() {
 }
 ```
 
-## Generic Notes
+## Notes
 
 ::: tip
 * Whenever you import a package, the compiler will automatically assign the imported code to a namespace with the same name as the package.

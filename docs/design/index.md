@@ -2,6 +2,8 @@
 
 # Design
 
+This folder contains all documentation related to the design of the Exeme language. This includes the language specification, and the language design. It is split into sub-folders, each of which contains documentation related to a specific topic. For example, the `packages` folder contains documentation related to packages.
+
 ## Introduction
 
 This documentation is an overview of the Exeme project in its current state, and is written for the maintainers of Exeme, and for those interested in learning more about Exeme. It is a description of the design of the Exeme language, and the rationale behind the design.
