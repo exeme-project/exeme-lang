@@ -52,7 +52,7 @@ You can use the **`using`** keyword to change the scope of the imported package 
 
 ### Example
 
-#### File Structure
+#### Folder Structure
 
 ```
 - main.exl
@@ -61,7 +61,7 @@ You can use the **`using`** keyword to change the scope of the imported package 
   - github.exl
 ```
 
-##### `main.exl`
+#### `main.exl`
 
 ```exeme
 import "github"
@@ -71,7 +71,7 @@ fn main() {
 }
 ```
 
-##### `github/package.exlp`
+#### `github/package.exlp`
 
 ```exeme
 package github
@@ -81,7 +81,7 @@ require (
 )
 ```
 
-##### `github/github.exl`
+#### `github/github.exl`
 
 ```exeme
 extern fn auth() {
