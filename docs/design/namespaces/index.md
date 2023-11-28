@@ -2,17 +2,6 @@
 
 # Namespaces
 
-- [Namespaces](#namespaces)
-  - [Overview](#overview)
-  - [Syntax](#syntax)
-    - [Namespace Declaration](#namespace-declaration)
-    - [Referencing Namespaces' Members](#referencing-namespaces-members)
-    - [Example](#example)
-  - [Scoping of Namespaces / Their Members](#scoping-of-namespaces--their-members)
-    - [Example with Namespace](#example-with-namespace)
-    - [Example with Namespace Member](#example-with-namespace-member)
-  - [Generic Notes](#generic-notes)
-
 ## Overview
 
 A namespace is a way to group related variables, functions, and structs together. Namespaces are useful for preventing name collisions, and for organizing code.

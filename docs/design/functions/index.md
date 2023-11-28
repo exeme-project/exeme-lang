@@ -2,12 +2,6 @@
 
 # Functions
 
-- [Functions](#functions)
-  - [Overview](#overview)
-  - [Syntax](#syntax)
-    - [Function Declaration](#function-declaration)
-    - [Calling Functions](#calling-functions)
-
 ## Overview
 
 A function is a block of code that can be called from anywhere in the program. Functions are useful for code reuse and for organizing code.

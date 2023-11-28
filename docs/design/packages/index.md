@@ -2,18 +2,6 @@
 
 # Packages
 
-- [Packages](#packages)
-  - [Overview](#overview)
-  - [Syntax](#syntax)
-    - [Package Declaration](#package-declaration)
-    - [Package Requirements](#package-requirements)
-    - [Importing Packages](#importing-packages)
-    - [Example](#example)
-      - [File Structure](#file-structure)
-        - [`main.exl`](#mainexl)
-        - [`github/package.exlp`](#githubpackageexlp)
-        - [`github/github.exl`](#githubgithubexl)
-
 ## Overview
 
 A package is a collection of related resources that provide functionality for a specific purpose. Packages may contain sub-packages, which may contain sub-packages, infinitely.

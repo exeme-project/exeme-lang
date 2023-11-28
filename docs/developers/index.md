@@ -2,12 +2,6 @@
 
 # 🛠️ Developer Documentation
 
-- [🛠️ Developer Documentation](#️-developer-documentation)
-  - [🖥️ Environment Setup](#️-environment-setup)
-    - [Cloning the Repository](#cloning-the-repository)
-    - [Setting up *pre-commit*](#setting-up-pre-commit)
-  - [Making Changes](#making-changes)
-
 ## 🖥️ Environment Setup
 
 ::: info

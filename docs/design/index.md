@@ -2,12 +2,6 @@
 
 # Design
 
-- [Design](#design)
-  - [Introduction](#introduction)
-  - [Important Notice](#important-notice)
-  - [The Basics](#the-basics)
-    - [**`import`** declaration - *Packages*](#import-declaration---packages)
-
 ## Introduction
 
 This documentation is an overview of the Exeme project in its current state, and is written for the maintainers of Exeme, and for those interested in learning more about Exeme. It is a description of the design of the Exeme language, and the rationale behind the design.

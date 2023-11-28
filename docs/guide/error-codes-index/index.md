@@ -2,10 +2,6 @@
 
 # 📚 Error Codes Index
 
-- [📚 Error Codes Index](#-error-codes-index)
-  - [📖 Lexer](#-lexer)
-  - [🔎 Parser](#-parser)
-
 This page lists all the error codes emitted by the Exeme compiler.
 
 ## 📖 Lexer
