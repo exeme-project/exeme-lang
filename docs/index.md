@@ -25,3 +25,35 @@ features:
     icon: 📦
     details: Exeme is designed to be portable, with a focus on cross-platform support.
 ---
+
+<script setup>
+import {
+  VPTeamPage,
+  VPTeamPageTitle,
+  VPTeamMembers
+} from 'vitepress/theme'
+
+const members = [
+  {
+    avatar: 'https://www.github.com/skifli.png',
+    name: 'Skifli Skiffles',
+    title: 'Creator',
+    links: [
+      { icon: 'github', link: 'https://github.com/skifli' },
+      { icon: 'twitter', link: 'https://twitter.com/skifli_' }
+    ]
+  },
+]
+</script>
+
+<VPTeamPageTitle>
+  <template #title>
+    Our Team
+  </template>
+  <template #lead>
+    The team behind The Exeme Language.
+  </template>
+</VPTeamPageTitle>
+<VPTeamMembers
+  :members="members"
+/>
