@@ -13,9 +13,9 @@ export default defineConfig({
 
   head: [
     ['link', {
-      rel: 'icon', type: 'image/svg+xml', href: 'https://avatars.githubusercontent.com/u/124382299?s=400&u=0a0596688b27c5b40b2df9521d6fb8460904b3ef&v=4'
+      rel: 'icon', type: 'image/svg+xml', href: '/logo_no_bg.png'
     }],
-    ['link', { rel: 'icon', type: 'image/png', href: 'https://avatars.githubusercontent.com/u/124382299?s=400&u=0a0596688b27c5b40b2df9521d6fb8460904b3ef&v=4' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/logo_no_bg.png' }],
   ],
 
   themeConfig: {
@@ -83,6 +83,6 @@ export default defineConfig({
       provider: 'local'
     },
 
-    logo: "https://avatars.githubusercontent.com/u/124382299?s=400&u=0a0596688b27c5b40b2df9521d6fb8460904b3ef&v=4",
+    logo: "/logo_no_bg.png",
   }
 })
