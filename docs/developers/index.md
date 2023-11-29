@@ -12,9 +12,9 @@ GitHub Codespaces uses devcontainers to setup development environments. If you a
 
 Requirements to setup the development environment for The Exeme Language:
 
-- [**CMake**](https://cmake.org/download/) - For building the project.
-- [**Git**](https://git-scm.com/downloads) - For cloning the repository.
-- [**LLVM**](https://llvm.org/) - For compiling the compiler.
+- [*CMake*](https://cmake.org/download/) - For building the project.
+- [*Git*](https://git-scm.com/downloads) - For cloning the repository.
+- [*LLVM*](https://llvm.org/) - For compiling the compiler.
 
 ### Cloning the Repository
 
@@ -25,16 +25,16 @@ git clone https://github.com/revical/revical
 cd revical
 ```
 
-### Setting up *pre-commit*
+### Setting up `pre-commit`
 
-To setup *pre-commit*, run the following command:
+To setup `pre-commit`, run the following command:
 
 ```bash
 python -m pip -r requirements.txt && pre-commit install
 ```
 
 ::: tip
-If the command fails, try replacing **`python`** with **`python3`**.
+If the command fails, try replacing `python` with `python3`.
 :::
 
 ## Making Changes

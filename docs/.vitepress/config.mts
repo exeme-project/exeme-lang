@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import footnote from 'markdown-it-footnote'
 
 import pkg from '../../package.json'
 
@@ -14,6 +15,12 @@ export default defineConfig({
   head: [
     ['link', { rel: 'icon', type: 'image/png', href: '/exeme-lang/logo_no_bg.png' }],
   ],
+
+  markdown: {
+    config: (md) => {
+      md.use(footnote)
+    }
+  },
 
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config

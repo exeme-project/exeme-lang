@@ -2,13 +2,11 @@
 
 # Design
 
-This folder contains all documentation related to the design of the Exeme language. This includes the language specification, and the language design. It is split into sub-folders, each of which contains documentation related to a specific topic. For example, the `packages` folder contains documentation related to packages.
+This folder contains all documentation related to the design of the Exeme language. This includes the language specification, and the language design. It is split into sub-folders, each of which contains documentation related to a specific topic. For example, the [`packages/`](packages/) folder contains documentation related to packages.
 
 ## Introduction
 
 This documentation is an overview of the Exeme project in its current state, and is written for the maintainers of Exeme, and for those interested in learning more about Exeme. It is a description of the design of the Exeme language, and the rationale behind the design.
-
-## Important Notice
 
 ::: info
 This document is **not** a complete programming manual. It does not provide a detailed and comprehensive justification for design decisions. See the sub-folders and linked pages for more detailed justifications.
@@ -41,10 +39,10 @@ fn main() {
 }
 ```
 
-### **`import`** declaration - [*Packages*](packages/)
+### **`import`** declaration
 
-The *`import`* declaration is used to import packages. The *`import`* declaration is a top-level declaration, and must be the first declaration in a file (after the optional package declaration). In this example it imports the *`io`* subpackage from the *`std`* package.
+The `import` declaration is used to import packages. The `import` declaration is a top-level declaration, and must be the first declaration in a file (after the optional package declaration). In this example it imports the `io` sub-package from the `std` package.
 
 ::: tip
-To find out more about packages, see **[`packages/`](packages/)**.
+To find out more about packages, see [`packages/`](packages/).
 :::
