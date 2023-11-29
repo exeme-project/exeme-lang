@@ -12,10 +12,7 @@ export default defineConfig({
   cleanUrls: true,
 
   head: [
-    ['link', {
-      rel: 'icon', type: 'image/svg+xml', href: '/logo_no_bg.png'
-    }],
-    ['link', { rel: 'icon', type: 'image/png', href: '/logo_no_bg.png' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/exeme-lang/logo_no_bg.png' }],
   ],
 
   themeConfig: {
