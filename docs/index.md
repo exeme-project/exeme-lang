@@ -16,9 +16,12 @@ hero:
 
 features:
   - title: Optimised
+    icon: 🚀
     details: Exeme is designed to be fast and efficient, with a focus on high quality code.
   - title: Elegant
+    icon: 💎
     details: Exeme is designed to have a simple but powerful syntax, with a focus on elegance.
   - title: Compiled
+    icon: 📦
     details: Exeme is designed to be portable, with a focus on cross-platform support.
 ---
