@@ -3,9 +3,10 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
+#include "./includes.c"
+
 #include "./args/args.c"
 #include "./compiler/compiler.c"
-#include "./includes.c"
 
 #pragma pack(1)
 

@@ -204,6 +204,10 @@ void parser_error(struct Parser *self, const enum ErrorIdentifiers ERROR_MSG_NUM
         startChrIndex = token->data.AST_CLOSE_BRACE->_token->startChrIndex;
         endChrIndex = token->data.AST_CLOSE_BRACE->_token->endChrIndex;
         break;
+    case ASTTOKENS_COMMA:
+        startChrIndex = token->data.AST_COMMA->_token->startChrIndex;
+        endChrIndex = token->data.AST_COMMA->_token->endChrIndex;
+        break;
     case ASTTOKENS_COLON:
         startChrIndex = token->data.AST_COLON->_token->startChrIndex;
         endChrIndex = token->data.AST_COLON->_token->endChrIndex;
@@ -644,6 +648,9 @@ void parser_parseNext(struct Parser *self) {
     case LEXERTOKENS_CLOSE_BRACE:
         array_insert(self->parserTokens, self->parserTokens->length,
                      ast_new(ASTTOKENS_CLOSE_BRACE, AST_CLOSE_BRACE, lexerToken));
+        break;
+    case LEXERTOKENS_COMMA:
+        array_insert(self->parserTokens, self->parserTokens->length, ast_new(ASTTOKENS_COMMA, AST_COMMA, lexerToken));
         break;
     case LEXERTOKENS_COLON:
         array_insert(self->parserTokens, self->parserTokens->length, ast_new(ASTTOKENS_COLON, AST_COLON, lexerToken));
