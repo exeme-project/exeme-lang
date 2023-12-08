@@ -331,8 +331,8 @@ void parser_parseFunction(struct Parser *self, const struct LexerToken *funcKeyw
                           struct AST *parsedIdentifier) {
     struct AST *function = NULL, *identifier = NULL, *openingBrackets = NULL, *arguments = NULL, *argumentIdentifier = NULL,
                *argumentTypeSeparator = NULL, *argumentType = NULL, *closingBrackets = NULL,
-               *lastToken; // arguments are placeholders, so its better
-                           // to use that word rather than parameters
+               *lastToken = NULL; // arguments are placeholders, so its better to use that word rather than parameters
+    bool firstArgument = true;
 
     if (parsedIdentifier) { // if this is a function call
         identifier = parsedIdentifier;
@@ -385,6 +385,8 @@ void parser_parseFunction(struct Parser *self, const struct LexerToken *funcKeyw
         if (argumentIdentifier->IDENTIFIER == ASTTOKENS_CLOSE_BRACE) {
             closingBrackets = argumentIdentifier; // TODO: You know... do stuff here.
             break;
+        } else if (!firstArgument && argumentIdentifier->IDENTIFIER == ASTTOKENS_COMMA) {
+            continue;
         } else if (argumentIdentifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
             parser_error(self, P0002,
                          stringConcatenate(5, "expected parser token of type '", astTokens_getName(ASTTOKENS_VARIABLE),
@@ -430,12 +432,14 @@ void parser_parseFunction(struct Parser *self, const struct LexerToken *funcKeyw
         printf("argumentIdentifier: %s\n", argumentIdentifier->data.AST_VARIABLE->NAME->_value);
         printf("argumentType: %s\n\n", argumentType->data.AST_VARIABLE->NAME->_value);
 
-        // FIX: ADD SUPPORT FOR COMMA SEPARATING ARGUMENTS
-
         // TODO: You know... work out if it is actually a type. For this types
         // have to be supported, and so classes... etc.
 
         lastToken = argumentType;
+
+        if (firstArgument) {
+            firstArgument = false;
+        }
     }
 }
 
