@@ -1,4 +1,12 @@
 CompileFlags:
-  Add: [-std=c17, -Weverything, -Wno-missing-prototypes, -Wno-empty-translation-unit, -Wno-cast-qual]
+  Add: [-std=c17, -Weverything]
 Diagnostics:
-  Suppress: [unused-includes, padded, unsafe-buffer-usage]
+  Suppress:
+    [
+      missing-prototypes,
+      empty-translation-unit,
+      cast-qual,
+      unused-includes,
+      padded,
+      unsafe-buffer-usage,
+    ]
