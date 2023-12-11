@@ -114,8 +114,8 @@ void lexer_free(struct Lexer **self) {
  * @param ERROR_MSG The error message.
  * @param token     The erroneous token.
  */
-void lexer_error(struct Lexer *self, const enum ErrorIdentifiers ERROR_MSG_NUMBER, const char *ERROR_MSG,
-                 const struct LexerToken *token) {
+__attribute__((noreturn)) void lexer_error(struct Lexer *self, const enum ErrorIdentifiers ERROR_MSG_NUMBER,
+                                           const char *ERROR_MSG, const struct LexerToken *token) {
     const char *lineNumberString;
     FILE *filePointer = fopen(self->FILE_PATH, "r");
     struct String *line = string_new("\0", true);
@@ -441,8 +441,6 @@ char lexer_escapeChr(struct Lexer *self, const size_t startChrIndex) {
 
     lexer_error(self, L0004, "invalid escape sequence",
                 lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true), startChrIndex, self->chrIndex, self->lineIndex));
-
-    return '\0';
 }
 
 /**
