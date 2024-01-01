@@ -1,7 +1,7 @@
 {
   "version": "0.0.1-alpha",
   "devDependencies": {
-    "vitepress": "^1.0.0-rc.33"
+    "vitepress": "^1.0.0-rc.34"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs --host",
