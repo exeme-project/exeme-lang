@@ -432,8 +432,7 @@ void parser_parseFunction(struct Parser *self, const struct LexerToken *funcKeyw
         printf("argumentIdentifier: %s\n", argumentIdentifier->data.AST_VARIABLE->NAME->_value);
         printf("argumentType: %s\n\n", argumentType->data.AST_VARIABLE->NAME->_value);
 
-        // TODO: You know... work out if it is actually a type. For this types
-        // have to be supported, and so classes... etc.
+        // TODO: You know... work out if it is actually a type. And that requires types to be supported, and so classes...
 
         lastToken = argumentType;
 
