@@ -2,11 +2,9 @@
   // Update `../.devcontainer/devcontainer.json` as well.
   "recommendations": [
     "aaron-bond.better-comments",
-    "albert.tabout",
     "alexanderte.dainty-one-dark-pro-vscode",
     "github.copilot",
     "gruntfuggly.todo-tree",
-    "leonardssh.vscord",
     "llvm-vs-code-extensions.vscode-clangd",
     "ms-vscode.cmake-tools",
     "pkief.material-icon-theme",
