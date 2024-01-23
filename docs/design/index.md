@@ -51,7 +51,7 @@ The [`using` declaration](namespaces/#scoping-of-namespaces-their-members) bring
 To find out more about namespaces, see [`namespaces/`](namespaces/).
 :::
 
-This is followed by a [`comment`](comments/), more specifically a single-line comment. Comments are ignored by the compiler, and are used to document code.
+This is followed by a [`comment`](#comments), more specifically a single-line comment. Comments are ignored by the compiler, and are used to document code.
 
 Next is a [`function declaration`](functions/#function-declaration), consisting of:
 
