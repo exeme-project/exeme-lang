@@ -18,19 +18,26 @@ To declare a folder is a package, use the `package` keyword followed by the pack
 package github
 ```
 
-By default, no functions or variables are exported from a package. To export a function or variable, it has to be declared with the `extern` keyword. See [Example](#example) for more information.
+By default, no functions or variables are exported from a package. To export a function or variable, it has to be declared with the `extern` keyword. See the [example](#example) for more information.
+
+::: tip
+It is not a requirement to name the package as the containing folder. However, it is recommended to do so, as this increases readability.
+:::
 
 ### Package Requirements
 
-Packages may have external requirements. To declare a package requirement, use the `require` keyword followed by the package identifier, and the package version. The package identifier must be a valid link to a valid repository (that can be understood by `git`), that is a valid package. The package version must be a valid tag.
+Packages may have external requirements. To declare a package requirement, use the `require` keyword followed by the package identifier, and the package version in a dictionary with their respective keys (see below). The package identifier must be a valid link to a valid repository (that can be understood by `git`), that is a valid package. The package version must be a valid tag.
 
 ```exeme
 ; package.exlp
 
-package github
+package "github"
 
 require (
-  github.com/exeme-project/example-package v1.0.0
+  {
+    "package": "github.com/exeme-project/example-package",
+    "version": "v1.0.0",
+  }
 )
 ```
 
@@ -74,10 +81,13 @@ fn main() {
 #### `github/package.exlp`
 
 ```exeme
-package github
+package "github"
 
 require (
-  github.com/exeme-project/example-package v1.0.0
+  {
+    "package": "github.com/exeme-project/example-package",
+    "version": "v1.0.0",
+  }
 )
 ```
 

@@ -57,6 +57,7 @@ using github ; the contents from the github namespace are brought into the globa
 
 fn main() {
   auth()
+  logout()
 }
 ```
 
@@ -69,6 +70,7 @@ using github::auth ; the auth function from the github namespace is brought into
 
 fn main() {
   auth()
+  github::logout()
 }
 ```
 

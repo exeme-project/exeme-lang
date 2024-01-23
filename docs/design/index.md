@@ -39,10 +39,10 @@ fn main() {
 }
 ```
 
-### **`import`** declaration
-
-The `import` declaration is used to import packages. The `import` declaration is a top-level declaration, and must be the first declaration in a file (after the optional package declaration). In this example it imports the `io` sub-package from the `std` package.
+The examples starts with an [`import` declaration](packages/index.md#importing-packages), used to import packages. The `import` declaration is a top-level declaration, and must be the first declaration in a file (after the optional package declaration). In this example it imports the `io` sub-package from the `std` package.
 
 ::: tip
 To find out more about packages, see [`packages/`](packages/).
 :::
+
+The [`using` declaration](namespaces/#scoping-of-namespaces-their-members) brings the `out` function from the `io` package into the global scope. This means that it can be used without having to use the `io::` prefix.
