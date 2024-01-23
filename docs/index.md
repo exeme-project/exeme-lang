@@ -40,7 +40,7 @@ const members = [
     title: 'Creator',
     links: [
       { icon: 'github', link: 'https://github.com/skifli' },
-      { icon: 'twitter', link: 'https://twitter.com/skifli_' }
+      { icon: 'mastodon', link: 'https://mastodon.social/@skifli' }
     ]
   },
 ]

@@ -24,9 +24,9 @@ import "std.io"
 using io::out
 
 ; Returns whether `n` itself is prime.
-fn isPrime(n: i32) -> bool {
+func isPrime(n: i32) -> bool {
     for _, d = range(2, n) { ; '_' is the index, but it is not needed
-        if (n % d == 0) { ; Can be divided without a remainder
+        if n % d == 0 { ; Can be divided without a remainder
             return false
         }
     }
@@ -34,7 +34,7 @@ fn isPrime(n: i32) -> bool {
     return true
 }
 
-fn main() {
+func main() {
     out(isPrime(100))
 }
 ```
@@ -45,4 +45,26 @@ The examples starts with an [`import` declaration](packages/index.md#importing-p
 To find out more about packages, see [`packages/`](packages/).
 :::
 
-The [`using` declaration](namespaces/#scoping-of-namespaces-their-members) brings the `out` function from the `io` package into the global scope. This means that it can be used without having to use the `io::` prefix.
+The [`using` declaration](namespaces/#scoping-of-namespaces-their-members) brings the `out` function from the `io` namespace into the global scope. This means that it can be used without having to use the `io::` prefix.
+
+::: tip
+To find out more about namespaces, see [`namespaces/`](namespaces/).
+:::
+
+This is followed by a [`comment`](comments/), more specifically a single-line comment. Comments are ignored by the compiler, and are used to document code.
+
+Next is a [`function declaration`](functions/#function-declaration), consisting of:
+
+* The `func` keyword, introducing the function declaration.
+* The function name, `isPrime`.
+* A list of parameters enclosed in round brackets. In this case, the function takes a single parameter, `n`, of type `i32`.
+* An optional return type, `bool`, and the associated `->` token.
+* A body enclosed in curly brackets.
+
+The body is a [`block`](functions/index.md#blocks), containing [`statements`](functions/index.md#statements).
+
+## Code Encoding
+
+### Comments
+
+a

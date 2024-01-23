@@ -48,6 +48,7 @@ export default defineConfig({
         text: 'Design',
         items: [
           { text: 'Introduction', link: '/design/' },
+          { text: 'Control Flow', link: '/design/control-flow/' },
           { text: 'Functions', link: '/design/functions/' },
           { text: 'Namespaces', link: '/design/namespaces/' },
           { text: 'Packages', link: '/design/packages/' },

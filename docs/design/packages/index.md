@@ -73,7 +73,7 @@ You can use the `using` keyword to change the scope of the imported package / it
 ```exeme
 import "github"
 
-fn main() {
+func main() {
   github::auth()
 }
 ```
@@ -94,7 +94,7 @@ require (
 #### `github/github.exl`
 
 ```exeme
-extern fn auth() {
+extern func auth() {
   ; ...
 }
 ```

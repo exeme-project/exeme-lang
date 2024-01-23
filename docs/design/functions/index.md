@@ -31,3 +31,25 @@ func main() {
   add(1, 2)
 }
 ```
+
+## Statements
+
+A statement is a single instruction, and can be a declaration, an expression, or a control flow statement.
+
+## Blocks
+
+The body of a function is a block, and can contain any number of statements (enclosed in curly braces). Statements are executed in order, from top to bottom. The order of execution can be changed using [`control-flow statements`](../control-flow/). Some control flow statements also introduce new blocks, which are nested inside the current block.
+
+An example is as follows:
+
+```exeme
+import "std.io"
+
+using io::out
+
+func main() {
+    if true {
+        out("Hello, world!")
+    }
+}
+```

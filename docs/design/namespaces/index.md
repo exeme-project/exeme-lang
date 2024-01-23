@@ -30,12 +30,12 @@ Namespaces can be nested infinitely. In that case, use the `::` operator to refe
 
 ```exeme
 namespace github {
-  fn auth() {
+  func auth() {
     ; ...
   }
 }
 
-fn main() {
+func main() {
   github::auth()
 }
 ```
@@ -55,7 +55,7 @@ import "github"
 
 using github ; the contents from the github namespace are brought into the global scope
 
-fn main() {
+func main() {
   auth()
   logout()
 }
@@ -68,7 +68,7 @@ import "github"
 
 using github::auth ; the auth function from the github namespace is brought into the global scope
 
-fn main() {
+func main() {
   auth()
   github::logout()
 }
