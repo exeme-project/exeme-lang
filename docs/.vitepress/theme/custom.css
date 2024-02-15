@@ -1,7 +1,0 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code&family=Noto+Sans&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap');
-
-:root {
-    --vp-font-family-base: "Space Grotesk", sans-serif;
-    --vp-font-family-mono: "Fira Code", monospace;
-}

@@ -640,6 +640,8 @@ void lexer_lexNumber(struct Lexer *self) {
  * @return Whether lexing succeeded.
  */
 bool lexer_lexNext(struct Lexer *self) {
+    printf("%c\n", self->chr);
+
     switch (self->chr) {
     case '\'':
         lexer_lexChr(self);

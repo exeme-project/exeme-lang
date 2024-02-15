@@ -1,0 +1,33 @@
+---
+title: The Exeme Language
+template: splash
+hero:
+  tagline: An optimised, elegant, and compiled programming language.
+  image:
+    file: ../../assets/doggo.png
+  actions:
+    - text: Get Started
+      link: /guides/installation
+      icon: right-arrow
+      variant: primary
+    - text: Language Specification
+      link: /language-specification
+      icon: open-book
+    - text: View Source
+      link: https://github.com/exeme-project/exeme-lang/tree/main/src
+      icon: github
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+	<Card title="Optimised" icon="rocket">
+		Exeme is designed to be fast and efficient, with a focus on high quality code.
+	</Card>
+	<Card title="Elegant" icon="star">
+		Exeme is designed to have a simple but powerful syntax, with a focus on elegance.
+	</Card>
+	<Card title="Compiled" icon="document">
+		Exeme is designed to be portable, with a focus on cross-platform support.
+	</Card>
+</CardGrid>
