@@ -3,6 +3,8 @@ import {defineConfig} from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
+  site : "https://exeme-project.github",
+  base : "/exeme-lang",
   integrations : [
     starlight({
       title : 'The Exeme Language',

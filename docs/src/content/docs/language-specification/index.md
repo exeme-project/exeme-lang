@@ -34,7 +34,7 @@ func main() {
 }
 ```
 
-The example starts with an [**`import` statement**](/language-specification/packages#importing-packages), used to import a [*package*](/language-specification/packages/). `import` is a **top-level** declaration, and must be the first declaration in a file. The `import` statement is followed by a **string literal**, which is the package identifier. In this case it imports the *`io`* sub-package of the *`std`* package.
+The example starts with an [**`import` statement**](/language-specification/packages#importing-packages), used to import a [*package*](/language-specification/packages). `import` is a **top-level** declaration, and must be the first declaration in a file. The `import` statement is followed by a **string literal**, which is the package identifier. In this case it imports the *`io`* sub-package of the *`std`* package.
 
 The [**`using` statement**](/language-specification/namespaces#using-statements) brings the *`out`* function from the *`io`* package into the current scope. This means that the *`out`* function can be used without having to prefix it with *`io::`*.
 
