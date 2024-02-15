@@ -53,7 +53,7 @@ The standard library takes precedence over user-defined packages. For example if
 :::
 
 :::note
-You can use the `using` keyword to change the scope of the imported package / its members. To learn more, see [`../namespaces/`](../namespaces/).
+You can use the `using` keyword to change the scope of the imported package / its members. To learn more, see [`../namespaces`](../namespaces/).
 :::
 
 ### Example
