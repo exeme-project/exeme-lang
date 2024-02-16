@@ -18,7 +18,7 @@ export default defineConfig({
         src : "./src/assets/logo.png",
       },
       social : {
-        github : 'https://github.com/exeme-project/exeme-language',
+        github : 'https://github.com/exeme-project/exeme-lang',
       },
       sidebar : [
         {
