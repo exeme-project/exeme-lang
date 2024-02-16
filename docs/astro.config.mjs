@@ -8,6 +8,12 @@ export default defineConfig({
   integrations : [
     starlight({
       title : 'The Exeme Language',
+      customCss : [
+        // Fontsource files for to regular and semi-bold font weights.
+        '@fontsource/noto-sans/400.css',
+        '@fontsource/noto-sans/600.css',
+        "./src/styles/custom.css",
+      ],
       logo : {
         src : "./src/assets/logo.png",
       },
