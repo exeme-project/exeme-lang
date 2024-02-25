@@ -48,6 +48,7 @@ struct Lexer {
     char chr, prevChr;
     const char *FILE_PATH;
     FILE *filePointer;
+    int chrStatus;
     size_t chrIndex, lineIndex, tokenUnlexes;
     struct Array *tokens;
 };
@@ -223,11 +224,12 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
     while (true) {
         char prevChr = self->prevChr;
         self->prevChr = self->chr;
-        self->chr = (char)fgetc(self->filePointer); // Specify cast to char to silence warnings
+        self->chrStatus = fgetc(self->filePointer); // Specify cast to char to silence warnings
+        self->chr = (char)self->chrStatus;
         self->chrIndex++;
 
-        if (self->chr == EOF || ferror(self->filePointer) || self->chr == '\n') { // EOF / error or EOL
-            if (self->chr == EOF || ferror(self->filePointer)) {                  // EOF / error
+        if (self->chrStatus == EOF || ferror(self->filePointer) || self->chr == '\n') { // EOF / error or EOL
+            if (self->chrStatus == EOF || ferror(self->filePointer)) {                  // EOF / error
                 fclose(self->filePointer);
                 self->filePointer = NULL; // Set to NULL to prevent future errors
             }
@@ -242,9 +244,9 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
             return false;
         }
 
-        if (skipWhitespace) {          // Keep going till we encounter a char that is not
-                                       // whitespace
-            if (!isspace(self->chr)) { // Not whitespace
+        if (skipWhitespace) {           // Keep going till we encounter a char that is not
+                                        // whitespace
+            if (!iswspace(self->chr)) { // Not whitespace
                 break;
             }
         } else { // Don't skip whitespace chars
@@ -263,7 +265,7 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
  */
 void lexer_checkForContinuation(struct Lexer *self, const struct LexerToken *token) {
     if (lexer_getChr(self, false)) {
-        if (!isspace(self->chr) && !isalnum(self->chr)) {
+        if (!iswspace(self->chr) && !iswalnum(self->chr)) {
             lexer_error(self, L0002, stringConcatenate(3, "unexpected continuation of token '", token->value->_value, "'"),
                         lexerToken_new(LEXERTOKENS_NONE, string_new(chrToString(self->chr), true), self->chrIndex,
                                        self->chrIndex, self->lineIndex));
@@ -580,7 +582,7 @@ void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
     struct String *identifier = string_new(chrToString(self->chr), false);
 
     while (lexer_getChr(self, false)) {
-        if (!isalnum(self->chr)) {
+        if (!iswalnum(self->chr)) {
             lexer_unGetChr(self);
             break;
         }
@@ -607,9 +609,9 @@ void lexer_lexNumber(struct Lexer *self) {
     struct String *number = string_new(chrToString(self->chr), false);
 
     while (lexer_getChr(self, false)) {
-        if (isspace(self->chr)) {
+        if (iswspace(self->chr)) {
             break;
-        } else if (isalpha(self->chr)) {
+        } else if (iswalpha(self->chr)) {
             lexer_error(self, L0006, stringConcatenate(2, "invalid character for ", isFloat ? "float" : "integer"),
                         lexerToken_new(LEXERTOKENS_NONE, number, self->chrIndex, self->chrIndex, self->lineIndex));
         } else if (self->chr == '.') {
@@ -619,7 +621,7 @@ void lexer_lexNumber(struct Lexer *self) {
             } else {
                 isFloat = true;
             }
-        } else if (!isdigit(self->chr)) {
+        } else if (!iswdigit(self->chr)) {
             lexer_unGetChr(self);
             break;
         }
@@ -640,8 +642,6 @@ void lexer_lexNumber(struct Lexer *self) {
  * @return Whether lexing succeeded.
  */
 bool lexer_lexNext(struct Lexer *self) {
-    printf("%c\n", self->chr);
-
     switch (self->chr) {
     case '\'':
         lexer_lexChr(self);
@@ -740,9 +740,9 @@ bool lexer_lexNext(struct Lexer *self) {
         lexer_lexSingleLineComment(self);
         break;
     default:
-        if (isalpha(self->chr) || self->chr == '_') {
+        if (iswalpha(self->chr) || self->chr == '_') {
             lexer_lexKeywordOrIdentifier(self);
-        } else if (isdigit(self->chr)) {
+        } else if (iswdigit(self->chr)) {
             lexer_lexNumber(self);
         } else {
             lexer_error(self, L0001, "unknown character", NULL);

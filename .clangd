@@ -9,4 +9,5 @@ Diagnostics:
       unused-includes,
       padded,
       unsafe-buffer-usage,
+      sign-conversion
     ]
