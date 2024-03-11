@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.5.6",
-    "@fontsource/noto-sans": "^5.0.19",
+    "@fontsource/noto-sans": "^5.0.20",
     "@astrojs/starlight": "^0.21.1",
     "astro": "^4.4.15",
     "sharp": "^0.33.2",
