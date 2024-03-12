@@ -26,7 +26,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout your repository using git
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
       - name: Install, build, and upload your site output
         uses: withastro/action@acfe56dffc635abfb9506c77d51ce097030360d1 # v2.0.0
 
