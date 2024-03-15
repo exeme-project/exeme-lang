@@ -13,7 +13,7 @@
     "@astrojs/check": "^0.5.7",
     "@fontsource/noto-sans": "^5.0.20",
     "@astrojs/starlight": "^0.21.1",
-    "astro": "^4.5.0",
+    "astro": "^4.5.4",
     "sharp": "^0.33.2",
     "typescript": "^5.4.2"
   }
