@@ -12,7 +12,7 @@
   "dependencies": {
     "@fontsource/noto-sans": "^5.0.21",
     "@astrojs/check": "^0.5.9",
-    "astro": "^4.5.7",
+    "astro": "^4.5.8",
     "@astrojs/starlight": "^0.21.2",
     "sharp": "^0.33.2",
     "typescript": "^5.4.3"
