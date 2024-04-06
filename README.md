@@ -44,7 +44,7 @@ The Exeme Language is currently in the early stages of development. The language
 
 ## 🌟 Contributing
 
-To learn more about contributing to The Exeme Language, please read the [**Contributing Guide**](CONTRIBUTING.md). There are ways to contribute to The Exeme Language even if you don't know how to code. We look forward to your contributions! 🚀
+To learn more about contributing to The Exeme Language, please read the [**Contributing Guide**](https://github.com/exeme-project/.github/blob/main/CONTRIBUTING.md). There are ways to contribute to The Exeme Language even if you don't know how to code. We look forward to your contributions! 🚀
 
 ### 🛠️ Developer Documentation
 
