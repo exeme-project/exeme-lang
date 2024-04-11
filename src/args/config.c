@@ -37,3 +37,11 @@ const struct Array CONFIG = {
                          "--stdlib",
                      }},
 };
+
+/**
+ * Parses the arguments.
+ *
+ * @param argc The number of arguments.
+ * @param argv The arguments.
+ * @return The parsed arguments.
+ */

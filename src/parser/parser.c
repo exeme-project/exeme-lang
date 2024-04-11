@@ -440,6 +440,9 @@ void parser_parseFunction(struct Parser *self, const struct LexerToken *funcKeyw
             firstArgument = false;
         }
     }
+
+    if (!parsedIdentifier) { // if this is a function declaration
+    }
 }
 
 /**
