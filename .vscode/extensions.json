@@ -3,7 +3,6 @@
   "recommendations": [
     "aaron-bond.better-comments",
     "alexanderte.dainty-one-dark-pro-vscode",
-    "github.copilot",
     "gruntfuggly.todo-tree",
     "llvm-vs-code-extensions.vscode-clangd",
     "ms-vscode.cmake-tools",
