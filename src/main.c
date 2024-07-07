@@ -8,8 +8,6 @@
 #include "./args/args.c"
 #include "./compiler/compiler.c"
 
-#pragma pack(1)
-
 int main(int argc, char **argv) {
     struct Args *args = NULL;
     struct Compiler *compiler = NULL;
