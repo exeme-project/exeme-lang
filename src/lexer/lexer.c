@@ -244,9 +244,9 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
             return false;
         }
 
-        if (skipWhitespace) {           // Keep going till we encounter a char that is not
-                                        // whitespace
-            if (!iswspace(self->chr)) { // Not whitespace
+        if (skipWhitespace) {          // Keep going till we encounter a char that is not
+                                       // whitespace
+            if (!isspace(self->chr)) { // Not whitespace
                 break;
             }
         } else { // Don't skip whitespace chars
@@ -265,7 +265,7 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
  */
 void lexer_checkForContinuation(struct Lexer *self, const struct LexerToken *token) {
     if (lexer_getChr(self, false)) {
-        if (!iswspace(self->chr) && !iswalnum(self->chr)) {
+        if (!isspace(self->chr) && !isalnum(self->chr)) {
             lexer_error(self, L0002, stringConcatenate(3, "unexpected continuation of token '", token->value->_value, "'"),
                         lexerToken_new(LEXERTOKENS_NONE, string_new(chrToString(self->chr), true), self->chrIndex,
                                        self->chrIndex, self->lineIndex));
@@ -582,7 +582,7 @@ void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
     struct String *identifier = string_new(chrToString(self->chr), false);
 
     while (lexer_getChr(self, false)) {
-        if (!iswalnum(self->chr)) {
+        if (!isalnum(self->chr)) {
             lexer_unGetChr(self);
             break;
         }
@@ -609,9 +609,9 @@ void lexer_lexNumber(struct Lexer *self) {
     struct String *number = string_new(chrToString(self->chr), false);
 
     while (lexer_getChr(self, false)) {
-        if (iswspace(self->chr)) {
+        if (isspace(self->chr)) {
             break;
-        } else if (iswalpha(self->chr)) {
+        } else if (isalpha(self->chr)) {
             lexer_error(self, L0006, stringConcatenate(2, "invalid character for ", isFloat ? "float" : "integer"),
                         lexerToken_new(LEXERTOKENS_NONE, number, self->chrIndex, self->chrIndex, self->lineIndex));
         } else if (self->chr == '.') {
@@ -621,7 +621,7 @@ void lexer_lexNumber(struct Lexer *self) {
             } else {
                 isFloat = true;
             }
-        } else if (!iswdigit(self->chr)) {
+        } else if (!isdigit(self->chr)) {
             lexer_unGetChr(self);
             break;
         }
@@ -740,9 +740,9 @@ bool lexer_lexNext(struct Lexer *self) {
         lexer_lexSingleLineComment(self);
         break;
     default:
-        if (iswalpha(self->chr) || self->chr == '_') {
+        if (isalpha(self->chr) || self->chr == '_') {
             lexer_lexKeywordOrIdentifier(self);
-        } else if (iswdigit(self->chr)) {
+        } else if (isdigit(self->chr)) {
             lexer_lexNumber(self);
         } else {
             lexer_error(self, L0001, "unknown character", NULL);
