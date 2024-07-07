@@ -1,3 +1,12 @@
 {
+  "customizations": {
+    "codespaces": {
+      "repositories": {
+        "exeme-project/utils": {
+          "permissions": "write-all"
+        }
+      }
+    }
+  },
   "onCreateCommand": "git submodule update --init --recursive && sudo apt update && sudo apt-get -y install clang-format ninja-build && pip install -r ./requirements.txt && pre-commit install"
 }
