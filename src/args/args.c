@@ -18,9 +18,6 @@ struct Args {
 
 #define ARGS_STRUCT_SIZE sizeof(struct Args)
 
-/* Forward declarations to silence warnings */
-void args_parse(struct Args *self);
-
 /**
  * Creates a new Args struct.
  *
@@ -38,8 +35,6 @@ struct Args *args_new(int argc, char **argv) {
 
     self->argv = argv;
     self->argc = argc;
-
-    args_parse(self);
 
     return self;
 }

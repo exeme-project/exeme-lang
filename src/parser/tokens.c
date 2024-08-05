@@ -114,7 +114,7 @@ struct AST {
             const struct AST *VALUE;
         } *AST_DIVISION_ASSIGNMENT;
 
-        /* Represents a floor divison assignment in the AST */
+        /* Represents a floor division assignment in the AST */
         struct AST_FLOOR_DIVISION_ASSIGNMENT {
             const struct LexerToken *_token;
             const struct AST_VARIABLE *IDENTIFIER;
@@ -283,7 +283,7 @@ const char *astTokens_getName(const enum ASTTokenIdentifiers IDENTIFIER) {
     return ASTTOKEN_NAMES._values[IDENTIFIER];
 }
 
-/* Forward declarations */
+/* Forward declarations to silence warnings */
 void ast_free(struct AST **self);
 
 /**

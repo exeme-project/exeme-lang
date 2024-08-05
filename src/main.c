@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
     setlocale(LC_ALL, "");
 
     args = args_new(argc, argv);
+    args_parse(args);
 
     compiler = compiler_new("../../programs/test.exl");
 

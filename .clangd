@@ -1,5 +1,5 @@
 CompileFlags:
-  Add: [-std=c17, -Weverything]
+  Add: [-std=c99, -Weverything]
 Diagnostics:
   Suppress:
     [
