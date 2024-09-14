@@ -2,11 +2,12 @@
   // Update `../.devcontainer/devcontainer.json` as well.
   "recommendations": [
     "aaron-bond.better-comments",
-    "alexanderte.dainty-one-dark-pro-vscode",
+    "fooxly.themeswitch",
     "gruntfuggly.todo-tree",
+    "helgardrichard.helium-icon-theme",
     "llvm-vs-code-extensions.vscode-clangd",
+    "miguelsolorio.fluent-icons",
     "ms-vscode.cmake-tools",
-    "pkief.material-icon-theme",
     "rreverser.llvm",
     "streetsidesoftware.code-spell-checker",
     "streetsidesoftware.code-spell-checker-british-english",

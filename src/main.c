@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     args = args_new(argc, argv);
     args_parse(args);
 
-    compiler = compiler_new("../../programs/test.exl");
+    compiler = compiler_new("../../programs/complex.exl");
 
     while (compiler_compile(compiler)) {
     }
