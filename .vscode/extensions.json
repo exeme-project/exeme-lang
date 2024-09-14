@@ -1,12 +1,12 @@
 {
   // Update `../.devcontainer/devcontainer.json` as well.
   "recommendations": [
+    "7ute.minimal-icon-theme",
     "aaron-bond.better-comments",
-    "fooxly.themeswitch",
     "gruntfuggly.todo-tree",
-    "helgardrichard.helium-icon-theme",
     "llvm-vs-code-extensions.vscode-clangd",
     "miguelsolorio.fluent-icons",
+    "monokai.theme-monokai-pro-vscode",
     "ms-vscode.cmake-tools",
     "rreverser.llvm",
     "streetsidesoftware.code-spell-checker",
