@@ -90,8 +90,8 @@ void parser_free(struct Parser **self) {
  * @param ERROR_MSG        The error message.
  * @param token            The erroneous token.
  */
-void parser_error(struct Parser *self, const enum ErrorIdentifiers ERROR_MSG_NUMBER, const char *ERROR_MSG,
-                  const struct AST *token) {
+__attribute__((noreturn)) void parser_error(struct Parser *self, const enum ErrorIdentifiers ERROR_MSG_NUMBER,
+                                            const char *ERROR_MSG, const struct AST *token) {
     bool warning = false;
     const char *lineNumberString;
     FILE *filePointer = fopen(self->lexer->FILE_PATH, "r");

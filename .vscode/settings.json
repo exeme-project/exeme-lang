@@ -23,6 +23,8 @@
   "git.enableSmartCommit": true,
   "git.confirmSync": false,
   "git.autofetch": true,
+  "terminal.integrated.fontFamily": "Fira Code",
+  "terminal.integrated.fontSize": 13,
   "window.autoDetectColorScheme": true,
   "workbench.iconTheme": "helium-icon-theme",
   "workbench.productIconTheme": "fluent-icons",
