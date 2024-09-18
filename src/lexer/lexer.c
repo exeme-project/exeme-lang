@@ -142,9 +142,9 @@ __attribute__((noreturn)) void lexer_error(struct Lexer *self, const enum ErrorI
     printf("-%s> %s\n%s | %s\n%s", repeatChr('-', lineNumberStringLength), self->FILE_PATH, lineNumberString, line->_value,
            repeatChr(' ', lineNumberStringLength + 3));
 
-    if (token) {
+    if (token) { /* We know what token the error occurred on, and telling the user it will help them */
         printf("%s%s ", repeatChr(' ', token->startChrIndex), repeatChr('^', token->endChrIndex - token->startChrIndex + 1));
-    } else {
+    } else { /* We don't know what token the error occurred on */
         printf("%s^ ", repeatChr(' ', self->chrIndex));
     }
 

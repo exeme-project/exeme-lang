@@ -7,4 +7,14 @@
 
 #include "./includes.c"
 
+#define LONG_SIZE sizeof(long)
+#define FLOAT_SIZE sizeof(float)
+
 const size_t negativeULL = (size_t)-1;
+
+enum VariableType {
+    VARIABLE_TYPE_STRING,
+    VARIABLE_TYPE_INT,
+    VARIABLE_TYPE_FLOAT,
+    VARIABLE_TYPE_BOOL,
+};

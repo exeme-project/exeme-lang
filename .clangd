@@ -9,5 +9,6 @@ Diagnostics:
       unused-includes,
       padded,
       unsafe-buffer-usage,
-      sign-conversion
+      sign-conversion,
+      declaration-after-statement
     ]

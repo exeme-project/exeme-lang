@@ -8,5 +8,5 @@
       }
     }
   },
-  "onCreateCommand": "git submodule update --init --recursive && sudo apt update && sudo apt-get -y install clang-format ninja-build fonts-firacode && pip install -r ./requirements.txt && pre-commit install"
+  "onCreateCommand": "sudo apt update && sudo apt-get -y install clang-format ninja-build fonts-firacode && pip install -r ./requirements.txt && pre-commit install"
 }

@@ -6,8 +6,6 @@
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/8038/badge)](https://www.bestpractices.dev/projects/8038)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/exeme-project/exeme-lang/main.svg)](https://results.pre-commit.ci/latest/github/exeme-project/exeme-lang/main)
 
-- [Exeme Programming Language](#exeme-programming-language)
-
 The Exeme Language (from [**exeme**](https://www.collinsdictionary.com/dictionary/english/exeme)), is an *optimised*, *elegant*, and *compiled* programming language.
 
 > [!CAUTION]
