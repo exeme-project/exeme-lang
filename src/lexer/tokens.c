@@ -96,88 +96,47 @@ enum LexerTokenIdentifiers {
 /**
  * Contains the names of each of the lexer token identifiers.
  */
-static const struct Array LEXERTOKEN_NAMES = {
-    57,
-    (const void *[]){
-        "",
+static const struct Array LEXERTOKEN_NAMES = array_new_stack(
+    "",
 
-        "keyword",
-        "identifier",
+    "keyword", "identifier",
 
-        "char",
-        "string",
-        "integer",
-        "float",
+    "char", "string", "integer", "float",
 
-        // Arithmetic operators
-        "modulo operator",
-        "multiplication operator",
-        "exponent operator",
-        "division operator",
-        "floor division operator",
-        "addition operator",
-        "subtraction operator",
+    // Arithmetic operators
+    "modulo operator", "multiplication operator", "exponent operator", "division operator", "floor division operator",
+    "addition operator", "subtraction operator",
 
-        // Comparison / Relational operators
-        "equal to operator",
-        "not equal to operator",
-        "greater then operator",
-        "less than operator",
-        "greater than or equal operator",
-        "less than or equal operator",
+    // Comparison / Relational operators
+    "equal to operator", "not equal to operator", "greater then operator", "less than operator",
+    "greater than or equal operator", "less than or equal operator",
 
-        // Logical operators
-        "logical and operator",
-        "logical or operator",
-        "logical not operator",
+    // Logical operators
+    "logical and operator", "logical or operator", "logical not operator",
 
-        // Bitwise operators
-        "bitwise AND operator",
-        "bitwise OR operator",
-        "bitwise XOR operator",
-        "bitwise NOT operator",
-        "bitwise left shift",
-        "bitwise right shift",
+    // Bitwise operators
+    "bitwise AND operator", "bitwise OR operator", "bitwise XOR operator", "bitwise NOT operator", "bitwise left shift",
+    "bitwise right shift",
 
-        // Assignment operators
-        "assignment operator",
+    // Assignment operators
+    "assignment operator",
 
-        "modulo assignment operator",
-        "multiplication assignment operator",
-        "exponent assignment operator",
-        "division assignment operator",
-        "floor division assignment operator",
-        "addition assignment operator",
-        "subtraction assignment operator",
+    "modulo assignment operator", "multiplication assignment operator", "exponent assignment operator",
+    "division assignment operator", "floor division assignment operator", "addition assignment operator",
+    "subtraction assignment operator",
 
-        "bitwise AND assignment operator",
-        "bitwise OR assignment operator",
-        "bitwise XOR assignment operator",
-        "bitwise NOT assignment operator",
-        "bitwise left shift assignment operator",
-        "bitwise right shift assignment operator",
+    "bitwise AND assignment operator", "bitwise OR assignment operator", "bitwise XOR assignment operator",
+    "bitwise NOT assignment operator", "bitwise left shift assignment operator", "bitwise right shift assignment operator",
 
-        // Member / Pointer operators
-        "dot operator",
-        "arrow operator",
-        "at operator",
+    // Member / Pointer operators
+    "dot operator", "arrow operator", "at operator",
 
-        // Syntactic constructs
-        "open brace",
-        "open square brace",
-        "open curly brace",
-        "close brace",
-        "close square brace",
-        "close curly brace",
-        "comma",
-        "colon",
-        "scope resolution operator",
+    // Syntactic constructs
+    "open brace", "open square brace", "open curly brace", "close brace", "close square brace", "close curly brace", "comma",
+    "colon", "scope resolution operator",
 
-        // Misc
-        "single line comment",
-        "multi line comment",
-    },
-};
+    // Misc
+    "single line comment", "multi line comment");
 
 /**
  * Gets the name of a lexer token.
@@ -199,88 +158,39 @@ const char *lexerTokens_getName(const enum LexerTokenIdentifiers IDENTIFIER) {
  * be done with 'strcmp(a, b) < 0' ('true' if 'a' precedes over 'b',
  * else 'false').
  */
-const struct Array LEXER_TOKEN_PRECEDENCES = {
-    57,
-    (const void *[]){
-        "a",
+const struct Array LEXER_TOKEN_PRECEDENCES = array_new_stack("a",
 
-        "a",
-        "a",
+                                                             "a", "a",
 
-        "a",
-        "a",
-        "a",
-        "a",
+                                                             "a", "a", "a", "a",
 
-        // Arithmetic operators
-        "d",
-        "c",
-        "d",
-        "d",
-        "d",
-        "e",
-        "e",
+                                                             // Arithmetic operators
+                                                             "d", "c", "d", "d", "d", "e", "e",
 
-        // Comparison / Relational operators
-        "g",
-        "g",
-        "f",
-        "f",
-        "f",
-        "f",
+                                                             // Comparison / Relational operators
+                                                             "g", "g", "f", "f", "f", "f",
 
-        // Logical operators
-        "h",
-        "h",
-        "h",
+                                                             // Logical operators
+                                                             "h", "h", "h",
 
-        // Bitwise operators
-        "e",
-        "e",
-        "e",
-        "e",
-        "i",
-        "i",
+                                                             // Bitwise operators
+                                                             "e", "e", "e", "e", "i", "i",
 
-        // Assignment operators
-        "i",
+                                                             // Assignment operators
+                                                             "i",
 
-        "i",
-        "i",
-        "i",
-        "i",
-        "i",
-        "i",
-        "i",
+                                                             "i", "i", "i", "i", "i", "i", "i",
 
-        "i",
-        "i",
-        "i",
-        "i",
-        "i",
-        "i",
+                                                             "i", "i", "i", "i", "i", "i",
 
-        // Member / Pointer operators
-        "b",
-        "b",
-        "c",
+                                                             // Member / Pointer operators
+                                                             "b", "b", "c",
 
-        // Syntactic constructs
-        "b",
-        "b",
-        "b",
-        "b",
-        "b",
-        "b",
-        "j",
-        "b",
-        "a",
+                                                             // Syntactic constructs
+                                                             "b", "b", "b", "b", "b", "b", "j", "b", "a",
 
-        // Misc
-        "a",
-        "a",
-    },
-};
+                                                             // Misc
+                                                             "a", "a");
 
 /**
  * Represents a lexer token.

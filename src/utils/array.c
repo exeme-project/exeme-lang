@@ -19,6 +19,9 @@ struct Array {
 
 #define ARRAY_STRUCT_SIZE sizeof(struct Array)
 #define ARRAY_STRUCT_ELEMENT_SIZE sizeof(const void *)
+#define array_new_stack(...)                                                                                                \
+    ((struct Array){.length = sizeof((const void *[]){__VA_ARGS__}) / ARRAY_STRUCT_ELEMENT_SIZE,                            \
+                    ._values = (const void *[]){__VA_ARGS__}}) /* Variadic args to the rescue! */
 
 /**
  * Creates a new Array struct.
@@ -120,7 +123,29 @@ const void *array_get(struct Array *self, size_t index) {
 }
 
 /**
- * Iterates through the array, using the passed function to check for matches.
+ * Iterates through the array, using the passed function to check for matches. If a match is found then the index is
+ * returned.
+ *
+ * @param self    The current Array struct.
+ * @param matcher The function to check for matches.
+ * @param match   The value to match against.
+ *
+ * @return The index of the match.
+ */
+int array_find(struct Array *self, bool (*matcher)(const void *, const void *), void *match) {
+    for (size_t index = 0; index < self->length; index++) {
+        const void *element = self->_values[index];
+
+        if (matcher(element, match)) {
+            return (int)index;
+        }
+    }
+
+    return -1;
+}
+
+/**
+ * Checks if the array contains a value, internally using the array_find function.
  *
  * @param self    The current Array struct.
  * @param matcher The function to check for matches.
@@ -128,16 +153,24 @@ const void *array_get(struct Array *self, size_t index) {
  *
  * @return If a match was found.
  */
-bool array_find(struct Array *self, bool (*matcher)(const void *, const void *), void *match) {
-    for (size_t index = 0; index < self->length; index++) {
-        const void *element = self->_values[index];
+bool array_contains(struct Array *self, bool (*matcher)(const void *, const void *), void *match) {
+    return array_find(self, matcher, match) != -1;
+}
 
-        if (matcher(element, match)) {
-            return true;
-        }
+/**
+ * Checks if the array contains a value at the specified index.
+ *
+ * @param self  The current Array struct.
+ * @param index The index to check.
+ *
+ * @return If the index is occupied.
+ */
+bool array_index_occupied(struct Array *self, size_t index) {
+    if (index + 1 > self->length) {
+        return false;
     }
 
-    return false;
+    return self->_values[index] != NULL;
 }
 
 /**

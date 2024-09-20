@@ -17,28 +17,9 @@
 /**
  * Used to identify keywords.
  */
-static const struct Array KEYWORDS = {
-    16,
-    (const void *[]){
-        "break",
-        "case",
-        "class",
-        "else",
-        "elif",
-        "enum",
-        "export",
-        "for",
-        "func",
-        "if",
-        "import",
-        "match",
-        "pass",
-        "return",
-        "struct",
-        "using",
-        "while",
-    },
-};
+static const struct Array KEYWORDS =
+    array_new_stack("break", "case", "class", "else", "elif", "enum", "export", "for", "func", "if", "import", "match",
+                    "pass", "return", "struct", "using", "while");
 
 /**
  * Represents a lexer.
@@ -592,7 +573,7 @@ void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
 
     array_insert(
         self->tokens, self->tokens->length,
-        lexerToken_new(array_find((struct Array *)&KEYWORDS, &lexer_lexKeywordOrIdentifier_match_, identifier->_value)
+        lexerToken_new(array_contains((struct Array *)&KEYWORDS, &lexer_lexKeywordOrIdentifier_match_, identifier->_value)
                            ? LEXERTOKENS_KEYWORD
                            : LEXERTOKENS_IDENTIFIER,
                        identifier, startChrIndex, self->chrIndex, self->lineIndex));

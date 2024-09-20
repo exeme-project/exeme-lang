@@ -10,5 +10,6 @@ Diagnostics:
       padded,
       unsafe-buffer-usage,
       sign-conversion,
-      declaration-after-statement
+      declaration-after-statement,
+      initializer-overrides
     ]

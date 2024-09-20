@@ -13,6 +13,7 @@
 const size_t negativeULL = (size_t)-1;
 
 enum VariableType {
+    VARIABLE_TYPE_NULL,
     VARIABLE_TYPE_STRING,
     VARIABLE_TYPE_INT,
     VARIABLE_TYPE_FLOAT,

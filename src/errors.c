@@ -32,23 +32,8 @@ enum ErrorIdentifiers {
 /**
  * Contains the names of each of the error identifiers.
  */
-const struct Array ERRORIDENTIFIER_NAMES = {
-    9,
-    (const void *[]){
-        // Lexer
-        "L0001",
-        "L0002",
-        "L0003",
-        "L0004",
-        "L0005",
-        "L0006",
-        "L0007",
-
-        // Parser
-        "P0001",
-        "P0002",
-    },
-};
+const struct Array ERRORIDENTIFIER_NAMES =
+    array_new_stack("L0001", "L0002", "L0003", "L0004", "L0005", "L0006", "L0007", "P0001", "P0002", "P0003");
 
 /**
  * Gets the name of an error.
