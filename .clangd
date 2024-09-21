@@ -11,5 +11,5 @@ Diagnostics:
       unsafe-buffer-usage,
       sign-conversion,
       declaration-after-statement,
-      initializer-overrides
+      initializer-overrides,
     ]

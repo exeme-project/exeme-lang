@@ -18,16 +18,12 @@ static const struct Array ARGUMENTS_FORMAT = array_new_stack(
               .def = "./../../lib", .flagShort = "-s", .flagLong = "--stdlib", .type = VARIABLE_TYPE_STRING));
 
 int main(int argc, char **argv) {
-    struct Args *args = NULL;
-    struct Map *parsed_args = NULL;
-    struct Compiler *compiler = NULL;
-
     setlocale(LC_ALL, "");
 
-    args = args_new(argc, argv, ARGUMENTS_FORMAT);
-    parsed_args = args_parse(args);
+    struct Args *args = args_new(argc, argv, ARGUMENTS_FORMAT);
+    struct Map *parsed_args = args_parse(args);
 
-    compiler = compiler_new("../../programs/complex.exl");
+    struct Compiler *compiler = compiler_new("../../programs/complex.exl");
 
     while (compiler_compile(compiler)) {
     }

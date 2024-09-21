@@ -116,7 +116,7 @@ void string_free(struct String **self) {
  *
  * @return The concatenated string.
  */
-char *stringConcatenate(size_t argumentsNumber, ...) {
+char *stringConcatenate_(size_t argumentsNumber, ...) {
     char *string;
     va_list arguments;
     va_start(arguments, argumentsNumber);
@@ -144,6 +144,8 @@ char *stringConcatenate(size_t argumentsNumber, ...) {
 
     return string;
 }
+
+#define stringConcatenate(...) stringConcatenate_(sizeof((const char *[]){__VA_ARGS__}) / STRING_SIZE, __VA_ARGS__)
 
 /**
  * Repeats the char the specified amount of times.

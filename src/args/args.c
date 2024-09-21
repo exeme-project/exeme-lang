@@ -5,10 +5,12 @@
 
 #include "../includes.c"
 
+#include "../errors.c"
 #include "../utils/array.c"
 #include "../utils/conversions.c"
 #include "../utils/map.c"
 #include "../utils/panic.c"
+#include "../utils/string.c"
 
 /**
  * Represents an argument.
@@ -74,23 +76,37 @@ void args_free(struct Args **self) {
     }
 }
 
-__attribute__((noreturn)) void args_error(char *msg) {
-    printf("oops - %s", msg);
+/**
+ * Prints an argument parsing error and exits.
+ *
+ * @param self             The current Parser struct.
+ * @param ERROR_MSG_NUMBER The error message number.
+ * @param ERROR_MSG        The error message.
+ * @param ARG              The erroneous argument.
+ */
+__attribute__((noreturn)) void args_error(struct Args *self, const enum ErrorIdentifiers ERROR_MSG_NUMBER,
+                                          const char *ERROR_MSG, const char *ARG) {
+    printf("oops - %s", ERROR_MSG);
 
     exit(EXIT_FAILURE);
 }
 
-bool args_check_matchRequiredArgumentNames_(const void *element, const void *match) {
+bool args_check_matchArgumentNames_(const void *element, const void *match) {
     return strcmp(((struct Arg *)element)->name, ((struct Arg *)match)->name) == 0;
 }
 
+/**
+ * Checks the config for parsing arguments.
+ *
+ * @param self The current Args struct.
+ */
 void args_check(struct Args *self) {
     if (self->requiredArguments) {
         array_free(&self->requiredArguments);
     }
 
-    struct Array *optionalArguments = array_new();
     self->requiredArguments = array_new();
+    struct Array *checkedArguments = array_new();
 
     for (size_t index = 0; index < self->argumentsFormat.length; index++) {
         struct Arg *arg = (struct Arg *)self->argumentsFormat._values[index];
@@ -109,20 +125,22 @@ void args_check(struct Args *self) {
                 panic("required argument cannot have flags");
             } else if (arg->def) {
                 panic("required argument cannot have a default value");
+            } else if ((size_t)arg->position != self->requiredArguments->length) {
+                panic("required argument position must be in order");
             }
 
-            if (array_contains(self->requiredArguments, args_check_matchRequiredArgumentNames_, arg)) {
-                panic("duplicate required argument name");
+            if (array_contains(checkedArguments, args_check_matchArgumentNames_, arg)) {
+                panic("duplicate argument name");
             }
 
-            array_insert(self->requiredArguments, arg->position, arg);
+            array_append(self->requiredArguments, arg);
+            array_append(checkedArguments, arg);
         } else { /* Optional argument */
             if ((!arg->flagShort || strlen(arg->flagShort) == 0) ||
                 (!arg->flagLong || strlen(arg->flagLong) == 0)) { /* Again, short-circuiting! */
                 panic("optional argument must have a short and long flag");
-            } else if (!arg->def && arg->type != VARIABLE_TYPE_NULL) { /* Why do NULL variables exist in arguments? No use
-                                                                          case pops to mind. But it's fun to implement :). */
-                panic("optional argument must have a non-NULL default value, if type is not NULL");
+            } else if (!arg->def) {
+                panic("optional argument must have a non-NULL default value");
             }
 
             if (strncmp(arg->flagShort, "-", 1) != 0) {
@@ -132,23 +150,25 @@ void args_check(struct Args *self) {
             }
 
             /* Bit more complex than using the array_contains function I also wrote, but in this case its better this way */
-            for (size_t j = 0; j < optionalArguments->length; j++) {
-                struct Arg *optionalArg = (struct Arg *)optionalArguments->_values[j];
+            for (size_t j = 0; j < checkedArguments->length; j++) {
+                struct Arg *argument = (struct Arg *)checkedArguments->_values[j];
 
-                if (strcmp(arg->name, optionalArg->name) == 0) {
-                    panic("duplicate optional argument name");
-                } else if (strcmp(arg->flagShort, optionalArg->flagShort) == 0) {
+                if (strcmp(arg->name, argument->name) == 0) {
+                    panic("duplicate argument name");
+                } else if (argument->flagShort &&
+                           strcmp(arg->flagShort, argument->flagShort) ==
+                               0) { /* Again, short-circuiting, as we only compare the strings if it is a string */
                     panic("duplicate optional argument short flag");
-                } else if (strcmp(arg->flagLong, optionalArg->flagLong) == 0) {
+                } else if (argument->flagLong && strcmp(arg->flagLong, argument->flagLong) == 0) {
                     panic("duplicate optional argument long flag");
                 }
             }
 
-            array_insert(optionalArguments, optionalArguments->length, arg);
+            array_append(checkedArguments, arg);
         }
     }
 
-    array_free(&optionalArguments);
+    array_free(&checkedArguments);
 }
 
 /**
@@ -158,17 +178,24 @@ void args_check(struct Args *self) {
  */
 struct Map *args_parse(struct Args *self) {
     struct Map *parsed_args = map_new();
-    int true_argc = self->argc - 1; /* Index 0 is the executable name */
+    size_t true_argc = self->argc - 1; /* Index 0 is the executable name */
 
-    for (int index = 1; index < self->argc; index++) {
+    for (size_t index = 1; index < self->argc; index++) {
         char *arg = self->argv[index];
 
         if (arg[0] == '-') {
-            /* Essentially checks if index == true_argc, and irrespective, increments index. A cool way to combine what
-              should be two statements into one. Just dont't forget what it does :). */
+            if (index - 1 < self->requiredArguments->length) {
+                struct Arg *required_arg = (struct Arg *)self->requiredArguments->_values[index - 1];
 
-            if (index++ == true_argc) {
-                args_error("expected argument after flag");
+                args_error(self, A0001,
+                           stringConcatenate("expected required argument '", required_arg->name, "' at position ",
+                                             ulToString(required_arg->position)),
+                           arg);
+            }
+
+            if (index++ == true_argc) { /* Essentially checks if index == true_argc, and irrespective, increments index. A
+  cool way to combine what should be two statements into one. Just dont't forget what it does :). */
+                args_error(self, A0002, "expected argument after flag", arg);
             }
 
             char *arg_value = self->argv[index];
@@ -176,8 +203,6 @@ struct Map *args_parse(struct Args *self) {
         } else {
         }
     }
-
-    exit(EXIT_SUCCESS); // FIXME: REMOVE THIS
 
     return parsed_args;
 }

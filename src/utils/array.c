@@ -73,6 +73,14 @@ void array_insert(struct Array *self, size_t index, const void *value) {
 }
 
 /**
+ * Appends a value to the end of the array.
+ *
+ * @param self  The current Array struct.
+ * @param value The value to append.
+ */
+void array_append(struct Array *self, const void *value) { array_insert(self, self->length, value); }
+
+/**
  * Removes the last element from the array.
  *
  * @param self The current Array struct.

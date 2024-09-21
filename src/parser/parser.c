@@ -88,10 +88,10 @@ void parser_free(struct Parser **self) {
  * @param self             The current Parser struct.
  * @param ERROR_MSG_NUMBER The error message number.
  * @param ERROR_MSG        The error message.
- * @param token            The erroneous token.
+ * @param TOKEN            The erroneous token.
  */
 __attribute__((noreturn)) void parser_error(struct Parser *self, const enum ErrorIdentifiers ERROR_MSG_NUMBER,
-                                            const char *ERROR_MSG, const struct AST *token) {
+                                            const char *ERROR_MSG, const struct AST *TOKEN) {
     bool warning = false;
     const char *lineNumberString;
     FILE *filePointer = fopen(self->lexer->FILE_PATH, "r");
@@ -118,109 +118,109 @@ __attribute__((noreturn)) void parser_error(struct Parser *self, const enum Erro
     printf("-%s> %s\n%s | %s\n%s", repeatChr('-', lineNumberStringLength), self->lexer->FILE_PATH, lineNumberString,
            line->_value, repeatChr(' ', lineNumberStringLength + 3));
 
-    switch (token->IDENTIFIER) {
+    switch (TOKEN->IDENTIFIER) {
     case ASTTOKENS_CHR:
-        startChrIndex = token->data.AST_CHR->_token->startChrIndex;
-        endChrIndex = token->data.AST_CHR->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_CHR->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_CHR->_token->endChrIndex;
         break;
     case ASTTOKENS_STRING:
-        startChrIndex = token->data.AST_STRING->_token->startChrIndex;
-        endChrIndex = token->data.AST_STRING->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_STRING->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_STRING->_token->endChrIndex;
         break;
     case ASTTOKENS_INTEGER:
-        startChrIndex = token->data.AST_INTEGER->_token->startChrIndex;
-        endChrIndex = token->data.AST_INTEGER->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_INTEGER->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_INTEGER->_token->endChrIndex;
         break;
     case ASTTOKENS_FLOAT:
-        startChrIndex = token->data.AST_FLOAT->_token->startChrIndex;
-        endChrIndex = token->data.AST_FLOAT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_FLOAT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_FLOAT->_token->endChrIndex;
         break;
 
     case ASTTOKENS_VARIABLE:
-        startChrIndex = token->data.AST_VARIABLE->_token->startChrIndex;
-        endChrIndex = token->data.AST_VARIABLE->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_VARIABLE->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_VARIABLE->_token->endChrIndex;
         break;
     case ASTTOKENS_ASSIGNMENT:
-        startChrIndex = token->data.AST_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_MODULO_ASSIGNMENT:
-        startChrIndex = token->data.AST_MODULO_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_MODULO_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_MODULO_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_MODULO_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_MULTIPLICATION_ASSIGNMENT:
-        startChrIndex = token->data.AST_MULTIPLICATION_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_MULTIPLICATION_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_MULTIPLICATION_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_MULTIPLICATION_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_EXPONENT_ASSIGNMENT:
-        startChrIndex = token->data.AST_EXPONENT_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_EXPONENT_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_EXPONENT_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_EXPONENT_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_DIVISION_ASSIGNMENT:
-        startChrIndex = token->data.AST_DIVISION_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_DIVISION_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_DIVISION_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_DIVISION_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_FLOOR_DIVISION_ASSIGNMENT:
-        startChrIndex = token->data.AST_FLOOR_DIVISION_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_FLOOR_DIVISION_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_FLOOR_DIVISION_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_FLOOR_DIVISION_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_ADDITION_ASSIGNMENT:
-        startChrIndex = token->data.AST_ADDITION_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_ADDITION_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_ADDITION_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_ADDITION_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_SUBTRACTION_ASSIGNMENT:
-        startChrIndex = token->data.AST_SUBTRACTION_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_SUBTRACTION_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_SUBTRACTION_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_SUBTRACTION_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_BITWISE_AND_ASSIGNMENT:
-        startChrIndex = token->data.AST_BITWISE_AND_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_BITWISE_AND_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_BITWISE_AND_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_BITWISE_AND_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_BITWISE_OR_ASSIGNMENT:
-        startChrIndex = token->data.AST_BITWISE_OR_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_BITWISE_OR_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_BITWISE_OR_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_BITWISE_OR_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_BITWISE_XOR_ASSIGNMENT:
-        startChrIndex = token->data.AST_BITWISE_XOR_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_BITWISE_XOR_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_BITWISE_XOR_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_BITWISE_XOR_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_BITWISE_NOT_ASSIGNMENT:
-        startChrIndex = token->data.AST_BITWISE_NOT_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_BITWISE_NOT_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_BITWISE_NOT_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_BITWISE_NOT_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
-        startChrIndex = token->data.AST_BITWISE_LEFT_SHIFT_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_BITWISE_LEFT_SHIFT_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_BITWISE_LEFT_SHIFT_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_BITWISE_LEFT_SHIFT_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
-        startChrIndex = token->data.AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT->_token->startChrIndex;
-        endChrIndex = token->data.AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT->_token->endChrIndex;
         break;
     case ASTTOKENS_OPEN_BRACE:
-        startChrIndex = token->data.AST_OPEN_BRACE->_token->startChrIndex;
-        endChrIndex = token->data.AST_OPEN_BRACE->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_OPEN_BRACE->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_OPEN_BRACE->_token->endChrIndex;
         break;
     case ASTTOKENS_CLOSE_BRACE:
-        startChrIndex = token->data.AST_CLOSE_BRACE->_token->startChrIndex;
-        endChrIndex = token->data.AST_CLOSE_BRACE->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_CLOSE_BRACE->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_CLOSE_BRACE->_token->endChrIndex;
         break;
     case ASTTOKENS_COMMA:
-        startChrIndex = token->data.AST_COMMA->_token->startChrIndex;
-        endChrIndex = token->data.AST_COMMA->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_COMMA->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_COMMA->_token->endChrIndex;
         break;
     case ASTTOKENS_COLON:
-        startChrIndex = token->data.AST_COLON->_token->startChrIndex;
-        endChrIndex = token->data.AST_COLON->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_COLON->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_COLON->_token->endChrIndex;
         break;
     case ASTTOKENS_FUNCTION_DEFINITION:
-        startChrIndex = token->data.AST_FUNCTION_DEFINITION->_token->startChrIndex;
-        endChrIndex = token->data.AST_FUNCTION_DEFINITION->_token->endChrIndex;
+        startChrIndex = TOKEN->data.AST_FUNCTION_DEFINITION->_token->startChrIndex;
+        endChrIndex = TOKEN->data.AST_FUNCTION_DEFINITION->_token->endChrIndex;
         break;
     default:
         warning = true;
     }
 
-    if (token) {
+    if (TOKEN) {
         printf("%s%s ", repeatChr(' ', startChrIndex), repeatChr('^', endChrIndex - startChrIndex + 1));
     } else {
         printf("%s^ ", repeatChr(' ', self->lexer->chrIndex));
@@ -247,10 +247,10 @@ __attribute__((noreturn)) void parser_error(struct Parser *self, const enum Erro
  */
 void parser_parseChrOrString(struct Parser *self, const struct LexerToken *lexerToken) {
     if (lexerToken->identifier == LEXERTOKENS_CHR) {
-        array_insert(self->parserTokens, self->parserTokens->length,
+        array_append(self->parserTokens,
                      ast_new(ASTTOKENS_CHR, AST_CHR, lexerToken, string_new(lexerToken->value->_value, true)));
     } else {
-        array_insert(self->parserTokens, self->parserTokens->length,
+        array_append(self->parserTokens,
                      ast_new(ASTTOKENS_STRING, AST_STRING, lexerToken, string_new(lexerToken->value->_value, true)));
     }
 }
@@ -263,10 +263,10 @@ void parser_parseChrOrString(struct Parser *self, const struct LexerToken *lexer
  */
 void parser_parseNumber(struct Parser *self, const struct LexerToken *lexerToken) {
     if (lexerToken->identifier == LEXERTOKENS_INTEGER) {
-        array_insert(self->parserTokens, self->parserTokens->length,
+        array_append(self->parserTokens,
                      ast_new(ASTTOKENS_INTEGER, AST_INTEGER, lexerToken, string_new(lexerToken->value->_value, true)));
     } else {
-        array_insert(self->parserTokens, self->parserTokens->length,
+        array_append(self->parserTokens,
                      ast_new(ASTTOKENS_FLOAT, AST_FLOAT, lexerToken, string_new(lexerToken->value->_value, true)));
     }
 }
@@ -288,7 +288,7 @@ void parser_parseClass(struct Parser *self, const struct LexerToken *classKeywor
 
     if (identifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
         parser_error(self, P0002,
-                     stringConcatenate(5, "expected parser token of type '", astTokens_getName(ASTTOKENS_VARIABLE),
+                     stringConcatenate("expected parser token of type '", astTokens_getName(ASTTOKENS_VARIABLE),
                                        "' after 'class' keyword, got '", astTokens_getName(identifier->IDENTIFIER), "'"),
                      identifier);
     }
@@ -304,7 +304,7 @@ void parser_parseClass(struct Parser *self, const struct LexerToken *classKeywor
 
     if (openingBrackets->IDENTIFIER != ASTTOKENS_OPEN_BRACE) {
         parser_error(self, P0002,
-                     stringConcatenate(5, "expected parser token of type '", astTokens_getName(ASTTOKENS_OPEN_BRACE),
+                     stringConcatenate("expected parser token of type '", astTokens_getName(ASTTOKENS_OPEN_BRACE),
                                        "' after class identifier, got '", astTokens_getName(openingBrackets->IDENTIFIER),
                                        "'"),
                      openingBrackets);
@@ -346,7 +346,7 @@ void parser_parseFunction(struct Parser *self, const struct LexerToken *funcKeyw
 
     if (identifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
         parser_error(self, P0002,
-                     stringConcatenate(5, "expected parser token of type '", astTokens_getName(ASTTOKENS_VARIABLE),
+                     stringConcatenate("expected parser token of type '", astTokens_getName(ASTTOKENS_VARIABLE),
                                        "' after 'func' keyword, got '", astTokens_getName(identifier->IDENTIFIER), "'"),
                      identifier);
     }
@@ -363,7 +363,7 @@ void parser_parseFunction(struct Parser *self, const struct LexerToken *funcKeyw
 
         if (openingBrackets->IDENTIFIER != ASTTOKENS_OPEN_BRACE) {
             parser_error(self, P0002,
-                         stringConcatenate(5, "expected parser token of type '", astTokens_getName(ASTTOKENS_OPEN_BRACE),
+                         stringConcatenate("expected parser token of type '", astTokens_getName(ASTTOKENS_OPEN_BRACE),
                                            "' after function identifier, got '",
                                            astTokens_getName(openingBrackets->IDENTIFIER), "'"),
                          openingBrackets);
@@ -375,7 +375,7 @@ void parser_parseFunction(struct Parser *self, const struct LexerToken *funcKeyw
     while (true) {
         if (!parser_parse(self, false, true)) {
             parser_error(self, P0001,
-                         stringConcatenate(3, "expected parser token of type '", astTokens_getName(ASTTOKENS_CLOSE_BRACE),
+                         stringConcatenate("expected parser token of type '", astTokens_getName(ASTTOKENS_CLOSE_BRACE),
                                            "' after function arguments, got 'EOF'"),
                          lastToken);
         }
@@ -389,7 +389,7 @@ void parser_parseFunction(struct Parser *self, const struct LexerToken *funcKeyw
             continue;
         } else if (argumentIdentifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
             parser_error(self, P0002,
-                         stringConcatenate(5, "expected parser token of type '", astTokens_getName(ASTTOKENS_VARIABLE),
+                         stringConcatenate("expected parser token of type '", astTokens_getName(ASTTOKENS_VARIABLE),
                                            "' for function argument, got '",
                                            astTokens_getName(argumentIdentifier->IDENTIFIER), "'"),
                          argumentIdentifier);
@@ -406,7 +406,7 @@ void parser_parseFunction(struct Parser *self, const struct LexerToken *funcKeyw
 
         if (argumentTypeSeparator->IDENTIFIER != ASTTOKENS_COLON) {
             parser_error(self, P0002,
-                         stringConcatenate(5, "expected parser token of type '", astTokens_getName(ASTTOKENS_COLON),
+                         stringConcatenate("expected parser token of type '", astTokens_getName(ASTTOKENS_COLON),
                                            "' after function argument, got '",
                                            astTokens_getName(argumentTypeSeparator->IDENTIFIER), "'"),
                          argumentTypeSeparator);
@@ -423,7 +423,7 @@ void parser_parseFunction(struct Parser *self, const struct LexerToken *funcKeyw
 
         if (argumentType->IDENTIFIER != ASTTOKENS_VARIABLE) {
             parser_error(self, P0002,
-                         stringConcatenate(5, "expected parser token of type '", astTokens_getName(ASTTOKENS_VARIABLE),
+                         stringConcatenate("expected parser token of type '", astTokens_getName(ASTTOKENS_VARIABLE),
                                            "' for function argument type, got '",
                                            astTokens_getName(argumentType->IDENTIFIER), "'"),
                          argumentType);
@@ -491,9 +491,8 @@ void parser_parseIdentifier(struct Parser *self, const struct LexerToken *lexerT
         }
     }
 
-    array_insert(
-        self->parserTokens, self->parserTokens->length,
-        ast_new(ASTTOKENS_VARIABLE, AST_VARIABLE, pointer, lexerToken, string_new(lexerToken->value->_value, true)));
+    array_append(self->parserTokens, ast_new(ASTTOKENS_VARIABLE, AST_VARIABLE, pointer, lexerToken,
+                                             string_new(lexerToken->value->_value, true)));
 }
 
 /**
@@ -508,7 +507,7 @@ void parser_parseAssignment(struct Parser *self, const struct LexerToken *lexerT
     if (self->parserTokens->length != 1) {
         lexer_error(
             self->lexer, P0001,
-            stringConcatenate(2, "expected 1 parser token before assignment, got ", ulToString(self->parserTokens->length)),
+            stringConcatenate("expected 1 parser token before assignment, got ", ulToString(self->parserTokens->length)),
             lexerToken);
     }
 
@@ -516,7 +515,7 @@ void parser_parseAssignment(struct Parser *self, const struct LexerToken *lexerT
 
     if (identifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
         parser_error(self, P0002,
-                     stringConcatenate(5, "expected parser token of type '", astTokens_getName(ASTTOKENS_VARIABLE),
+                     stringConcatenate("expected parser token of type '", astTokens_getName(ASTTOKENS_VARIABLE),
                                        "' before assignment, got '", astTokens_getName(identifier->IDENTIFIER), "'"),
                      identifier);
     }
@@ -531,7 +530,7 @@ void parser_parseAssignment(struct Parser *self, const struct LexerToken *lexerT
     if (self->parserTokens->length != 1) {
         lexer_error(
             self->lexer, P0001,
-            stringConcatenate(2, "expected 1 parser token after assignment, got ", ulToString(self->parserTokens->length)),
+            stringConcatenate("expected 1 parser token after assignment, got ", ulToString(self->parserTokens->length)),
             lexerToken);
     }
 
@@ -648,18 +647,16 @@ void parser_parseNext(struct Parser *self) {
         parser_parseAssignment(self, lexerToken);
         break;
     case LEXERTOKENS_OPEN_BRACE:
-        array_insert(self->parserTokens, self->parserTokens->length,
-                     ast_new(ASTTOKENS_OPEN_BRACE, AST_OPEN_BRACE, lexerToken));
+        array_append(self->parserTokens, ast_new(ASTTOKENS_OPEN_BRACE, AST_OPEN_BRACE, lexerToken));
         break;
     case LEXERTOKENS_CLOSE_BRACE:
-        array_insert(self->parserTokens, self->parserTokens->length,
-                     ast_new(ASTTOKENS_CLOSE_BRACE, AST_CLOSE_BRACE, lexerToken));
+        array_append(self->parserTokens, ast_new(ASTTOKENS_CLOSE_BRACE, AST_CLOSE_BRACE, lexerToken));
         break;
     case LEXERTOKENS_COMMA:
-        array_insert(self->parserTokens, self->parserTokens->length, ast_new(ASTTOKENS_COMMA, AST_COMMA, lexerToken));
+        array_append(self->parserTokens, ast_new(ASTTOKENS_COMMA, AST_COMMA, lexerToken));
         break;
     case LEXERTOKENS_COLON:
-        array_insert(self->parserTokens, self->parserTokens->length, ast_new(ASTTOKENS_COLON, AST_COLON, lexerToken));
+        array_append(self->parserTokens, ast_new(ASTTOKENS_COLON, AST_COLON, lexerToken));
         break;
     default:
         printf("unsupported lexer token for parser: %s\n", lexerTokens_getName(lexerToken->identifier));
