@@ -96,7 +96,7 @@ struct Hashmap *hashmap_new(hash_function_t hasher, size_t initial_table_length,
  * @param KEY           The key of the bucket.
  * @param hash_index    The hash index, calculated as hash mod table length.
  */
-struct HashmapValue **hashmap_getBucket(struct Hashmap *self, bool return_parent, const char *KEY, size_t hash_index) {
+struct HashmapValue **hashmap___getBucket(struct Hashmap *self, bool return_parent, const char *KEY, size_t hash_index) {
     struct HashmapValue **bucket = &self->buckets[hash_index];
 
     if (!*bucket) {
@@ -114,7 +114,7 @@ struct HashmapValue **hashmap_getBucket(struct Hashmap *self, bool return_parent
     return return_parent ? bucket : NULL; // Same as above.
 }
 
-void hashmap_resize(struct Hashmap *self) {
+void hashmap___resize(struct Hashmap *self) {
     size_t old_table_length = self->table_length;
     struct HashmapValue **old_buckets = self->buckets;
 
@@ -135,7 +135,7 @@ void hashmap_resize(struct Hashmap *self) {
             size_t hash_raw = self->hasher(bucket->KEY);
             size_t hash_index = hash_raw % self->table_length;
 
-            struct HashmapValue **new_bucket = hashmap_getBucket(self, true, bucket->KEY, hash_index);
+            struct HashmapValue **new_bucket = hashmap___getBucket(self, true, bucket->KEY, hash_index);
             *new_bucket = bucket;
 
             bucket = next;
@@ -157,7 +157,7 @@ void hashmap_set(struct Hashmap *self, const char *KEY, void *value) {
     size_t hash_raw = self->hasher(KEY);
     size_t hash_index = hash_raw % self->table_length;
 
-    struct HashmapValue **bucket = hashmap_getBucket(self, true, KEY, hash_index);
+    struct HashmapValue **bucket = hashmap___getBucket(self, true, KEY, hash_index);
 
     if (*bucket) { // Key already exists, so update the value.
         (*bucket)->value = value;
@@ -178,7 +178,7 @@ void hashmap_set(struct Hashmap *self, const char *KEY, void *value) {
     }
 
     if ((float)self->initialized_buckets > (float)self->table_length * self->load_factor) { // Resize if needed.
-        hashmap_resize(self);
+        hashmap___resize(self);
     }
 }
 
@@ -194,7 +194,7 @@ const void *hashmap_get(struct Hashmap *self, const char *KEY) {
     size_t hash_raw = self->hasher(KEY);
     size_t hash_index = hash_raw % self->table_length;
 
-    struct HashmapValue **bucket = hashmap_getBucket(self, false, KEY, hash_index);
+    struct HashmapValue **bucket = hashmap___getBucket(self, false, KEY, hash_index);
 
     if (!bucket) { // Check if the pointer itself is NULL.
         return NULL;
