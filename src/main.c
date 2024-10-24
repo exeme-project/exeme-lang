@@ -12,7 +12,7 @@
 /*
  * Represents the config for parsing arguments.
  */
-static const struct Array ARGUMENTS_FORMAT = array_new_stack(
+static struct Array ARGUMENTS_FORMAT = array_new_stack(
     &arg_init(.name = "stdlib", .description = "The path to the folder containing the standard library",
               .def = "./../../lib", .flagShort = "-s", .flagLong = "--stdlib", .type = VARIABLE_TYPE_STRING),
     &subcommand_init(.name = "run", .help = "Runs the specified program",
