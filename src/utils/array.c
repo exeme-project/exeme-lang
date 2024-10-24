@@ -101,8 +101,8 @@ void array_pop(struct Array *self) {
         array___realloc(self, 1);
         self->length = 0;
     } else {
-        self->length--;
         array___realloc(self, self->length * ARRAY_STRUCT_ELEMENT_SIZE);
+        self->length--;
     }
 }
 
