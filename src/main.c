@@ -27,8 +27,6 @@ static const struct Array ARGUMENTS_FORMAT = array_new_stack(
 int main(int _, char **argv) {
     setlocale(LC_ALL, "");
 
-    exit(EXIT_SUCCESS);
-
     struct ArgsFormat *argsFormat = argsFormat_new(ARGUMENTS_FORMAT);
     struct Hashmap *parsed_args = argsFormat_parse(argsFormat, argv);
 
