@@ -36,19 +36,28 @@ struct Array *array_new(void) {
     }
 
     self->length = 0;
-    self->_values = malloc(1);
+    self->_values = calloc(1, ARRAY_STRUCT_ELEMENT_SIZE);
 
     return self;
 }
 
 /**
  * Reallocates the struct's array.
+ * IMPORTANT: Update the new length AFTER calling this function.
  *
  * @param self The current Array struct.
  * @param size The new size of the array.
  */
 void array___realloc(struct Array *self, size_t size) {
     self->_values = realloc(self->_values, size);
+
+    if (size > self->length * ARRAY_STRUCT_ELEMENT_SIZE) {
+        memset(self->_values + self->length, 0,
+               size - (self->length *
+                       ARRAY_STRUCT_ELEMENT_SIZE)); // Zero out the new memory. First parameter is the pointer for the array,
+                                                    // starting from where we reallocated from. The third parameter is the
+                                                    // size of the newly allocated memory.
+    }
 
     if (!self->_values) {
         panic("failed to realloc array");
@@ -89,8 +98,8 @@ void array_pop(struct Array *self) {
     if (self->length < 1) {
         panic("nothing to pop from array");
     } else if (self->length == 1) {
-        self->length = 0;
         array___realloc(self, 1);
+        self->length = 0;
     } else {
         self->length--;
         array___realloc(self, self->length * ARRAY_STRUCT_ELEMENT_SIZE);
@@ -110,8 +119,8 @@ void array_clear(struct Array *self, void (*free_element)(const void *)) {
         }
     }
 
-    self->length = 0;
     array___realloc(self, 1);
+    self->length = 0;
 }
 
 /**

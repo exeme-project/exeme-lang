@@ -67,7 +67,7 @@ struct Hashmap *hashmap_new(hash_function_t hasher, size_t initial_table_length,
     struct Hashmap *self = malloc(HASHMAP_SIZE);
 
     if (!self) {
-        panic("failed to allocate memory for Hashmap struct");
+        panic("failed to malloc Hashmap struct");
     }
 
     self->hasher = hasher;
@@ -82,7 +82,7 @@ struct Hashmap *hashmap_new(hash_function_t hasher, size_t initial_table_length,
     self->buckets = calloc(initial_table_length, HASHMAP_VALUE_PTR_SIZE); // Initialise the buckets with NULL.
 
     if (!self->buckets) {
-        panic("failed to allocate memory for buckets");
+        panic("failed to allocate memory for hashmap buckets");
     }
 
     return self;
@@ -122,7 +122,7 @@ void hashmap___resize(struct Hashmap *self) {
     self->buckets = calloc(self->table_length, HASHMAP_VALUE_PTR_SIZE);
 
     if (!self->buckets) {
-        panic("failed to allocate memory for new buckets during resize");
+        panic("failed to allocate memory for new hashmap buckets during resize");
     }
 
     for (size_t index = 0; index < old_table_length; index++) {
@@ -169,7 +169,7 @@ void hashmap_set(struct Hashmap *self, const char *KEY, void *value) {
         *bucket = malloc(HASHMAP_VALUE_SIZE);
 
         if (!*bucket) {
-            panic("failed to allocate memory for HashmapValue struct");
+            panic("failed to malloc HashmapValue struct");
         }
 
         (*bucket)->KEY = KEY;
@@ -224,6 +224,6 @@ void hashmap_free(struct Hashmap **self) {
         free(*self);
         *self = NULL;
     } else {
-        panic("hashmap struct has already been freed");
+        panic("Hashmap struct has already been freed");
     }
 }
