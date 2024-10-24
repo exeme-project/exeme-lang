@@ -536,7 +536,7 @@ void parser_parseAssignment(struct Parser *self, const struct LexerToken *lexerT
 
     value = (struct AST *)array_get(self->parserTokens, 0);
 
-    switch (lexerToken->identifier) { //  for the different types of assignment
+    switch (lexerToken->identifier) { //  For the different types of assignment
     case LEXERTOKENS_ASSIGNMENT:
         self->AST = ast_new(ASTTOKENS_ASSIGNMENT, AST_ASSIGNMENT, lexerToken,
                             (const struct AST_VARIABLE *)identifier->data.AST_ASSIGNMENT, value);
@@ -691,7 +691,7 @@ bool parser_parse(struct Parser *self, bool freeParserTokens, bool nextLine) {
         if (!lexer_lex(self->lexer, nextLine)) {
             self->inParsing = old_inParsing;
 
-            if (!nextLine && self->parserTokens->length != 0) { // if not allowed to go to next line and
+            if (!nextLine && self->parserTokens->length != 0) { // If not allowed to go to next line and
                                                                 // there has been a parser token parsed
                 return true;
             }

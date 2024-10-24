@@ -12,4 +12,5 @@ Diagnostics:
       sign-conversion,
       declaration-after-statement,
       initializer-overrides,
+      covered-switch-default
     ]

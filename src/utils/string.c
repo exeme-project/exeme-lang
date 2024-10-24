@@ -110,28 +110,33 @@ void string_free(struct String **self) {
 }
 
 /**
- * Concatenates the specified amount of strings together.
+ * Concatenates the specified strings together.
  *
- * @param argumentsNumber The amount of strings to concatenate.
+ * @param firstString The first string to concatenate.
+ * @param ... The strings to concatenate, terminated by a NULL sentinel.
  *
  * @return The concatenated string.
  */
-char *stringConcatenate_(size_t argumentsNumber, ...) {
-    char *string;
-    va_list arguments;
-    va_start(arguments, argumentsNumber);
+char *stringConcatenate_(const char *firstString, ...) {
+    if (!firstString) {
+        return NULL;
+    }
 
-    string = malloc(1);
-    string[0] = '\0';
+    va_list arguments;
+    va_start(arguments, firstString);
+
+    char *string = malloc(strlen(firstString) + 1);
 
     if (!string) {
         panic("failed to malloc string");
     }
 
-    for (size_t index = 0; index < argumentsNumber; index++) {
-        char *appendString = va_arg(arguments, char *);
+    strcpy(string, firstString);
 
-        string = realloc(string, strlen(string) + 1 + strlen(appendString));
+    const char *appendString;
+
+    while ((appendString = va_arg(arguments, const char *)) != NULL) {
+        string = realloc(string, strlen(string) + strlen(appendString) + 1);
 
         if (!string) {
             panic("failed to realloc string");
@@ -145,7 +150,7 @@ char *stringConcatenate_(size_t argumentsNumber, ...) {
     return string;
 }
 
-#define stringConcatenate(...) stringConcatenate_(sizeof((const char *[]){__VA_ARGS__}) / STRING_SIZE, __VA_ARGS__)
+#define stringConcatenate(...) stringConcatenate_(__VA_ARGS__, NULL)
 
 /**
  * Repeats the char the specified amount of times.

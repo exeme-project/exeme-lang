@@ -37,7 +37,7 @@
   "terminal.integrated.fontFamily": "Fira Code",
   "terminal.integrated.fontSize": 11,
   "terminal.integrated.smoothScrolling": true,
-  "workbench.colorTheme": "Monokai Pro (Filter Ristretto)",
+  "workbench.colorTheme": "Horizon Legacy",
   "workbench.iconTheme": "minimal-icon-theme",
   "workbench.list.smoothScrolling": true,
   "workbench.productIconTheme": "fluent-icons",
