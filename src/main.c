@@ -12,20 +12,22 @@
 /*
  * Represents the config for parsing arguments.
  */
-static struct Array ARGUMENTS_FORMAT = array_new_stack(
-    &arg_init(.name = "stdlib", .description = "The path to the folder containing the standard library",
-              .def = "./../../lib", .flagShort = "-s", .flagLong = "--stdlib", .type = VARIABLE_TYPE_STRING),
-    &subcommand_init(.name = "run", .help = "Runs the specified program",
-                     .argumentsFormat =
-                         array_new_stack(&arg_init(.name = "file", .description = "The path of the file to compile",
-                                                   .type = VARIABLE_TYPE_STRING, .position = 0))),
-    &subcommand_init(.name = "build", .help = "Builds the specified program",
-                     .argumentsFormat =
-                         array_new_stack(&arg_init(.name = "file", .description = "The path of the file to compile",
-                                                   .type = VARIABLE_TYPE_STRING, .position = 0))));
+static struct Array ARGUMENTS_FORMAT;
 
 int main(int _, char **argv) {
     setlocale(LC_ALL, "");
+
+    ARGUMENTS_FORMAT = array_new_stack(
+        &arg_init(.name = "stdlib", .description = "The path to the folder containing the standard library",
+                  .def = "./../../lib", .flagShort = "-s", .flagLong = "--stdlib", .type = VARIABLE_TYPE_STRING),
+        &subcommand_init(.name = "run", .help = "Runs the specified program",
+                         .argumentsFormat =
+                             array_new_stack(&arg_init(.name = "file", .description = "The path of the file to compile",
+                                                       .type = VARIABLE_TYPE_STRING, .position = 0))),
+        &subcommand_init(.name = "build", .help = "Builds the specified program",
+                         .argumentsFormat =
+                             array_new_stack(&arg_init(.name = "file", .description = "The path of the file to compile",
+                                                       .type = VARIABLE_TYPE_STRING, .position = 0))));
 
     struct ArgsFormat *argsFormat = argsFormat_new(ARGUMENTS_FORMAT);
     struct Hashmap *parsed_args = argsFormat_parse(argsFormat, argv);
