@@ -14,7 +14,7 @@
  */
 static struct Array ARGUMENTS_FORMAT;
 
-int main(int _, char **argv) {
+int main(int argc, char **argv) {
     setlocale(LC_ALL, "");
 
     ARGUMENTS_FORMAT = array_new_stack(
@@ -23,19 +23,22 @@ int main(int _, char **argv) {
         &subcommand_init(.name = "run", .help = "Runs the specified program",
                          .argumentsFormat =
                              array_new_stack(&arg_init(.name = "file", .description = "The path of the file to compile",
-                                                       .type = VARIABLE_TYPE_STRING, .position = 0))),
+                                                       .type = VARIABLE_TYPE_STRING, .position = 1))),
         &subcommand_init(.name = "build", .help = "Builds the specified program",
                          .argumentsFormat =
                              array_new_stack(&arg_init(.name = "file", .description = "The path of the file to compile",
-                                                       .type = VARIABLE_TYPE_STRING, .position = 0))));
+                                                       .type = VARIABLE_TYPE_STRING, .position = 1))));
 
     struct ArgsFormat *argsFormat = argsFormat_new(ARGUMENTS_FORMAT);
-    struct Hashmap *parsed_args = argsFormat_parse(argsFormat, argv);
+    struct Hashmap *parsed_args = argsFormat_parse(argsFormat, (const void **)argv, argc);
 
-    struct Compiler *compiler = compiler_new("../../programs/complex.exl");
+    argsFormat_free(&argsFormat);
+
+    struct Compiler *compiler = compiler_new(hashmap_get(parsed_args, "file"));
 
     while (compiler_compile(compiler)) {
     }
 
     compiler_free(&compiler);
+    hashmap_free(&parsed_args, NULL);
 }

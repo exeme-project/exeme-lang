@@ -8,6 +8,7 @@
 #include "../includes.c"
 
 #include "./panic.c"
+#include "./string.c"
 
 /**
  * Represents an array.
@@ -21,7 +22,9 @@ struct Array {
 #define ARRAY_STRUCT_ELEMENT_SIZE sizeof(const void *)
 #define array_new_stack(...)                                                                                                \
     ((struct Array){.length = sizeof((const void *[]){__VA_ARGS__}) / ARRAY_STRUCT_ELEMENT_SIZE,                            \
-                    ._values = (const void *[]){__VA_ARGS__}}) /* Variadic args to the rescue! */
+                    ._values = (const void *[]){__VA_ARGS__}}) // Variadic args to the rescue!
+#define array_upgrade_stack(array, _length)                                                                                 \
+    ((struct Array){.length = _length, ._values = array}) // Changes a const void *[] to a struct Array on the stack
 
 /**
  * Creates a new Array struct.
@@ -188,6 +191,21 @@ bool array_index_occupied(struct Array *self, size_t index) {
     }
 
     return self->_values[index] != NULL;
+}
+
+char *array_join(struct Array *self, const char *separator, char *(*stringify)(const void *)) {
+    char *joined = stringDuplicate(stringify(self->_values[0])); // Malloc a duplicate of the first element
+
+    for (size_t index = 1; index < self->length; index++) {
+        char *temp =
+            stringConcatenate(joined, separator, stringify(self->_values[index])); // Concatenate the next element with the
+                                                                                   // separator in-between the previous.
+        free(joined); // Since stringConcatenate mallocs a new string, we need to free the old one
+
+        joined = temp;
+    }
+
+    return joined;
 }
 
 /**

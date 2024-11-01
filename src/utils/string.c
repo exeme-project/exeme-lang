@@ -45,7 +45,7 @@ struct String *string_new(char *string, bool copy) {
         self->_value = malloc(self->length + 1);
 
         if (!self->_value) {
-            panic("failed to malloc string");
+            panic("failed to malloc string while initialising String struct");
         }
 
         for (size_t index = 0; index < self->length; index++) {
@@ -125,21 +125,21 @@ char *stringConcatenate_(const char *firstString, ...) {
     va_list arguments;
     va_start(arguments, firstString);
 
-    char *string = malloc(strlen(firstString) + 1);
+    char *string = malloc(strlen(firstString) + 1); // 1 for null terminator
 
     if (!string) {
-        panic("failed to malloc string");
+        panic("failed to malloc string while concatenating");
     }
 
     strcpy(string, firstString);
 
     const char *appendString;
 
-    while ((appendString = va_arg(arguments, const char *)) != NULL) {
+    while ((appendString = va_arg(arguments, const char *))) { // Doesn't equal NULL
         string = realloc(string, strlen(string) + strlen(appendString) + 1);
 
         if (!string) {
-            panic("failed to realloc string");
+            panic("failed to realloc string while concatenating");
         }
 
         strcat(string, appendString);
@@ -151,6 +151,18 @@ char *stringConcatenate_(const char *firstString, ...) {
 }
 
 #define stringConcatenate(...) stringConcatenate_(__VA_ARGS__, NULL)
+
+char *stringDuplicate(const char *string) {
+    char *duplicate = malloc(strlen(string) + 1);
+
+    if (!duplicate) {
+        panic("failed to malloc string while duplicating");
+    } else {
+        strcpy(duplicate, string);
+    }
+
+    return duplicate;
+}
 
 /**
  * Repeats the char the specified amount of times.
@@ -164,7 +176,7 @@ char *repeatChr(char chr, size_t length) {
     char *string = malloc(length + 1);
 
     if (!string) {
-        panic("failed to malloc string");
+        panic("failed to malloc string while repeating car");
     }
 
     for (size_t index = 0; index < length; index++) {

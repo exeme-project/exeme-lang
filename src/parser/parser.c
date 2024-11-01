@@ -61,7 +61,7 @@ void parser_free(struct Parser **self) {
     if (self && *self) {
         if ((*self)->parserTokens) {
             for (size_t index = 0; index < (*self)->parserTokens->length; index++) {
-                parserToken = (struct AST *)array_get((*self)->parserTokens, index);
+                parserToken = (struct AST *)(*self)->parserTokens->_values[index];
 
                 ast_free(&parserToken);
             }
@@ -511,7 +511,7 @@ void parser_parseAssignment(struct Parser *self, const struct LexerToken *lexerT
             lexerToken);
     }
 
-    identifier = (struct AST *)array_get(self->parserTokens, 0);
+    identifier = (struct AST *)self->parserTokens->_values[0];
 
     if (identifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
         parser_error(self, P0002,
@@ -534,7 +534,7 @@ void parser_parseAssignment(struct Parser *self, const struct LexerToken *lexerT
             lexerToken);
     }
 
-    value = (struct AST *)array_get(self->parserTokens, 0);
+    value = (struct AST *)self->parserTokens->_values[0];
 
     switch (lexerToken->identifier) { //  For the different types of assignment
     case LEXERTOKENS_ASSIGNMENT:
@@ -707,5 +707,6 @@ bool parser_parse(struct Parser *self, bool freeParserTokens, bool nextLine) {
     } while (self->AST == NULL);
 
     self->inParsing = old_inParsing;
+
     return true;
 }

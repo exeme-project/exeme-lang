@@ -66,10 +66,17 @@ void *convertToType(char *data, enum VariableType type) {
         long *result = malloc(LONG_SIZE);
 
         if (!result) {
-            panic("failed to malloc intResult");
+            panic("failed to malloc long while converting to int");
         }
 
-        *result = strtol(data, NULL, 10);
+        char *endptr;
+        *result = strtol(data, &endptr, 10);
+
+        if (endptr == data || *endptr != '\0') {
+            free(result);
+
+            return NULL;
+        }
 
         return result;
     }
@@ -77,16 +84,23 @@ void *convertToType(char *data, enum VariableType type) {
         float *result = malloc(FLOAT_SIZE);
 
         if (!result) {
-            panic("failed to malloc floatResult");
+            panic("failed to malloc float while converting to float");
         }
 
-        *result = strtof(data, NULL);
+        char *endptr;
+        *result = strtof(data, &endptr);
+
+        if (endptr == data || *endptr != '\0') {
+            free(result);
+
+            return NULL;
+        }
 
         return result;
     }
     case VARIABLE_TYPE_BOOL:
         return strcmp(data, "true") == 0 ? (void *)1 : (void *)0;
     default:
-        return NULL;
+        panic("invalid variable type for conversion");
     }
 }

@@ -28,7 +28,7 @@ struct HashmapValue {
 struct Hashmap {
     hash_function_t hasher;        // Function to calculate the hash of a key.
     float load_factor;             // The load factor of the hashmap.
-    size_t initialized_buckets;    // Number of initialized buckets in the hashmap.
+    size_t initialised_buckets;    // Number of initialised buckets in the hashmap.
     size_t table_length;           // The total number of buckets in the hashmap.
     struct HashmapValue **buckets; // Array of pointers to the buckets.
 };
@@ -72,7 +72,7 @@ struct Hashmap *hashmap_new(hash_function_t hasher, size_t initial_table_length,
 
     self->hasher = hasher;
     self->load_factor = load_factor;
-    self->initialized_buckets = 0;
+    self->initialised_buckets = 0;
     self->table_length = initial_table_length;
 
     if (self->table_length == 0) {
@@ -163,7 +163,7 @@ void hashmap_set(struct Hashmap *self, const char *KEY, void *value) {
         (*bucket)->value = value;
     } else { // Create a new value in the bucket.
         if (!self->buckets[hash_index]) {
-            self->initialized_buckets++;
+            self->initialised_buckets++;
         }
 
         *bucket = malloc(HASHMAP_VALUE_SIZE);
@@ -177,7 +177,7 @@ void hashmap_set(struct Hashmap *self, const char *KEY, void *value) {
         (*bucket)->next = NULL; // Last element in the chain.
     }
 
-    if ((float)self->initialized_buckets > (float)self->table_length * self->load_factor) { // Resize if needed.
+    if ((float)self->initialised_buckets > (float)self->table_length * self->load_factor) { // Resize if needed.
         hashmap___resize(self);
     }
 }
@@ -204,17 +204,40 @@ const void *hashmap_get(struct Hashmap *self, const char *KEY) {
 }
 
 /**
+ * Combines two hashmaps into one.
+ *
+ * @param self  The current Hashmap struct.
+ * @param other The other Hashmap struct to combine with.
+ */
+void hashmap_combine(struct Hashmap *self, struct Hashmap *other) {
+    for (size_t index = 0; index < other->table_length; index++) {
+        struct HashmapValue *bucket = other->buckets[index];
+
+        while (bucket) {
+            hashmap_set(self, bucket->KEY, bucket->value);
+
+            bucket = bucket->next;
+        }
+    }
+}
+
+/**
  * Frees a Hashmap struct.
  *
  * @param self Pointer to the current Hashmap struct.
+ * @param free_element The function to free the elements with.
  */
-void hashmap_free(struct Hashmap **self) {
+void hashmap_free(struct Hashmap **self, void (*free_element)(const void *)) {
     if (self && *self) {
         for (size_t index = 0; index < (*self)->table_length; index++) {
             struct HashmapValue *bucket = (*self)->buckets[index];
 
             while (bucket) {
                 struct HashmapValue *next = bucket->next;
+
+                if (free_element) {
+                    free_element(bucket->value);
+                }
 
                 free(bucket);
                 bucket = next;
