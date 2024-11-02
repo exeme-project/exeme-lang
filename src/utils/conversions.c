@@ -24,7 +24,7 @@ char *chrToString(char chr) {
     }
 
     string[0] = chr;
-    string[1] = '\0';
+    string[1] = '\0'; // Null terminator
 
     return string;
 }
@@ -39,7 +39,7 @@ char *chrToString(char chr) {
 char *ulToString(size_t num) {
     size_t length = (size_t)snprintf(NULL, 0, "%zu", num);
 
-    char *str = malloc(length + 1);
+    char *str = malloc(length + 1); // + 1 for null terminator
 
     if (!str) {
         panic("failed to malloc string");

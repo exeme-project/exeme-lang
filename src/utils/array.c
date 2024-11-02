@@ -46,25 +46,26 @@ struct Array *array_new(void) {
 
 /**
  * Reallocates the struct's array.
- * IMPORTANT: Update the new length AFTER calling this function.
  *
- * @param self The current Array struct.
- * @param size The new size of the array.
+ * @param self       The current Array struct.
+ * @param new_length The new length of the array.
  */
-void array___realloc(struct Array *self, size_t size) {
-    self->_values = realloc(self->_values, size);
+void array___realloc(struct Array *self, size_t new_length) {
+    self->_values = realloc(self->_values, new_length == 0 ? 1 : (new_length * ARRAY_STRUCT_ELEMENT_SIZE));
 
-    if (size > self->length * ARRAY_STRUCT_ELEMENT_SIZE) {
-        memset(self->_values + self->length, 0,
-               size - (self->length *
-                       ARRAY_STRUCT_ELEMENT_SIZE)); // Zero out the new memory. First parameter is the pointer for the array,
-                                                    // starting from where we reallocated from. The third parameter is the
-                                                    // size of the newly allocated memory.
+    if (new_length > self->length) {
+        memset(self->_values + self->length, NULL,
+               (new_length - self->length) *
+                   ARRAY_STRUCT_ELEMENT_SIZE); // Zero out the new memory. First parameter is the pointer for the array,
+        // starting from where we reallocated from. The third parameter is the
+        // size of the newly allocated memory.
     }
 
     if (!self->_values) {
         panic("failed to realloc array");
     }
+
+    self->length = new_length;
 }
 
 /**
@@ -77,8 +78,7 @@ void array___realloc(struct Array *self, size_t size) {
  */
 void array_insert(struct Array *self, size_t index, const void *value) {
     if (index + 1 > self->length) {
-        array___realloc(self, (index + 1) * ARRAY_STRUCT_ELEMENT_SIZE);
-        self->length = index + 1;
+        array___realloc(self, index + 1);
     }
 
     self->_values[index] = value;
@@ -101,11 +101,9 @@ void array_pop(struct Array *self) {
     if (self->length < 1) {
         panic("nothing to pop from array");
     } else if (self->length == 1) {
-        array___realloc(self, 1);
-        self->length = 0;
+        array___realloc(self, 0);
     } else {
-        array___realloc(self, self->length * ARRAY_STRUCT_ELEMENT_SIZE);
-        self->length--;
+        array___realloc(self, self->length - 1);
     }
 }
 
@@ -122,8 +120,7 @@ void array_clear(struct Array *self, void (*free_element)(const void *)) {
         }
     }
 
-    array___realloc(self, 1);
-    self->length = 0;
+    array___realloc(self, 0);
 }
 
 /**
