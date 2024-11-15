@@ -54,7 +54,7 @@ void array___realloc(struct Array *self, size_t new_length) {
     self->_values = realloc(self->_values, new_length == 0 ? 1 : (new_length * ARRAY_STRUCT_ELEMENT_SIZE));
 
     if (new_length > self->length) {
-        memset(self->_values + self->length, NULL,
+        memset(self->_values + self->length, 0,
                (new_length - self->length) *
                    ARRAY_STRUCT_ELEMENT_SIZE); // Zero out the new memory. First parameter is the pointer for the array,
         // starting from where we reallocated from. The third parameter is the
@@ -138,6 +138,16 @@ const void *array_get(struct Array *self, size_t index) {
 
     return self->_values[index];
 }
+
+/**
+ * Used to check for string matches in the array.
+ *
+ * @param element The element to check.
+ * @param match   The value to match against.
+ *
+ * @return If the element matches the match.
+ */
+bool array___match_string(const void *element, const void *match) { return strcmp(element, match) == 0; }
 
 /**
  * Iterates through the array, using the passed function to check for matches. If a match is found then the index is

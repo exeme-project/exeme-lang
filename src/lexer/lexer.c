@@ -63,7 +63,7 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
     if (!self->filePointer ||        // Only POSIX requires errno is set, and so for
                                      // other platforms we have to check for NULL
         ferror(self->filePointer)) { // Probably file doesn't exist
-        panic(stringConcatenate("failed to open file '", self->FILE_PATH, "'"));
+        error(stringConcatenate("failed to open file '", self->FILE_PATH, "'"));
     }
 
     return self;
@@ -99,34 +99,36 @@ void lexer_free(struct Lexer **self) {
  */
 __attribute__((noreturn)) void lexer_error(struct Lexer *self, const enum ErrorIdentifiers ERROR_MSG_NUMBER,
                                            const char *ERROR_MSG, const struct LexerToken *TOKEN) {
-    const char *lineNumberString;
     FILE *filePointer = fopen(self->FILE_PATH, "r");
     struct String *line = string_new("\0", true);
-    size_t lineIndex = 0, lineNumberStringLength;
+
+    size_t lineIndex = 0;
 
     while (true) {
-        char chr = (char)fgetc(filePointer);
+        char chr = (char)fgetc(filePointer); // Get a char
 
-        if (chr == '\n' || chr == EOF) {
-            if (self->lineIndex == lineIndex++) {
+        if (chr == '\n' || chr == EOF) {          // EOL (or EOF)
+            if (self->lineIndex == lineIndex++) { // If we have been copying the line we want
                 break;
             }
 
-            string_clear(line);
-        } else if (lineIndex == self->lineIndex) {
-            string_append(line, chr);
+            // string_clear(line);
+            // I believe the above line is not needed. Keeping it here in case I'm mistaken.
+            // Same as in the parser_error function.
+        } else if (lineIndex == self->lineIndex) { // If this is the line we want
+            string_appendChr(line, chr);
         }
     }
 
-    lineNumberString = ulToString(self->lineIndex + 1);
-    lineNumberStringLength = strlen(lineNumberString);
+    const char *lineNumberString = ulToString(self->lineIndex + 1);
+    size_t lineNumberStringLength = strlen(lineNumberString);
 
     printf("-%s> %s\n%s | %s\n%s", repeatChr('-', lineNumberStringLength), self->FILE_PATH, lineNumberString, line->_value,
            repeatChr(' ', lineNumberStringLength + 3));
 
-    if (TOKEN) { /* We know what token the error occurred on, and telling the user it will help them */
+    if (TOKEN) { // We know what token the error occurred on, and telling the user it will help them
         printf("%s%s ", repeatChr(' ', TOKEN->startChrIndex), repeatChr('^', TOKEN->endChrIndex - TOKEN->startChrIndex + 1));
-    } else { /* We don't know what token the error occurred on */
+    } else { // We don't know what token the error occurred on
         printf("%s^ ", repeatChr(' ', self->chrIndex));
     }
 
@@ -449,12 +451,12 @@ void lexer_lexChr(struct Lexer *self) {
         }
 
         if (escapeChrIndex != negativeULL) {
-            string_append(chr, lexer_escapeChr(self, escapeChrIndex));
+            string_appendChr(chr, lexer_escapeChr(self, escapeChrIndex));
             escapeChrIndex = negativeULL;
         } else if (self->chr == '\\') {
             escapeChrIndex = self->chrIndex;
         } else {
-            string_append(chr, self->chr);
+            string_appendChr(chr, self->chr);
         }
     }
 
@@ -481,16 +483,16 @@ void lexer_lexString(struct Lexer *self) {
             }
 
             if (escapeChrIndex != negativeULL) {
-                string_append(string, lexer_escapeChr(self, escapeChrIndex));
+                string_appendChr(string, lexer_escapeChr(self, escapeChrIndex));
                 escapeChrIndex = negativeULL;
             } else if (self->chr == '\\') {
                 escapeChrIndex = self->chrIndex;
             } else {
-                string_append(string, self->chr);
+                string_appendChr(string, self->chr);
             }
         }
 
-        string_append(string, '\n');
+        string_appendChr(string, '\n');
     }
 
     lexer_error(self, L0003, "unterminated string literal",
@@ -550,8 +552,6 @@ void lexer_lexSingleLineComment(struct Lexer *self) {
                                               self->chrIndex, self->lineIndex));
 }
 
-bool lexer_lexKeywordOrIdentifier_match_(const void *element, const void *match) { return strcmp(element, match) == 0; }
-
 /**
  * Creates a LexerToken for a keyword or identifier.
  *
@@ -567,14 +567,14 @@ void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
             break;
         }
 
-        string_append(identifier, self->chr);
+        string_appendChr(identifier, self->chr);
     }
 
-    array_append(self->tokens, lexerToken_new(array_contains((struct Array *)&KEYWORDS, &lexer_lexKeywordOrIdentifier_match_,
-                                                             identifier->_value)
-                                                  ? LEXERTOKENS_KEYWORD
-                                                  : LEXERTOKENS_IDENTIFIER,
-                                              identifier, startChrIndex, self->chrIndex, self->lineIndex));
+    array_append(self->tokens,
+                 lexerToken_new(array_contains((struct Array *)&KEYWORDS, &array___match_string, identifier->_value)
+                                    ? LEXERTOKENS_KEYWORD
+                                    : LEXERTOKENS_IDENTIFIER,
+                                identifier, startChrIndex, self->chrIndex, self->lineIndex));
 }
 
 /**
@@ -605,7 +605,7 @@ void lexer_lexNumber(struct Lexer *self) {
             break;
         }
 
-        string_append(number, self->chr);
+        string_appendChr(number, self->chr);
     }
 
     array_append(self->tokens, lexerToken_new(isFloat ? LEXERTOKENS_FLOAT : LEXERTOKENS_INTEGER, number, startChrIndex,

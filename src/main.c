@@ -9,6 +9,11 @@
 #include "./compiler/compiler.c"
 #include "./utils/hashmap.c"
 
+#define NAME "exeme"
+#define VERSION "v0.0.1-alpha"
+#define DESCRIPTION                                                                                                         \
+    "an optimised, elegant, and compiled programming language.\nBuilt by skifli@github, FOSS on exeme-project@github."
+
 /*
  * Represents the config for parsing arguments.
  */
@@ -29,12 +34,20 @@ int main(int argc, char **argv) {
                              array_new_stack(&arg_init(.name = "file", .description = "The path of the file to compile",
                                                        .type = VARIABLE_TYPE_STRING, .position = 1))));
 
-    struct ArgsFormat *argsFormat = argsFormat_new(ARGUMENTS_FORMAT);
+    struct ArgsFormat *argsFormat =
+        argsFormat_new(ARGUMENTS_FORMAT, NAME, VERSION, DESCRIPTION,
+                       &array_new_stack((int *)ARGS_RESERVED_FLAG_HELP, (int *)ARGS_RESERVED_FLAG_VERSION));
     struct Hashmap *parsed_args = argsFormat_parse(argsFormat, (const void **)argv, argc);
 
     argsFormat_free(&argsFormat);
 
-    struct Compiler *compiler = compiler_new(hashmap_get(parsed_args, "file"));
+    void **FILE_PATH = hashmap_get(parsed_args, "file");
+
+    if (!FILE_PATH) {
+        error("no file path specified");
+    }
+
+    struct Compiler *compiler = compiler_new(*FILE_PATH);
 
     while (compiler_compile(compiler)) {
     }

@@ -75,10 +75,28 @@ void string___realloc(struct String *self, size_t size) {
     }
 }
 
-void string_append(struct String *self, char chr) {
+/**
+ * Appends a char to the String.
+ *
+ * @param self The current String struct.
+ * @param chr  The string to append.
+ */
+void string_appendChr(struct String *self, char chr) {
     string___realloc(self, self->length + 2); // 1 for new char and 1 for null terminator
 
     self->_value[self->length++] = chr;
+    self->_value[self->length] = '\0';
+}
+
+void string_appendStr(struct String *self, const char *string) {
+    size_t length = strlen(string);
+
+    string___realloc(self, self->length + length + 1); // 1 for null terminator
+
+    for (size_t index = 0; index < length; index++) {
+        self->_value[self->length++] = string[index];
+    }
+
     self->_value[self->length] = '\0';
 }
 

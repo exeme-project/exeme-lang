@@ -60,6 +60,8 @@ char *ulToString(size_t num) {
  */
 void *convertToType(char *data, enum VariableType type) {
     switch (type) {
+    case VARIABLE_TYPE_NONE:
+        return NULL;
     case VARIABLE_TYPE_STRING:
         return data;
     case VARIABLE_TYPE_INT: {

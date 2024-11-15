@@ -52,10 +52,25 @@ struct Command {
  * Represents arguments.
  */
 struct ArgsFormat {
+    const char *NAME, *VERSION, *DESCRIPTION;
+    const struct Subcommand *SUBCOMMAND_PARENT;
     struct Array argumentsFormat;
-    struct Array *requiredArguments;
+    struct Array *requiredArguments, *reservedFlags;
     struct Hashmap *defaultValues, *subcommands;
 };
+
+/**
+ * Represents reserved flags.
+ */
+enum ArgsReservedFlags {
+    ARGS_RESERVED_FLAG_HELP = 0,
+    ARGS_RESERVED_FLAG_VERSION = 2,
+};
+
+/**
+ * Represents values for the reserved flags.
+ */
+static struct Array *ArgsReservedFlagsValue = &array_new_stack("-h", "--help", "-v", "--version");
 
 #define arg_init(...)                                                                                                       \
     ((struct Command){.type = COMMAND_TYPE_ARGUMENT, .data.arg = (struct Arg){.position = -1, ##__VA_ARGS__}})
@@ -70,23 +85,61 @@ void argsFormat_free(struct ArgsFormat **self);
 /**
  * Creates a new ArgsFormat struct.
  *
- * @param argumentsFormat The arguments config.
+ * @param argumentsFormat   The arguments config.
+ * @param NAME              The name of the program.
+ * @param VERSION           The version of the program.
+ * @param DESCRIPTION       The description of the program.
+ * @param reservedFlags     The reserved flags.
+ * @param SUBCOMMAND_PARENT The parent subcommand.
  *
  * @return The created Args struct.
  */
-struct ArgsFormat *argsFormat_new(struct Array argumentsFormat) {
+struct ArgsFormat *argsFormat_new_(struct Array argumentsFormat, const char *NAME, const char *VERSION,
+                                   const char *DESCRIPTION, struct Array *reservedFlags,
+                                   const struct Subcommand *SUBCOMMAND_PARENT) {
     struct ArgsFormat *self = malloc(ARGSFORMAT_STRUCT_SIZE);
 
     if (!self) {
         panic("failed to malloc Args struct");
     }
 
+    self->NAME = NAME;
+    self->VERSION = VERSION;
+    self->DESCRIPTION = DESCRIPTION;
+    self->SUBCOMMAND_PARENT = SUBCOMMAND_PARENT;
     self->argumentsFormat = argumentsFormat;
+    self->reservedFlags = NULL;
+
+    if (reservedFlags) {
+        self->reservedFlags = array_new();
+
+        for (size_t index = 0; index < reservedFlags->length; index++) {
+#pragma clang diagnostic push // Save previous pragma diagnostic state so we can restore it later
+#pragma clang diagnostic ignored "-Wvoid-pointer-to-int-cast" // Suppress the warning for the following code block
+            // Well, this isn't liked by the compiler. But, it's the only way...
+            // When creating the reserved flags, the flags are ENUM values (so int)
+            // They are casted to (int *) when added to the array since (array_new_stack) has values of const void*
+            // Obviously they are NOT int pointers, but that's the only way to make it a pointer (to an int)
+            // Then here, we retrieve them. However, converting from const void * to int is a pointer to non-pointer cast
+            // Why can't we just do: *(int *)reservedFlags->_values[index];
+            // Because that would be dereferencing a non-pointer, which is invalid - and would cause a segfault
+            // So, we just cast to int
+            // And trade a segfault for a compiler warning
+            int reservedFlag = (int)reservedFlags->_values[index];
+#pragma clang diagnostic pop // Restore the previous pragma diagnostic state
+
+            array_append(self->reservedFlags, ArgsReservedFlagsValue->_values[reservedFlag]);
+            array_append(self->reservedFlags, ArgsReservedFlagsValue->_values[reservedFlag + 1]);
+        }
+    }
 
     argsFormat___check(self);
 
     return self;
 }
+
+#define argsFormat_new(argumentsFormat, NAME, VERSION, DESCRIPTION, reservedFlags)                                          \
+    argsFormat_new_(argumentsFormat, NAME, VERSION, DESCRIPTION, reservedFlags, NULL)
 
 bool argsFormat___check_parsedArgumentsNameMatch_(const void *element, const void *match) {
     char *elementName = NULL;
@@ -116,6 +169,10 @@ bool argsFormat___check_parsedArgumentsShortFlagMatch_(const void *element, cons
         return false;
     default:
         panic("invalid command type while checking parsed arguments short flag match");
+    }
+
+    if (!elementFlagShort) { // Some arguments don't have a short flag
+        return false;
     }
 
     return strcmp(elementFlagShort, match) == 0;
@@ -178,24 +235,33 @@ void argsFormat___check(struct ArgsFormat *self) {
                 }
 
                 array_append(self->requiredArguments, arg);
-            } else { /* Optional argument */
-                if (!arg->flagShort || !arg->flagLong) {
-                    panic("optional argument must have a short and long flag");
-                } else if (!arg->def) {
+            } else { /* Optional argument/flag */
+                if (!arg->flagLong) {
+                    panic("optional argument must have at least a long flag");
+                } else if (arg->type != VARIABLE_TYPE_NONE && !arg->def) {
                     panic("optional argument must have a non-NULL default value");
-                } else if (strncmp(arg->flagShort, "-", 1) != 0) {
+                } else if (arg->type == VARIABLE_TYPE_NONE && arg->def) {
+                    panic("optional flag must have a NULL default value");
+                } else if (arg->flagShort && strncmp(arg->flagShort, "-", 1) != 0) {
                     panic("short flag must start with '-'");
                 } else if (strncmp(arg->flagLong, "--", 2) != 0) {
                     panic("long flag must start with '--'");
-                } else if (array_contains(parsed_arguments, argsFormat___check_parsedArgumentsShortFlagMatch_,
+                } else if (arg->flagShort &&
+                           array_contains(parsed_arguments, argsFormat___check_parsedArgumentsShortFlagMatch_,
                                           arg->flagShort)) {
                     panic("duplicate short flag");
                 } else if (array_contains(parsed_arguments, argsFormat___check_parsedArgumentsLongFlagMatch_,
                                           arg->flagLong)) {
                     panic("duplicate long flag");
+                } else if (arg->flagShort && array_contains(self->reservedFlags, array___match_string, arg->flagShort)) {
+                    panic("reserved short flag");
+                } else if (array_contains(self->reservedFlags, array___match_string, arg->flagLong)) {
+                    panic("reserved long flag");
                 }
 
-                hashmap_set(self->defaultValues, arg->name, arg->def);
+                if (arg->def) { // Optional argument (not flag)
+                    hashmap_set(self->defaultValues, arg->name, arg->def);
+                }
             }
 
             array_append(parsed_arguments, command);
@@ -217,7 +283,13 @@ void argsFormat___check(struct ArgsFormat *self) {
                 panic("subcommand must have arguments");
             }
 
-            struct ArgsFormat *subcommandFormat = argsFormat_new(subcommandRaw->argumentsFormat);
+            struct ArgsFormat *subcommandFormat =
+                argsFormat_new_(subcommandRaw->argumentsFormat, self->NAME, self->VERSION, self->DESCRIPTION,
+                                array_contains(self->reservedFlags, array___match_string,
+                                               (void *)ArgsReservedFlagsValue->_values[ARGS_RESERVED_FLAG_HELP])
+                                    ? &array_new_stack((int *)ARGS_RESERVED_FLAG_HELP)
+                                    : NULL,
+                                subcommandRaw);
             array_append(parsed_arguments, command);
 
             hashmap_set(self->subcommands, subcommandRaw->name, subcommandFormat);
@@ -276,15 +348,110 @@ bool argsFormat_parse_optionalArgumentFlagMatch_(const void *element, const void
 
     switch (command->type) {
     case COMMAND_TYPE_ARGUMENT:
-        return strcmp(command->data.arg.flagShort, (char *)match) == 0 ||
-               strcmp(command->data.arg.flagLong, (char *)match) == 0;
+        if (command->data.arg.position != -1) { // Required argument
+            return false;
+        } else {
+            return (command->data.arg.flagShort ? strcmp(command->data.arg.flagShort, (char *)match) == 0 : false) ||
+                   strcmp(command->data.arg.flagLong, (char *)match) == 0;
+        }
     case COMMAND_TYPE_SUBCOMMAND:
         return false;
     default:
         panic("invalid command type while parsing optional argument flag match");
     }
 }
+
 bool argsFormat_parse_requiredArgumentsExist_(const void *element, const void *_) { return element != NULL; }
+
+/**
+ * Prints the help message and exits.
+ *
+ * @param self The current ArgsFormat struct.
+ */
+__attribute__((noreturn)) void argsFormat_help_(struct ArgsFormat *self) {
+    if (self->SUBCOMMAND_PARENT) {
+        printf("%s\n\n", self->SUBCOMMAND_PARENT->help);
+    } else {
+        printf("%s (%s) is %s\n\n", self->NAME, self->VERSION, self->DESCRIPTION);
+    }
+
+    printf("Usage: %s [command] [arguments] [options]\n", self->NAME);
+
+    struct String *commandString = string_new("\0", true);
+    struct String *requiredArgumentsString = string_new("\0", true);
+    struct String *optionsString = string_new("\0", true);
+    struct String *flagsString = string_new("\0", true);
+
+    for (size_t index = 0; index < self->argumentsFormat.length; index++) {
+        struct Command *command = (struct Command *)self->argumentsFormat._values[index];
+
+        switch (command->type) {
+        case COMMAND_TYPE_SUBCOMMAND: {
+            struct Subcommand *subcommand = &command->data.subcommand;
+            char *helpStr = stringConcatenate("  ", subcommand->name, "\t", subcommand->help, "\n");
+
+            string_appendStr(commandString, helpStr);
+            free(helpStr);
+
+            break;
+        }
+        case COMMAND_TYPE_ARGUMENT: {
+            struct Arg *arg = &command->data.arg;
+
+            if (arg->type == VARIABLE_TYPE_NONE) {
+                if (arg->position == -1) {
+                    char *helpStr = stringConcatenate("  ", arg->flagShort ? arg->flagShort : "\b", " ", arg->flagLong, "\t",
+                                                      arg->description, "\n");
+
+                    string_appendStr(flagsString, helpStr);
+                    free(helpStr);
+                }
+            } else {
+                if (arg->position == -1) {
+                    char *helpStr = stringConcatenate("  ", arg->flagShort ? arg->flagShort : "\b", " ", arg->flagLong, "\t",
+                                                      arg->description, " (", variableType_get(arg->type), ")\n");
+
+                    string_appendStr(optionsString, helpStr);
+                    free(helpStr);
+                } else {
+                    char *helpStr =
+                        stringConcatenate("  ", arg->name, "\t", arg->description, " (", variableType_get(arg->type), ")\n");
+
+                    string_appendStr(requiredArgumentsString, helpStr);
+                    free(helpStr);
+                }
+            }
+
+            break;
+        }
+        default:
+            panic("invalid command type while printing help message");
+        }
+    }
+
+    if (commandString->length > 0) {
+        printf("\nCommands:\n%s", commandString->_value);
+    }
+
+    if (requiredArgumentsString->length > 0) {
+        printf("\nRequired arguments:\n%s", requiredArgumentsString->_value);
+    }
+
+    if (optionsString->length > 0) {
+        printf("\nOptions:\n%s", optionsString->_value);
+    }
+
+    if (flagsString->length > 0) {
+        printf("\nFlags:\n%s", flagsString->_value);
+    }
+
+    string_free(&commandString);
+    string_free(&requiredArgumentsString);
+    string_free(&optionsString);
+    string_free(&flagsString);
+
+    exit(EXIT_SUCCESS);
+}
 
 /**
  * Parses arguments.
@@ -307,21 +474,41 @@ struct Hashmap *argsFormat_parse_(struct ArgsFormat *self, struct Array args, si
                 array_find(&self->argumentsFormat, argsFormat_parse_optionalArgumentFlagMatch_, arg_raw);
 
             if (argumentFormatIndex == -1) {
-                args_error(args, A0001, stringConcatenate("unknown ", longFlag ? "long" : "short", " flag"), index);
-            } else if (index++ == args.length - 1) {
-                args_error(args, A0002, stringConcatenate("missing value for ", longFlag ? "long" : "short", " flag"),
-                           real_index);
+                int reserved_flags_index = array_find(self->reservedFlags, array___match_string, arg_raw);
+
+                if (reserved_flags_index != -1) {
+                    switch (reserved_flags_index -
+                            (reserved_flags_index % 2)) { // Converts to nearest even number, starting from 0
+                    case ARGS_RESERVED_FLAG_HELP:
+                        argsFormat_help_(self);
+                    case ARGS_RESERVED_FLAG_VERSION:
+                        printf("%s %s\n", self->NAME, self->VERSION);
+                        exit(EXIT_SUCCESS);
+                    default:
+                        panic("invalid reserved flag index");
+                    }
+                } else {
+                    args_error(args, A0001, stringConcatenate("unknown ", longFlag ? "long" : "short", " flag"), index);
+                }
+            } else {
+                struct Arg *arg = &((struct Command *)self->argumentsFormat._values[argumentFormatIndex])->data.arg;
+
+                if (arg->type == VARIABLE_TYPE_NONE) { // Optional flag
+                    hashmap_set(parsed_args, arg->name, NULL);
+                } else if (index++ == args.length - 1) { // Optional argument and no value
+                    args_error(args, A0002, stringConcatenate("missing value for ", longFlag ? "long" : "short", " flag"),
+                               real_index);
+                } else { // Optional argument and value
+                    void *arg_converted = convertToType((char *)args._values[index], arg->type);
+
+                    if (!arg_converted) {
+                        args_error(args, A0003,
+                                   stringConcatenate("failed to convert argument to ", variableType_get(arg->type)), index);
+                    }
+
+                    hashmap_set(parsed_args, arg->name, arg_converted);
+                }
             }
-
-            struct Arg *arg = &((struct Command *)self->argumentsFormat._values[argumentFormatIndex])->data.arg;
-            void *arg_converted = convertToType((char *)args._values[index], arg->type);
-
-            if (!arg_converted) {
-                args_error(args, A0003, stringConcatenate("failed to convert argument to ", variableType_get(arg->type)),
-                           index);
-            }
-
-            hashmap_set(parsed_args, arg->name, arg_converted);
         } else {                                                             // Required argument / Subcommand
             if (array_index_occupied(self->requiredArguments, real_index)) { // Required argument
                 struct Arg *arg = (struct Arg *)self->requiredArguments->_values[real_index];
@@ -335,11 +522,13 @@ struct Hashmap *argsFormat_parse_(struct ArgsFormat *self, struct Array args, si
                 hashmap_set(parsed_args, arg->name, arg_converted);
                 self->requiredArguments->_values[real_index] = NULL;
             } else { // Subcommand
-                struct ArgsFormat *subcommandFormat = (struct ArgsFormat *)hashmap_get(self->subcommands, arg_raw);
+                struct ArgsFormat **subcommandFormatPointer = (struct ArgsFormat **)hashmap_get(self->subcommands, arg_raw);
 
-                if (!subcommandFormat) {
+                if (!subcommandFormatPointer || !*subcommandFormatPointer) {
                     args_error(args, A0001, "unknown subcommand", index);
                 }
+
+                struct ArgsFormat *subcommandFormat = *subcommandFormatPointer;
 
                 struct Hashmap *subcommandParsedArgs = argsFormat_parse_(subcommandFormat, args, index + 1);
                 hashmap_combine(parsed_args, subcommandParsedArgs);
@@ -380,10 +569,15 @@ struct Hashmap *argsFormat_parse_(struct ArgsFormat *self, struct Array args, si
  */
 void argsFormat_free(struct ArgsFormat **self) {
     if (self && *self) {
-        array_free(&(*self)->requiredArguments);     // Required arguments are by default on stack, so don't have to be
-                                                     // explicitly freed
-        hashmap_free(&(*self)->defaultValues, NULL); // The default values are on the stack.
-        hashmap_free(&(*self)->subcommands, NULL);   // Again, the format is on the stack.
+        array_free(&(*self)->requiredArguments); // Required arguments (inner) are by default on stack, so don't have to
+                                                 // be explicitly freed
+
+        if ((*self)->reservedFlags) {            // Can be NULL if no reserved flags
+            array_free(&(*self)->reservedFlags); // Reserved flags are on the stack
+        }
+
+        hashmap_free(&(*self)->defaultValues, NULL); // The default values are on the stack
+        hashmap_free(&(*self)->subcommands, NULL);   // Again, the format is on the stack
 
         free(*self);
 

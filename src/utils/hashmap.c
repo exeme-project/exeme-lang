@@ -89,6 +89,36 @@ struct Hashmap *hashmap_new(hash_function_t hasher, size_t initial_table_length,
 }
 
 /**
+ * Frees a Hashmap struct.
+ *
+ * @param self Pointer to the current Hashmap struct.
+ * @param free_element The function to free the elements with.
+ */
+void hashmap_free(struct Hashmap **self, void (*free_element)(const void *)) {
+    if (self && *self) {
+        for (size_t index = 0; index < (*self)->table_length; index++) {
+            struct HashmapValue *bucket = (*self)->buckets[index];
+
+            while (bucket) {
+                struct HashmapValue *next = bucket->next;
+
+                if (free_element) {
+                    free_element(bucket->value);
+                }
+
+                free(bucket);
+                bucket = next;
+            }
+        }
+
+        free(*self);
+        *self = NULL;
+    } else {
+        panic("Hashmap struct has already been freed");
+    }
+}
+
+/**
  * Retrieves a pointer to a bucket from the hashmap.
  *
  * @param self          The current Hashmap struct.
@@ -190,7 +220,7 @@ void hashmap_set(struct Hashmap *self, const char *KEY, void *value) {
  *
  * @return The retrieved value or NULL if not found.
  */
-const void *hashmap_get(struct Hashmap *self, const char *KEY) {
+void **hashmap_get(struct Hashmap *self, const char *KEY) {
     size_t hash_raw = self->hasher(KEY);
     size_t hash_index = hash_raw % self->table_length;
 
@@ -200,7 +230,7 @@ const void *hashmap_get(struct Hashmap *self, const char *KEY) {
         return NULL;
     }
 
-    return (*bucket)->value;
+    return &(*bucket)->value;
 }
 
 /**
@@ -218,35 +248,5 @@ void hashmap_combine(struct Hashmap *self, struct Hashmap *other) {
 
             bucket = bucket->next;
         }
-    }
-}
-
-/**
- * Frees a Hashmap struct.
- *
- * @param self Pointer to the current Hashmap struct.
- * @param free_element The function to free the elements with.
- */
-void hashmap_free(struct Hashmap **self, void (*free_element)(const void *)) {
-    if (self && *self) {
-        for (size_t index = 0; index < (*self)->table_length; index++) {
-            struct HashmapValue *bucket = (*self)->buckets[index];
-
-            while (bucket) {
-                struct HashmapValue *next = bucket->next;
-
-                if (free_element) {
-                    free_element(bucket->value);
-                }
-
-                free(bucket);
-                bucket = next;
-            }
-        }
-
-        free(*self);
-        *self = NULL;
-    } else {
-        panic("Hashmap struct has already been freed");
     }
 }
