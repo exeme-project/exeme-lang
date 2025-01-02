@@ -1,9 +1,9 @@
 class str {
-    _char_buf: *i8,
-    _length: i64,
+	_char_buf: *i8,
+	_length: i64,
 
-    func __init__(self: *str) -> NULL {
-        self._char_buf = NULL
-        self.length = 0
-    }
+	func __init__(self: *str) -> NULL {
+		self._char_buf = NULL
+		self.length = 0
+	}
 }

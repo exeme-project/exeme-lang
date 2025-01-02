@@ -4,15 +4,15 @@ use io::out
 
 ; Returns whether `n` itself is prime.
 fun isPrime(n: i32) -> bool {
-    for _, d = range(2, n) { ; '_' is the index, but it is not needed
-        if n % d == 0 { ; Can be divided without a remainder
-            return false
-        }
-    }
+	for _, d = range(2, n) { ; '_' is the index, but it is not needed
+		if n % d == 0 { ; Can be divided without a remainder
+			return false
+		}
+	}
 
-    return true
+	return true
 }
 
 fun main() {
-    out(isPrime(100))
+	out(isPrime(100))
 }

@@ -4,20 +4,20 @@
 cff-version: 1.2.0
 title: The Exeme Language
 message: >-
-  If you use this software, please cite it using the
-  metadata from this file.
+	If you use this software, please cite it using the
+	metadata from this file.
 type: software
 authors:
-  - given-names: Aneeq
-    family-names: W
-    orcid: 'https://orcid.org/0009-0004-6637-3341'
+	- given-names: Aneeq
+		family-names: W
+		orcid: 'https://orcid.org/0009-0004-6637-3341'
 repository-code: 'https://github.com/exeme-project/exeme-lang'
 url: 'https://exeme-project.github.io/exeme-lang'
 abstract: 'An optimised, elegant, and compiled programming language. '
 keywords:
-  - programming
-  - language
-  - optimised
-  - elegant
-  - compiled
+	- programming
+	- language
+	- optimised
+	- elegant
+	- compiled
 license: MIT

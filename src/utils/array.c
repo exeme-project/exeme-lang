@@ -57,8 +57,8 @@ void array___realloc(struct Array *self, size_t new_length) {
         memset(self->_values + self->length, 0,
                (new_length - self->length) *
                    ARRAY_STRUCT_ELEMENT_SIZE); // Zero out the new memory. First parameter is the pointer for the array,
-        // starting from where we reallocated from. The third parameter is the
-        // size of the newly allocated memory.
+                                               // starting from where we reallocated from. The third parameter is the
+                                               // size of the newly allocated memory.
     }
 
     if (!self->_values) {
