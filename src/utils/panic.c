@@ -16,7 +16,7 @@
  */
 __attribute__((noreturn)) void _panic(const char *PANIC_MSG, const char *FILE, const int LINE, const char *FUNCTION) {
 	printf("%s%spanic%s(line=%s%d%s, function=%s%s%s, file=%s%s%s): %s\n", F_BRIGHT_RED, S_BOLD, S_RESET, S_BOLD, LINE,
-			 S_RESET, S_ITALIC, FUNCTION, S_RESET, S_UNDERLINE, FILE, S_RESET, PANIC_MSG);
+		   S_RESET, S_ITALIC, FUNCTION, S_RESET, S_UNDERLINE, FILE, S_RESET, PANIC_MSG);
 
 	exit(EXIT_FAILURE);
 }

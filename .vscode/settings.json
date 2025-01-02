@@ -28,7 +28,7 @@
   "editor.detectIndentation": false,
   "editor.guides.bracketPairs": true,
   "editor.insertSpaces": false,
-  "editor.tabSize": 3,
+  "editor.tabSize": 4,
   "editor.smoothScrolling": true,
   "editor.suggest.localityBonus": true,
   "git.enableCommitSigning": true,

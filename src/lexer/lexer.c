@@ -18,7 +18,7 @@
  * Used to identify keywords.
  */
 static const struct Array KEYWORDS = array_new_stack("break", "case", "cls", "else", "elif", "enum", "export", "for", "fun",
-																	  "if", "import", "match", "pass", "return", "struct", "use", "while");
+													 "if", "import", "match", "pass", "return", "struct", "use", "while");
 
 /**
  * Represents a lexer.
@@ -59,9 +59,9 @@ struct Lexer *lexer_new(const char *FILE_PATH) {
 	self->tokenUnlexes = 0;
 	self->tokens = array_new();
 
-	if (!self->filePointer ||			// Only POSIX requires errno is set, and so for
-												// other platforms we have to check for NULL
-		 ferror(self->filePointer)) { // Probably file doesn't exist
+	if (!self->filePointer ||		 // Only POSIX requires errno is set, and so for
+									 // other platforms we have to check for NULL
+		ferror(self->filePointer)) { // Probably file doesn't exist
 		error(stringConcatenate("failed to open file '", self->FILE_PATH, "'"));
 	}
 
@@ -97,7 +97,7 @@ void lexer_free(struct Lexer **self) {
  * @param TOKEN            The erroneous token.
  */
 __attribute__((noreturn)) void lexer_error(struct Lexer *self, const enum ErrorIdentifiers ERROR_MSG_NUMBER,
-														 const char *ERROR_MSG, const struct LexerToken *TOKEN) {
+										   const char *ERROR_MSG, const struct LexerToken *TOKEN) {
 	FILE *filePointer = fopen(self->FILE_PATH, "r");
 	struct String *line = string_new("\0", true);
 
@@ -106,7 +106,7 @@ __attribute__((noreturn)) void lexer_error(struct Lexer *self, const enum ErrorI
 	while (true) {
 		char chr = (char)fgetc(filePointer); // Get a char
 
-		if (chr == '\n' || chr == EOF) {			  // EOL (or EOF)
+		if (chr == '\n' || chr == EOF) {		  // EOL (or EOF)
 			if (self->lineIndex == lineIndex++) { // If we have been copying the line we want
 				break;
 			}
@@ -123,7 +123,7 @@ __attribute__((noreturn)) void lexer_error(struct Lexer *self, const enum ErrorI
 	size_t lineNumberStringLength = strlen(lineNumberString);
 
 	printf("-%s> %s\n%s | %s\n%s", repeatChr('-', lineNumberStringLength), self->FILE_PATH, lineNumberString, line->_value,
-			 repeatChr(' ', lineNumberStringLength + 3));
+		   repeatChr(' ', lineNumberStringLength + 3));
 
 	if (TOKEN) { // We know what token the error occurred on, and telling the user it will help them
 		printf("%s%s ", repeatChr(' ', TOKEN->startChrIndex), repeatChr('^', TOKEN->endChrIndex - TOKEN->startChrIndex + 1));
@@ -212,7 +212,7 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
 		self->chrIndex++;
 
 		if (self->chrStatus == EOF || ferror(self->filePointer) || self->chr == '\n') { // EOF / error or EOL
-			if (self->chrStatus == EOF || ferror(self->filePointer)) {						  // EOF / error
+			if (self->chrStatus == EOF || ferror(self->filePointer)) {					// EOF / error
 				fclose(self->filePointer);
 				self->filePointer = NULL; // Set to NULL to prevent future errors
 			}
@@ -227,8 +227,8 @@ bool lexer_getChr(struct Lexer *self, bool skipWhitespace) {
 			return false;
 		}
 
-		if (skipWhitespace) {			// Keep going till we encounter a char that is not
-												// whitespace
+		if (skipWhitespace) {		   // Keep going till we encounter a char that is not
+									   // whitespace
 			if (!isspace(self->chr)) { // Not whitespace
 				break;
 			}
@@ -250,8 +250,8 @@ void lexer_checkForContinuation(struct Lexer *self, const struct LexerToken *tok
 	if (lexer_getChr(self, false)) {
 		if (!isspace(self->chr) && !isalnum(self->chr)) {
 			lexer_error(self, L0002, stringConcatenate("unexpected continuation of token '", token->value->_value, "'"),
-							lexerToken_new(LEXERTOKENS_NONE, string_new(chrToString(self->chr), true), self->chrIndex,
-												self->chrIndex, self->lineIndex));
+						lexerToken_new(LEXERTOKENS_NONE, string_new(chrToString(self->chr), true), self->chrIndex,
+									   self->chrIndex, self->lineIndex));
 		}
 
 		lexer_unGetChr(self); // Token was not continued, un-get the current char
@@ -266,7 +266,7 @@ void lexer_checkForContinuation(struct Lexer *self, const struct LexerToken *tok
  */
 void lexer_lexOneChar(struct Lexer *self, const enum LexerTokenIdentifiers IDENTIFIER) {
 	const struct LexerToken *token = lexerToken_new(IDENTIFIER, string_new(chrToString(self->chr), false), self->chrIndex,
-																	self->chrIndex, self->lineIndex);
+													self->chrIndex, self->lineIndex);
 
 	array_append(self->tokens, token);
 }
@@ -280,22 +280,22 @@ void lexer_lexOneChar(struct Lexer *self, const enum LexerTokenIdentifiers IDENT
  * @param IF_TWO     If the token is two chars.
  */
 void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR, const enum LexerTokenIdentifiers IF_ONE,
-							 const enum LexerTokenIdentifiers IF_TWO) {
+					  const enum LexerTokenIdentifiers IF_TWO) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
 		if (self->chr == SECOND_CHR) {
-			token =
-				 lexerToken_new(IF_TWO, string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
-									 self->chrIndex - 1, self->chrIndex, self->lineIndex);
+			token = lexerToken_new(IF_TWO,
+								   string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
+								   self->chrIndex - 1, self->chrIndex, self->lineIndex);
 		} else { // SECOND_CHR was not found, un-get it
 			lexer_unGetChr(self);
 		}
 	}
 
 	if (!token) { // SECOND_CHR was not found
-		token =
-			 lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false), self->chrIndex, self->chrIndex, self->lineIndex);
+		token = lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false), self->chrIndex, self->chrIndex,
+							   self->lineIndex);
 	}
 
 	array_append(self->tokens, token);
@@ -314,27 +314,27 @@ void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR, const enum Lexe
  * @param IF_OTHER_TWO     If the token is two chars with OTHER_SECOND_CHR.
  */
 void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR, const char OTHER_SECOND_CHR,
-							  const enum LexerTokenIdentifiers IF_ONE, const enum LexerTokenIdentifiers IF_TWO,
-							  const enum LexerTokenIdentifiers IF_OTHER_TWO) {
+					   const enum LexerTokenIdentifiers IF_ONE, const enum LexerTokenIdentifiers IF_TWO,
+					   const enum LexerTokenIdentifiers IF_OTHER_TWO) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
 		if (self->chr == SECOND_CHR) {
-			token =
-				 lexerToken_new(IF_TWO, string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
-									 self->chrIndex - 1, self->chrIndex, self->lineIndex);
+			token = lexerToken_new(IF_TWO,
+								   string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
+								   self->chrIndex - 1, self->chrIndex, self->lineIndex);
 		} else if (self->chr == OTHER_SECOND_CHR) {
 			token = lexerToken_new(IF_OTHER_TWO,
-										  string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
-										  self->chrIndex - 1, self->chrIndex, self->lineIndex);
+								   string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
+								   self->chrIndex - 1, self->chrIndex, self->lineIndex);
 		} else {
 			lexer_unGetChr(self);
 		}
 	}
 
 	if (!token) {
-		token =
-			 lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false), self->chrIndex, self->chrIndex, self->lineIndex);
+		token = lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false), self->chrIndex, self->chrIndex,
+							   self->lineIndex);
 	}
 
 	array_append(self->tokens, token);
@@ -353,8 +353,8 @@ void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR, const char OTH
  * @param IF_TWO_AND_ONE If the token is two of SECOND_CHR and THIRD_CHR.
  */
 void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR, const char THIRD_CHR,
-								const enum LexerTokenIdentifiers IF_ONE, const enum LexerTokenIdentifiers IF_TWO,
-								const enum LexerTokenIdentifiers IF_ONE_AND_ONE, const enum LexerTokenIdentifiers IF_TWO_AND_ONE) {
+						const enum LexerTokenIdentifiers IF_ONE, const enum LexerTokenIdentifiers IF_TWO,
+						const enum LexerTokenIdentifiers IF_ONE_AND_ONE, const enum LexerTokenIdentifiers IF_TWO_AND_ONE) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
@@ -363,31 +363,31 @@ void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR, const char TH
 
 			if (IF_TWO_AND_ONE && lexer_getChr(self, false)) {
 				if (self->chr == THIRD_CHR) {
-					token = lexerToken_new(
-						 IF_TWO_AND_ONE,
-						 string_new(stringConcatenate(chrToString(prevChr), chrToString(self->prevChr), chrToString(self->chr)),
-										false),
-						 self->chrIndex - 2, self->chrIndex, self->lineIndex);
+					token = lexerToken_new(IF_TWO_AND_ONE,
+										   string_new(stringConcatenate(chrToString(prevChr), chrToString(self->prevChr),
+																		chrToString(self->chr)),
+													  false),
+										   self->chrIndex - 2, self->chrIndex, self->lineIndex);
 				}
 			}
 
 			if (!token) { // THIRD_CHR was not found
-				token = lexerToken_new(IF_TWO,
-											  string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
-											  self->chrIndex - 1, self->chrIndex, self->lineIndex);
+				token = lexerToken_new(
+					IF_TWO, string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
+					self->chrIndex - 1, self->chrIndex, self->lineIndex);
 			}
 		} else if (self->chr == THIRD_CHR) {
 			token = lexerToken_new(IF_ONE_AND_ONE,
-										  string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
-										  self->chrIndex - 1, self->chrIndex, self->lineIndex);
+								   string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
+								   self->chrIndex - 1, self->chrIndex, self->lineIndex);
 		} else { // SECOND_CHR was not found, un-get it
 			lexer_unGetChr(self);
 		}
 	}
 
 	if (!token) { // SECOND_CHR was not found
-		token =
-			 lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false), self->chrIndex, self->chrIndex, self->lineIndex);
+		token = lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false), self->chrIndex, self->chrIndex,
+							   self->lineIndex);
 	}
 
 	array_append(self->tokens, token);
@@ -423,8 +423,9 @@ char lexer_escapeChr(struct Lexer *self, const size_t startChrIndex) {
 	case '\\':
 		return '\\';
 	default:
-		lexer_error(self, L0004, "invalid escape sequence",
-						lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true), startChrIndex, self->chrIndex, self->lineIndex));
+		lexer_error(
+			self, L0004, "invalid escape sequence",
+			lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true), startChrIndex, self->chrIndex, self->lineIndex));
 	}
 }
 
@@ -443,9 +444,9 @@ void lexer_lexChr(struct Lexer *self) {
 			array_append(self->tokens, lexerToken_new(LEXERTOKENS_CHR, chr, startChrIndex, self->chrIndex, self->lineIndex));
 			return;
 		} else if (chr->length == 1) {
-			lexer_error(
-				 self, L0005, "multi-character char literal",
-				 lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true), startChrIndex + 1, self->chrIndex, self->lineIndex));
+			lexer_error(self, L0005, "multi-character char literal",
+						lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true), startChrIndex + 1, self->chrIndex,
+									   self->lineIndex));
 		}
 
 		if (escapeChrIndex != negativeULL) {
@@ -459,7 +460,7 @@ void lexer_lexChr(struct Lexer *self) {
 	}
 
 	lexer_error(self, L0003, "unterminated character literal",
-					lexerToken_new(LEXERTOKENS_NONE, chr, startChrIndex, self->chrIndex, self->lineIndex));
+				lexerToken_new(LEXERTOKENS_NONE, chr, startChrIndex, self->chrIndex, self->lineIndex));
 }
 
 /**
@@ -476,7 +477,7 @@ void lexer_lexString(struct Lexer *self) {
 		while (lexer_getChr(self, false)) {
 			if (self->chr == '"') {
 				array_append(self->tokens,
-								 lexerToken_new(LEXERTOKENS_STRING, string, startChrIndex, self->chrIndex, self->lineIndex));
+							 lexerToken_new(LEXERTOKENS_STRING, string, startChrIndex, self->chrIndex, self->lineIndex));
 				return;
 			}
 
@@ -494,8 +495,8 @@ void lexer_lexString(struct Lexer *self) {
 	}
 
 	lexer_error(self, L0003, "unterminated string literal",
-					lexerToken_new(LEXERTOKENS_STRING, string, self->lineIndex == startLineIndex ? startChrIndex : 0,
-										self->chrIndex, self->lineIndex));
+				lexerToken_new(LEXERTOKENS_STRING, string, self->lineIndex == startLineIndex ? startChrIndex : 0,
+							   self->chrIndex, self->lineIndex));
 }
 
 /**
@@ -513,8 +514,8 @@ void lexer_lexMultiLineComment(struct Lexer *self, const size_t startChrIndex) {
 				if (lexer_getChr(self, false)) {
 					if (self->chr == ';') {
 						array_append(self->tokens, lexerToken_new(LEXERTOKENS_MULTI_LINE_COMMENT, string_new("\0", true),
-																				self->lineIndex == startLineIndex ? startChrIndex : 0,
-																				self->chrIndex, startLineIndex));
+																  self->lineIndex == startLineIndex ? startChrIndex : 0,
+																  self->chrIndex, startLineIndex));
 						return;
 					}
 				}
@@ -523,8 +524,8 @@ void lexer_lexMultiLineComment(struct Lexer *self, const size_t startChrIndex) {
 	}
 
 	lexer_error(self, L0003, "unterminated multi-line comment",
-					lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
-										self->lineIndex == startLineIndex ? startChrIndex : 0, self->chrIndex, self->lineIndex));
+				lexerToken_new(LEXERTOKENS_NONE, string_new("\0", true),
+							   self->lineIndex == startLineIndex ? startChrIndex : 0, self->chrIndex, self->lineIndex));
 }
 
 /**
@@ -547,7 +548,7 @@ void lexer_lexSingleLineComment(struct Lexer *self) {
 	}
 
 	array_append(self->tokens, lexerToken_new(LEXERTOKENS_SINGLE_LINE_COMMENT, string_new("\0", true), startChrIndex,
-															self->chrIndex, self->lineIndex));
+											  self->chrIndex, self->lineIndex));
 }
 
 /**
@@ -569,10 +570,10 @@ void lexer_lexKeywordOrIdentifier(struct Lexer *self) {
 	}
 
 	array_append(self->tokens,
-					 lexerToken_new(array_contains((struct Array *)&KEYWORDS, &array___match_string, identifier->_value)
-											  ? LEXERTOKENS_KEYWORD
-											  : LEXERTOKENS_IDENTIFIER,
-										 identifier, startChrIndex, self->chrIndex, self->lineIndex));
+				 lexerToken_new(array_contains((struct Array *)&KEYWORDS, &array___match_string, identifier->_value)
+									? LEXERTOKENS_KEYWORD
+									: LEXERTOKENS_IDENTIFIER,
+								identifier, startChrIndex, self->chrIndex, self->lineIndex));
 }
 
 /**
@@ -590,11 +591,11 @@ void lexer_lexNumber(struct Lexer *self) {
 			break;
 		} else if (isalpha(self->chr)) {
 			lexer_error(self, L0006, stringConcatenate("invalid character for ", isFloat ? "float" : "integer"),
-							lexerToken_new(LEXERTOKENS_NONE, number, self->chrIndex, self->chrIndex, self->lineIndex));
+						lexerToken_new(LEXERTOKENS_NONE, number, self->chrIndex, self->chrIndex, self->lineIndex));
 		} else if (self->chr == '.') {
 			if (isFloat) {
 				lexer_error(self, L0007, "too many decimal points for float",
-								lexerToken_new(LEXERTOKENS_NONE, number, self->chrIndex, self->chrIndex, self->lineIndex));
+							lexerToken_new(LEXERTOKENS_NONE, number, self->chrIndex, self->chrIndex, self->lineIndex));
 			} else {
 				isFloat = true;
 			}
@@ -607,7 +608,7 @@ void lexer_lexNumber(struct Lexer *self) {
 	}
 
 	array_append(self->tokens, lexerToken_new(isFloat ? LEXERTOKENS_FLOAT : LEXERTOKENS_INTEGER, number, startChrIndex,
-															self->chrIndex, self->lineIndex));
+											  self->chrIndex, self->lineIndex));
 }
 
 /**
@@ -632,11 +633,11 @@ bool lexer_lexNext(struct Lexer *self) {
 		break;
 	case '*':
 		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_MULTIPLICATION, LEXERTOKENS_EXPONENT,
-								 LEXERTOKENS_MULTIPLICATION_ASSIGNMENT, LEXERTOKENS_EXPONENT_ASSIGNMENT);
+						   LEXERTOKENS_MULTIPLICATION_ASSIGNMENT, LEXERTOKENS_EXPONENT_ASSIGNMENT);
 		break;
 	case '/':
 		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_DIVISION, LEXERTOKENS_FLOOR_DIVISION,
-								 LEXERTOKENS_DIVISION_ASSIGNMENT, LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT);
+						   LEXERTOKENS_DIVISION_ASSIGNMENT, LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT);
 		break;
 	case '+':
 		lexer_lexTwoChar(self, '=', LEXERTOKENS_ADDITION, LEXERTOKENS_ADDITION_ASSIGNMENT);
@@ -654,21 +655,21 @@ bool lexer_lexNext(struct Lexer *self) {
 		break;
 	case '>':
 		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_GREATER_THAN, LEXERTOKENS_BITWISE_RIGHT_SHIFT,
-								 LEXERTOKENS_GREATER_THAN_OR_EQUAL, LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT);
+						   LEXERTOKENS_GREATER_THAN_OR_EQUAL, LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT);
 		break;
 	case '<':
 		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_LESS_THAN, LEXERTOKENS_BITWISE_LEFT_SHIFT,
-								 LEXERTOKENS_LESS_THAN_OR_EQUAL, LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT);
+						   LEXERTOKENS_LESS_THAN_OR_EQUAL, LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT);
 		break;
 
 	// Logical operators
 	case '&':
 		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_BITWISE_AND, LEXERTOKENS_LOGICAL_AND,
-								 LEXERTOKENS_BITWISE_AND_ASSIGNMENT, LEXERTOKENS_NONE);
+						   LEXERTOKENS_BITWISE_AND_ASSIGNMENT, LEXERTOKENS_NONE);
 		break;
 	case '|':
 		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_BITWISE_OR, LEXERTOKENS_LOGICAL_OR,
-								 LEXERTOKENS_BITWISE_OR_ASSIGNMENT, LEXERTOKENS_NONE);
+						   LEXERTOKENS_BITWISE_OR_ASSIGNMENT, LEXERTOKENS_NONE);
 		break;
 
 	// Bitwise operators
@@ -769,7 +770,7 @@ const struct LexerToken *lexer_getToken(struct Lexer *self, size_t *index) {
 		*index = self->tokens->length - 1 - (self->tokenUnlexes--);
 
 		return self->tokens->_values[*index]; // For future me, yes it does
-														  // decrement
+											  // decrement
 	}
 
 	*index = self->tokens->length - 1;

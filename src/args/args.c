@@ -95,8 +95,8 @@ void argsFormat_free(struct ArgsFormat **self);
  * @return The created Args struct.
  */
 struct ArgsFormat *argsFormat_new_(struct Array argumentsFormat, const char *NAME, const char *VERSION,
-											  const char *DESCRIPTION, struct Array *reservedFlags,
-											  const struct Subcommand *SUBCOMMAND_PARENT) {
+								   const char *DESCRIPTION, struct Array *reservedFlags,
+								   const struct Subcommand *SUBCOMMAND_PARENT) {
 	struct ArgsFormat *self = malloc(ARGSFORMAT_STRUCT_SIZE);
 
 	if (!self) {
@@ -247,9 +247,11 @@ void argsFormat___check(struct ArgsFormat *self) {
 				} else if (strncmp(arg->flagLong, "--", 2) != 0) {
 					panic("long flag must start with '--'");
 				} else if (arg->flagShort &&
-							  array_contains(parsed_arguments, argsFormat___check_parsedArgumentsShortFlagMatch_, arg->flagShort)) {
+						   array_contains(parsed_arguments, argsFormat___check_parsedArgumentsShortFlagMatch_,
+										  arg->flagShort)) {
 					panic("duplicate short flag");
-				} else if (array_contains(parsed_arguments, argsFormat___check_parsedArgumentsLongFlagMatch_, arg->flagLong)) {
+				} else if (array_contains(parsed_arguments, argsFormat___check_parsedArgumentsLongFlagMatch_,
+										  arg->flagLong)) {
 					panic("duplicate long flag");
 				} else if (arg->flagShort && array_contains(self->reservedFlags, array___match_string, arg->flagShort)) {
 					panic("reserved short flag");
@@ -282,12 +284,12 @@ void argsFormat___check(struct ArgsFormat *self) {
 			}
 
 			struct ArgsFormat *subcommandFormat =
-				 argsFormat_new_(subcommandRaw->argumentsFormat, self->NAME, self->VERSION, self->DESCRIPTION,
-									  array_contains(self->reservedFlags, array___match_string,
-														  (void *)ArgsReservedFlagsValue->_values[ARGS_RESERVED_FLAG_HELP])
-											? &array_new_stack((int *)ARGS_RESERVED_FLAG_HELP)
-											: NULL,
-									  subcommandRaw);
+				argsFormat_new_(subcommandRaw->argumentsFormat, self->NAME, self->VERSION, self->DESCRIPTION,
+								array_contains(self->reservedFlags, array___match_string,
+											   (void *)ArgsReservedFlagsValue->_values[ARGS_RESERVED_FLAG_HELP])
+									? &array_new_stack((int *)ARGS_RESERVED_FLAG_HELP)
+									: NULL,
+								subcommandRaw);
 			array_append(parsed_arguments, command);
 
 			hashmap_set(self->subcommands, subcommandRaw->name, subcommandFormat);
@@ -314,13 +316,13 @@ char *argsFormat___error_convertToString_(const void *element) { return (char *)
  * end).
  */
 __attribute__((noreturn)) void args_error(struct Array args, const enum ErrorIdentifiers ERROR_MSG_NUMBER,
-														const char *ERROR_MSG, const size_t ARG_INDEX) {
+										  const char *ERROR_MSG, const size_t ARG_INDEX) {
 	const char *ARGUMENT_INDEX_STRING = ARG_INDEX == 0 ? "-1" : ulToString(ARG_INDEX);
 	const size_t ARGUMENT_INDEX_STRING_LENGTH = strlen(ARGUMENT_INDEX_STRING);
 	const char *LINE = array_join(&args, " ", argsFormat___error_convertToString_);
 
 	printf("-%s> %s\n%s | %s\n%s", repeatChr('-', ARGUMENT_INDEX_STRING_LENGTH), "~/cli", ARGUMENT_INDEX_STRING, LINE,
-			 repeatChr(' ', ARGUMENT_INDEX_STRING_LENGTH + 3));
+		   repeatChr(' ', ARGUMENT_INDEX_STRING_LENGTH + 3));
 
 	size_t argumentStartIndex = 0;
 
@@ -350,7 +352,7 @@ bool argsFormat_parse_optionalArgumentFlagMatch_(const void *element, const void
 			return false;
 		} else {
 			return (command->data.arg.flagShort ? strcmp(command->data.arg.flagShort, (char *)match) == 0 : false) ||
-					 strcmp(command->data.arg.flagLong, (char *)match) == 0;
+				   strcmp(command->data.arg.flagLong, (char *)match) == 0;
 		}
 	case COMMAND_TYPE_SUBCOMMAND:
 		return false;
@@ -399,7 +401,7 @@ __attribute__((noreturn)) void argsFormat_help_(struct ArgsFormat *self) {
 			if (arg->type == VARIABLE_TYPE_NONE) {
 				if (arg->position == -1) {
 					char *helpStr = stringConcatenate("  ", arg->flagShort ? arg->flagShort : "\b", " ", arg->flagLong, "\t",
-																 arg->description, "\n");
+													  arg->description, "\n");
 
 					string_appendStr(flagsString, helpStr);
 					free(helpStr);
@@ -407,13 +409,13 @@ __attribute__((noreturn)) void argsFormat_help_(struct ArgsFormat *self) {
 			} else {
 				if (arg->position == -1) {
 					char *helpStr = stringConcatenate("  ", arg->flagShort ? arg->flagShort : "\b", " ", arg->flagLong, "\t",
-																 arg->description, " (", variableType_get(arg->type), ")\n");
+													  arg->description, " (", variableType_get(arg->type), ")\n");
 
 					string_appendStr(optionsString, helpStr);
 					free(helpStr);
 				} else {
 					char *helpStr =
-						 stringConcatenate("  ", arg->name, "\t", arg->description, " (", variableType_get(arg->type), ")\n");
+						stringConcatenate("  ", arg->name, "\t", arg->description, " (", variableType_get(arg->type), ")\n");
 
 					string_appendStr(requiredArgumentsString, helpStr);
 					free(helpStr);
@@ -468,14 +470,15 @@ struct Hashmap *argsFormat_parse_(struct ArgsFormat *self, struct Array args, si
 
 		if (strncmp(arg_raw, "-", 1) == 0) { // Long / short flag
 			bool longFlag = strncmp(arg_raw, "--", 2) == 0;
-			int argumentFormatIndex = array_find(&self->argumentsFormat, argsFormat_parse_optionalArgumentFlagMatch_, arg_raw);
+			int argumentFormatIndex =
+				array_find(&self->argumentsFormat, argsFormat_parse_optionalArgumentFlagMatch_, arg_raw);
 
 			if (argumentFormatIndex == -1) {
 				int reserved_flags_index = array_find(self->reservedFlags, array___match_string, arg_raw);
 
 				if (reserved_flags_index != -1) {
 					switch (reserved_flags_index -
-							  (reserved_flags_index % 2)) { // Converts to nearest even number, starting from 0
+							(reserved_flags_index % 2)) { // Converts to nearest even number, starting from 0
 					case ARGS_RESERVED_FLAG_HELP:
 						argsFormat_help_(self);
 					case ARGS_RESERVED_FLAG_VERSION:
@@ -494,26 +497,26 @@ struct Hashmap *argsFormat_parse_(struct ArgsFormat *self, struct Array args, si
 					hashmap_set(parsed_args, arg->name, NULL);
 				} else if (index++ == args.length - 1) { // Optional argument and no value
 					args_error(args, A0002, stringConcatenate("missing value for ", longFlag ? "long" : "short", " flag"),
-								  real_index);
+							   real_index);
 				} else { // Optional argument and value
 					void *arg_converted = convertToType((char *)args._values[index], arg->type);
 
 					if (!arg_converted) {
-						args_error(args, A0003, stringConcatenate("failed to convert argument to ", variableType_get(arg->type)),
-									  index);
+						args_error(args, A0003,
+								   stringConcatenate("failed to convert argument to ", variableType_get(arg->type)), index);
 					}
 
 					hashmap_set(parsed_args, arg->name, arg_converted);
 				}
 			}
-		} else {																				  // Required argument / Subcommand
+		} else {															 // Required argument / Subcommand
 			if (array_index_occupied(self->requiredArguments, real_index)) { // Required argument
 				struct Arg *arg = (struct Arg *)self->requiredArguments->_values[real_index];
 				void *arg_converted = convertToType(arg_raw, arg->type);
 
 				if (!arg_converted) {
 					args_error(args, A0003, stringConcatenate("failed to convert argument to ", variableType_get(arg->type)),
-								  index);
+							   index);
 				}
 
 				hashmap_set(parsed_args, arg->name, arg_converted);
@@ -567,14 +570,14 @@ struct Hashmap *argsFormat_parse_(struct ArgsFormat *self, struct Array args, si
 void argsFormat_free(struct ArgsFormat **self) {
 	if (self && *self) {
 		array_free(&(*self)->requiredArguments); // Required arguments (inner) are by default on stack, so don't have to
-															  // be explicitly freed
+												 // be explicitly freed
 
-		if ((*self)->reservedFlags) {				 // Can be NULL if no reserved flags
+		if ((*self)->reservedFlags) {			 // Can be NULL if no reserved flags
 			array_free(&(*self)->reservedFlags); // Reserved flags are on the stack
 		}
 
 		hashmap_free(&(*self)->defaultValues, NULL); // The default values are on the stack
-		hashmap_free(&(*self)->subcommands, NULL);	// Again, the format is on the stack
+		hashmap_free(&(*self)->subcommands, NULL);	 // Again, the format is on the stack
 
 		free(*self);
 

@@ -39,7 +39,7 @@ enum ErrorIdentifiers {
  * Contains the names of each of the error identifiers.
  */
 const struct Array ERRORIDENTIFIER_NAMES = array_new_stack("A0001", "A0002", "A0003", "A0004", "L0001", "L0002", "L0003",
-																			  "L0004", "L0005", "L0006", "L0007", "P0001", "P0002", "P0003");
+														   "L0004", "L0005", "L0006", "L0007", "P0001", "P0002", "P0003");
 
 /**
  * Gets the name of an error.

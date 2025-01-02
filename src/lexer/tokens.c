@@ -25,21 +25,21 @@ enum LexerTokenIdentifiers {
 	LEXERTOKENS_FLOAT,
 
 	// Arithmetic operators
-	LEXERTOKENS_MODULO,			 // '%'
+	LEXERTOKENS_MODULO,			// '%'
 	LEXERTOKENS_MULTIPLICATION, // '*'
-	LEXERTOKENS_EXPONENT,		 // '**'
-	LEXERTOKENS_DIVISION,		 // '/'
+	LEXERTOKENS_EXPONENT,		// '**'
+	LEXERTOKENS_DIVISION,		// '/'
 	LEXERTOKENS_FLOOR_DIVISION, // '//'
-	LEXERTOKENS_ADDITION,		 // '+'
-	LEXERTOKENS_SUBTRACTION,	 // '-'
+	LEXERTOKENS_ADDITION,		// '+'
+	LEXERTOKENS_SUBTRACTION,	// '-'
 
 	// Comparison / Relational operators
-	LEXERTOKENS_EQUAL_TO,				  // '=='
-	LEXERTOKENS_NOT_EQUAL_TO,			  // '!='
-	LEXERTOKENS_GREATER_THAN,			  // '>'
-	LEXERTOKENS_LESS_THAN,				  // '<'
+	LEXERTOKENS_EQUAL_TO,			   // '=='
+	LEXERTOKENS_NOT_EQUAL_TO,		   // '!='
+	LEXERTOKENS_GREATER_THAN,		   // '>'
+	LEXERTOKENS_LESS_THAN,			   // '<'
 	LEXERTOKENS_GREATER_THAN_OR_EQUAL, // '>='
-	LEXERTOKENS_LESS_THAN_OR_EQUAL,	  // '<='
+	LEXERTOKENS_LESS_THAN_OR_EQUAL,	   // '<='
 
 	// Logical operators
 	LEXERTOKENS_LOGICAL_AND, // '&&'
@@ -47,46 +47,46 @@ enum LexerTokenIdentifiers {
 	LEXERTOKENS_LOGICAL_NOT, // '!'
 
 	// Bitwise operators
-	LEXERTOKENS_BITWISE_AND,			// '&'
-	LEXERTOKENS_BITWISE_OR,				// '|'
-	LEXERTOKENS_BITWISE_XOR,			// '^'
-	LEXERTOKENS_BITWISE_NOT,			// '~'
-	LEXERTOKENS_BITWISE_LEFT_SHIFT,	// '<<'
+	LEXERTOKENS_BITWISE_AND,		 // '&'
+	LEXERTOKENS_BITWISE_OR,			 // '|'
+	LEXERTOKENS_BITWISE_XOR,		 // '^'
+	LEXERTOKENS_BITWISE_NOT,		 // '~'
+	LEXERTOKENS_BITWISE_LEFT_SHIFT,	 // '<<'
 	LEXERTOKENS_BITWISE_RIGHT_SHIFT, // '>>'
 
 	// Assignment operators
 	LEXERTOKENS_ASSIGNMENT, // '='
 
-	LEXERTOKENS_MODULO_ASSIGNMENT,			// '%='
+	LEXERTOKENS_MODULO_ASSIGNMENT,		   // '%='
 	LEXERTOKENS_MULTIPLICATION_ASSIGNMENT, // '*='
-	LEXERTOKENS_EXPONENT_ASSIGNMENT,			// '**='
-	LEXERTOKENS_DIVISION_ASSIGNMENT,			// '/='
+	LEXERTOKENS_EXPONENT_ASSIGNMENT,	   // '**='
+	LEXERTOKENS_DIVISION_ASSIGNMENT,	   // '/='
 	LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT, // '//='
-	LEXERTOKENS_ADDITION_ASSIGNMENT,			// '+='
-	LEXERTOKENS_SUBTRACTION_ASSIGNMENT,		// '-='
+	LEXERTOKENS_ADDITION_ASSIGNMENT,	   // '+='
+	LEXERTOKENS_SUBTRACTION_ASSIGNMENT,	   // '-='
 
-	LEXERTOKENS_BITWISE_AND_ASSIGNMENT,			  // '&='
-	LEXERTOKENS_BITWISE_OR_ASSIGNMENT,			  // '|='
-	LEXERTOKENS_BITWISE_XOR_ASSIGNMENT,			  // '^='
-	LEXERTOKENS_BITWISE_NOT_ASSIGNMENT,			  // '~='
-	LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT,  // '<<='
+	LEXERTOKENS_BITWISE_AND_ASSIGNMENT,			// '&='
+	LEXERTOKENS_BITWISE_OR_ASSIGNMENT,			// '|='
+	LEXERTOKENS_BITWISE_XOR_ASSIGNMENT,			// '^='
+	LEXERTOKENS_BITWISE_NOT_ASSIGNMENT,			// '~='
+	LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT,	// '<<='
 	LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT, // '>>='
 
 	// Member / Pointer operators
-	LEXERTOKENS_DOT,	 // '.'
+	LEXERTOKENS_DOT,   // '.'
 	LEXERTOKENS_ARROW, // '->'
-	LEXERTOKENS_AT,	 // '@'
+	LEXERTOKENS_AT,	   // '@'
 
 	// Syntactic constructs
-	LEXERTOKENS_OPEN_BRACE,			  // '('
-	LEXERTOKENS_OPEN_SQUARE_BRACE,  // '['
-	LEXERTOKENS_OPEN_CURLY_BRACE,	  // '{'
-	LEXERTOKENS_CLOSE_BRACE,		  // ')'
+	LEXERTOKENS_OPEN_BRACE,			// '('
+	LEXERTOKENS_OPEN_SQUARE_BRACE,	// '['
+	LEXERTOKENS_OPEN_CURLY_BRACE,	// '{'
+	LEXERTOKENS_CLOSE_BRACE,		// ')'
 	LEXERTOKENS_CLOSE_SQUARE_BRACE, // ']'
-	LEXERTOKENS_CLOSE_CURLY_BRACE,  // '}'
-	LEXERTOKENS_COMMA,				  // ','
-	LEXERTOKENS_COLON,				  // ':'
-	LEXERTOKENS_SCOPE_RESOLUTION,	  // '::'
+	LEXERTOKENS_CLOSE_CURLY_BRACE,	// '}'
+	LEXERTOKENS_COMMA,				// ','
+	LEXERTOKENS_COLON,				// ':'
+	LEXERTOKENS_SCOPE_RESOLUTION,	// '::'
 
 	// Misc
 	LEXERTOKENS_SINGLE_LINE_COMMENT,
@@ -97,46 +97,46 @@ enum LexerTokenIdentifiers {
  * Contains the names of each of the lexer token identifiers.
  */
 static const struct Array LEXERTOKEN_NAMES = array_new_stack(
-	 "",
+	"",
 
-	 "keyword", "identifier",
+	"keyword", "identifier",
 
-	 "char", "string", "integer", "float",
+	"char", "string", "integer", "float",
 
-	 // Arithmetic operators
-	 "modulo operator", "multiplication operator", "exponent operator", "division operator", "floor division operator",
-	 "addition operator", "subtraction operator",
+	// Arithmetic operators
+	"modulo operator", "multiplication operator", "exponent operator", "division operator", "floor division operator",
+	"addition operator", "subtraction operator",
 
-	 // Comparison / Relational operators
-	 "equal to operator", "not equal to operator", "greater then operator", "less than operator",
-	 "greater than or equal operator", "less than or equal operator",
+	// Comparison / Relational operators
+	"equal to operator", "not equal to operator", "greater then operator", "less than operator",
+	"greater than or equal operator", "less than or equal operator",
 
-	 // Logical operators
-	 "logical and operator", "logical or operator", "logical not operator",
+	// Logical operators
+	"logical and operator", "logical or operator", "logical not operator",
 
-	 // Bitwise operators
-	 "bitwise AND operator", "bitwise OR operator", "bitwise XOR operator", "bitwise NOT operator", "bitwise left shift",
-	 "bitwise right shift",
+	// Bitwise operators
+	"bitwise AND operator", "bitwise OR operator", "bitwise XOR operator", "bitwise NOT operator", "bitwise left shift",
+	"bitwise right shift",
 
-	 // Assignment operators
-	 "assignment operator",
+	// Assignment operators
+	"assignment operator",
 
-	 "modulo assignment operator", "multiplication assignment operator", "exponent assignment operator",
-	 "division assignment operator", "floor division assignment operator", "addition assignment operator",
-	 "subtraction assignment operator",
+	"modulo assignment operator", "multiplication assignment operator", "exponent assignment operator",
+	"division assignment operator", "floor division assignment operator", "addition assignment operator",
+	"subtraction assignment operator",
 
-	 "bitwise AND assignment operator", "bitwise OR assignment operator", "bitwise XOR assignment operator",
-	 "bitwise NOT assignment operator", "bitwise left shift assignment operator", "bitwise right shift assignment operator",
+	"bitwise AND assignment operator", "bitwise OR assignment operator", "bitwise XOR assignment operator",
+	"bitwise NOT assignment operator", "bitwise left shift assignment operator", "bitwise right shift assignment operator",
 
-	 // Member / Pointer operators
-	 "dot operator", "arrow operator", "at operator",
+	// Member / Pointer operators
+	"dot operator", "arrow operator", "at operator",
 
-	 // Syntactic constructs
-	 "open brace", "open square brace", "open curly brace", "close brace", "close square brace", "close curly brace", "comma",
-	 "colon", "scope resolution operator",
+	// Syntactic constructs
+	"open brace", "open square brace", "open curly brace", "close brace", "close square brace", "close curly brace", "comma",
+	"colon", "scope resolution operator",
 
-	 // Misc
-	 "single line comment", "multi line comment");
+	// Misc
+	"single line comment", "multi line comment");
 
 /**
  * Gets the name of a lexer token.
@@ -160,37 +160,37 @@ const char *lexerTokens_getName(const enum LexerTokenIdentifiers IDENTIFIER) {
  */
 const struct Array LEXER_TOKEN_PRECEDENCES = array_new_stack("a",
 
-																				 "a", "a",
+															 "a", "a",
 
-																				 "a", "a", "a", "a",
+															 "a", "a", "a", "a",
 
-																				 // Arithmetic operators
-																				 "d", "c", "d", "d", "d", "e", "e",
+															 // Arithmetic operators
+															 "d", "c", "d", "d", "d", "e", "e",
 
-																				 // Comparison / Relational operators
-																				 "g", "g", "f", "f", "f", "f",
+															 // Comparison / Relational operators
+															 "g", "g", "f", "f", "f", "f",
 
-																				 // Logical operators
-																				 "h", "h", "h",
+															 // Logical operators
+															 "h", "h", "h",
 
-																				 // Bitwise operators
-																				 "e", "e", "e", "e", "i", "i",
+															 // Bitwise operators
+															 "e", "e", "e", "e", "i", "i",
 
-																				 // Assignment operators
-																				 "i",
+															 // Assignment operators
+															 "i",
 
-																				 "i", "i", "i", "i", "i", "i", "i",
+															 "i", "i", "i", "i", "i", "i", "i",
 
-																				 "i", "i", "i", "i", "i", "i",
+															 "i", "i", "i", "i", "i", "i",
 
-																				 // Member / Pointer operators
-																				 "b", "b", "c",
+															 // Member / Pointer operators
+															 "b", "b", "c",
 
-																				 // Syntactic constructs
-																				 "b", "b", "b", "b", "b", "b", "j", "b", "a",
+															 // Syntactic constructs
+															 "b", "b", "b", "b", "b", "b", "j", "b", "a",
 
-																				 // Misc
-																				 "a", "a");
+															 // Misc
+															 "a", "a");
 
 /**
  * Represents a lexer token.
@@ -215,7 +215,7 @@ struct LexerToken {
  * @return The created LexerToken struct.
  */
 const struct LexerToken *lexerToken_new(enum LexerTokenIdentifiers identifier, struct String *value, size_t startChrIndex,
-													 size_t endChrIndex, size_t lineIndex) {
+										size_t endChrIndex, size_t lineIndex) {
 	struct LexerToken *self = malloc(LEXERTOKEN_STRUCT_SIZE);
 
 	if (!self) {

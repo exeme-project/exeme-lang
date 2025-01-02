@@ -1,11 +1,12 @@
+import "std.cf"
 import "std.io"
 
-use io::out
+use cf::range
 
 ; Returns whether `n` itself is prime.
-fun isPrime(n: i32) -> bool {
-	for _, d = range(2, n) { ; '_' is the index, but it is not needed
-		if n % d == 0 { ; Can be divided without a remainder
+fun isPrime(num: i32) -> bool {
+	for range(2, num) => div {
+		if num % div == 0 { ; Can be divided without a remainder
 			return false
 		}
 	}
@@ -14,5 +15,5 @@ fun isPrime(n: i32) -> bool {
 }
 
 fun main() {
-	out(isPrime(100))
+	io:out(isPrime(io::in()))
 }

@@ -21,8 +21,8 @@ struct Array {
 #define ARRAY_STRUCT_SIZE sizeof(struct Array)
 #define ARRAY_STRUCT_ELEMENT_SIZE sizeof(const void *)
 #define array_new_stack(...)                                                                                                \
-	((struct Array){.length = sizeof((const void *[]){__VA_ARGS__}) / ARRAY_STRUCT_ELEMENT_SIZE,                             \
-						 ._values = (const void *[]){__VA_ARGS__}}) // Variadic args to the rescue!
+	((struct Array){.length = sizeof((const void *[]){__VA_ARGS__}) / ARRAY_STRUCT_ELEMENT_SIZE,                            \
+					._values = (const void *[]){__VA_ARGS__}}) // Variadic args to the rescue!
 #define array_upgrade_stack(array, _length)                                                                                 \
 	((struct Array){.length = _length, ._values = array}) // Changes a const void *[] to a struct Array on the stack
 
@@ -55,10 +55,10 @@ void array___realloc(struct Array *self, size_t new_length) {
 
 	if (new_length > self->length) {
 		memset(self->_values + self->length, 0,
-				 (new_length - self->length) *
-					  ARRAY_STRUCT_ELEMENT_SIZE); // Zero out the new memory. First parameter is the pointer for the array,
-															// starting from where we reallocated from. The third parameter is the
-															// size of the newly allocated memory.
+			   (new_length - self->length) *
+				   ARRAY_STRUCT_ELEMENT_SIZE); // Zero out the new memory. First parameter is the pointer for the array,
+											   // starting from where we reallocated from. The third parameter is the
+											   // size of the newly allocated memory.
 	}
 
 	if (!self->_values) {
@@ -205,8 +205,8 @@ char *array_join(struct Array *self, const char *separator, char *(*stringify)(c
 
 	for (size_t index = 1; index < self->length; index++) {
 		char *temp =
-			 stringConcatenate(joined, separator, stringify(self->_values[index])); // Concatenate the next element with the
-																											// separator in-between the previous.
+			stringConcatenate(joined, separator, stringify(self->_values[index])); // Concatenate the next element with the
+																				   // separator in-between the previous.
 		free(joined); // Since stringConcatenate mallocs a new string, we need to free the old one
 
 		joined = temp;

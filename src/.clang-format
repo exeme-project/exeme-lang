@@ -1,7 +1,7 @@
 BasedOnStyle: LLVM
 UseTab: Always
-IndentWidth: 3
-TabWidth: 3
+IndentWidth: 4
+TabWidth: 4
 ColumnLimit: 125
 ReflowComments: true
 BreakBeforeBraces: Attach

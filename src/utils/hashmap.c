@@ -17,8 +17,8 @@ typedef size_t (*hash_function_t)(const char *);
  * Represents a value in a bucket of the hashmap (can also be the head of a bucket).
  */
 struct HashmapValue {
-	const char *KEY;				// The key associated with the value in the bucket.
-	void *value;					// The value stored in the bucket.
+	const char *KEY;		   // The key associated with the value in the bucket.
+	void *value;			   // The value stored in the bucket.
 	struct HashmapValue *next; // Pointer to the next value in the bucket chain.
 };
 
@@ -26,10 +26,10 @@ struct HashmapValue {
  * Represents a hashmap.
  */
 struct Hashmap {
-	hash_function_t hasher;			 // Function to calculate the hash of a key.
-	float load_factor;				 // The load factor of the hashmap.
-	size_t initialised_buckets;	 // Number of initialised buckets in the hashmap.
-	size_t table_length;				 // The total number of buckets in the hashmap.
+	hash_function_t hasher;		   // Function to calculate the hash of a key.
+	float load_factor;			   // The load factor of the hashmap.
+	size_t initialised_buckets;	   // Number of initialised buckets in the hashmap.
+	size_t table_length;		   // The total number of buckets in the hashmap.
 	struct HashmapValue **buckets; // Array of pointers to the buckets.
 };
 
