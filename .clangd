@@ -12,5 +12,6 @@ Diagnostics:
       sign-conversion,
       declaration-after-statement,
       initializer-overrides,
-      covered-switch-default
+      covered-switch-default,
+      unused-macros
     ]

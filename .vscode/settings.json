@@ -16,6 +16,7 @@
     "LEXERTOKENS",
     "OSSF",
     "Unlexes",
+    "Wvoid"
   ],
   "editor.bracketPairColorization.enabled": true,
   "editor.cursorBlinking": "smooth",
@@ -25,6 +26,8 @@
   "editor.fontSize": 11,
   "editor.formatOnSave": true,
   "editor.guides.bracketPairs": true,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 3,
   "editor.smoothScrolling": true,
   "editor.suggest.localityBonus": true,
   "git.enableCommitSigning": true,
@@ -40,5 +43,4 @@
   "workbench.colorTheme": "Horizon Legacy",
   "workbench.iconTheme": "minimal-icon-theme",
   "workbench.list.smoothScrolling": true,
-  "workbench.productIconTheme": "fluent-icons",
 }
