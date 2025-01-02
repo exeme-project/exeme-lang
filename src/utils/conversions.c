@@ -17,16 +17,16 @@
  * @return The repeated string.
  */
 char *chrToString(char chr) {
-    char *string = malloc(2);
+	char *string = malloc(2);
 
-    if (!string) {
-        panic("failed to malloc string");
-    }
+	if (!string) {
+		panic("failed to malloc string");
+	}
 
-    string[0] = chr;
-    string[1] = '\0'; // Null terminator
+	string[0] = chr;
+	string[1] = '\0'; // Null terminator
 
-    return string;
+	return string;
 }
 
 /**
@@ -37,17 +37,17 @@ char *chrToString(char chr) {
  * @return The converted string.
  */
 char *ulToString(size_t num) {
-    size_t length = (size_t)snprintf(NULL, 0, "%zu", num);
+	size_t length = (size_t)snprintf(NULL, 0, "%zu", num);
 
-    char *str = malloc(length + 1); // + 1 for null terminator
+	char *str = malloc(length + 1); // + 1 for null terminator
 
-    if (!str) {
-        panic("failed to malloc string");
-    }
+	if (!str) {
+		panic("failed to malloc string");
+	}
 
-    snprintf(str, length + 1, "%zu", num);
+	snprintf(str, length + 1, "%zu", num);
 
-    return str;
+	return str;
 }
 
 /**
@@ -59,50 +59,50 @@ char *ulToString(size_t num) {
  * @return The converted data.
  */
 void *convertToType(char *data, enum VariableType type) {
-    switch (type) {
-    case VARIABLE_TYPE_NONE:
-        return NULL;
-    case VARIABLE_TYPE_STRING:
-        return data;
-    case VARIABLE_TYPE_INT: {
-        long *result = malloc(LONG_SIZE);
+	switch (type) {
+	case VARIABLE_TYPE_NONE:
+		return NULL;
+	case VARIABLE_TYPE_STRING:
+		return data;
+	case VARIABLE_TYPE_INT: {
+		long *result = malloc(LONG_SIZE);
 
-        if (!result) {
-            panic("failed to malloc long while converting to int");
-        }
+		if (!result) {
+			panic("failed to malloc long while converting to int");
+		}
 
-        char *endptr;
-        *result = strtol(data, &endptr, 10);
+		char *endptr;
+		*result = strtol(data, &endptr, 10);
 
-        if (endptr == data || *endptr != '\0') {
-            free(result);
+		if (endptr == data || *endptr != '\0') {
+			free(result);
 
-            return NULL;
-        }
+			return NULL;
+		}
 
-        return result;
-    }
-    case VARIABLE_TYPE_FLOAT: {
-        float *result = malloc(FLOAT_SIZE);
+		return result;
+	}
+	case VARIABLE_TYPE_FLOAT: {
+		float *result = malloc(FLOAT_SIZE);
 
-        if (!result) {
-            panic("failed to malloc float while converting to float");
-        }
+		if (!result) {
+			panic("failed to malloc float while converting to float");
+		}
 
-        char *endptr;
-        *result = strtof(data, &endptr);
+		char *endptr;
+		*result = strtof(data, &endptr);
 
-        if (endptr == data || *endptr != '\0') {
-            free(result);
+		if (endptr == data || *endptr != '\0') {
+			free(result);
 
-            return NULL;
-        }
+			return NULL;
+		}
 
-        return result;
-    }
-    case VARIABLE_TYPE_BOOL:
-        return strcmp(data, "true") == 0 ? (void *)1 : (void *)0;
-    default:
-        panic("invalid variable type for conversion");
-    }
+		return result;
+	}
+	case VARIABLE_TYPE_BOOL:
+		return strcmp(data, "true") == 0 ? (void *)1 : (void *)0;
+	default:
+		panic("invalid variable type for conversion");
+	}
 }

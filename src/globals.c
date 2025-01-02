@@ -18,11 +18,11 @@ const size_t negativeULL = (size_t)-1;
  * Used to identify variable types.
  */
 enum VariableType {
-    VARIABLE_TYPE_NONE,
-    VARIABLE_TYPE_STRING,
-    VARIABLE_TYPE_INT,
-    VARIABLE_TYPE_FLOAT,
-    VARIABLE_TYPE_BOOL,
+	VARIABLE_TYPE_NONE,
+	VARIABLE_TYPE_STRING,
+	VARIABLE_TYPE_INT,
+	VARIABLE_TYPE_FLOAT,
+	VARIABLE_TYPE_BOOL,
 };
 
 /**
@@ -38,9 +38,9 @@ const struct Array VARIABLETYPE_NAMES = array_new_stack("none", "string", "int",
  * @return The name of the variable type.
  */
 const char *variableType_get(const enum VariableType TYPE) {
-    if ((size_t)TYPE + 1 > VARIABLETYPE_NAMES.length) {
-        panic("VariableType get index out of bounds");
-    }
+	if ((size_t)TYPE + 1 > VARIABLETYPE_NAMES.length) {
+		panic("VariableType get index out of bounds");
+	}
 
-    return VARIABLETYPE_NAMES._values[TYPE];
+	return VARIABLETYPE_NAMES._values[TYPE];
 }

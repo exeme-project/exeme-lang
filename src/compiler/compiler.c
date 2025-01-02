@@ -11,7 +11,7 @@
 #include "./tokens.c"
 
 struct Compiler {
-    struct Parser *parser;
+	struct Parser *parser;
 };
 
 #define COMPILER_STRUCT_SIZE sizeof(struct Compiler)
@@ -24,11 +24,11 @@ struct Compiler {
  * @return The created Compiler struct.
  */
 struct Compiler *compiler_new(const char *FILE_PATH) {
-    struct Compiler *compiler = malloc(COMPILER_STRUCT_SIZE);
+	struct Compiler *compiler = malloc(COMPILER_STRUCT_SIZE);
 
-    compiler->parser = parser_new(FILE_PATH);
+	compiler->parser = parser_new(FILE_PATH);
 
-    return compiler;
+	return compiler;
 }
 
 /**
@@ -37,14 +37,14 @@ struct Compiler *compiler_new(const char *FILE_PATH) {
  * @param self The current Compiler struct.
  */
 void compiler_free(struct Compiler **self) {
-    if (self && *self) {
-        parser_free(&(*self)->parser);
+	if (self && *self) {
+		parser_free(&(*self)->parser);
 
-        free(*self);
-        *self = NULL;
-    } else {
-        panic("Compiler struct has already been freed");
-    }
+		free(*self);
+		*self = NULL;
+	} else {
+		panic("Compiler struct has already been freed");
+	}
 }
 
 /**
@@ -137,7 +137,7 @@ void compiler_compileBitwiseNotAssignment(struct Compiler *self) { printf("compi
  * @param self The current Compiler struct.
  */
 void compiler_compileBitwiseLeftShiftAssignment(struct Compiler *self) {
-    printf("compiling bitwise left shift assignment\n");
+	printf("compiling bitwise left shift assignment\n");
 }
 
 /**
@@ -146,7 +146,7 @@ void compiler_compileBitwiseLeftShiftAssignment(struct Compiler *self) {
  * @param self The current Compiler struct.
  */
 void compiler_compileBitwiseRightShiftAssignment(struct Compiler *self) {
-    printf("compiling bitwise right shift assignment\n");
+	printf("compiling bitwise right shift assignment\n");
 }
 
 /**
@@ -155,54 +155,54 @@ void compiler_compileBitwiseRightShiftAssignment(struct Compiler *self) {
  * @param self The current Compiler struct.
  */
 void compiler_compileNext(struct Compiler *self) {
-    switch (self->parser->AST->IDENTIFIER) {
-    case ASTTOKENS_ASSIGNMENT:
-        compiler_compileAssignment(self);
-        break;
-    case ASTTOKENS_MODULO_ASSIGNMENT:
-        compiler_compileModuloAssignment(self);
-        break;
-    case ASTTOKENS_MULTIPLICATION_ASSIGNMENT:
-        compiler_compileMultiplicationAssignment(self);
-        break;
-    case ASTTOKENS_EXPONENT_ASSIGNMENT:
-        compiler_compileExponentAssignment(self);
-        break;
-    case ASTTOKENS_DIVISION_ASSIGNMENT:
-        compiler_compileDivisionAssignment(self);
-        break;
-    case ASTTOKENS_FLOOR_DIVISION_ASSIGNMENT:
-        compiler_compileFloorDivisionAssignment(self);
-        break;
-    case ASTTOKENS_ADDITION_ASSIGNMENT:
-        compiler_compileAdditionAssignment(self);
-        break;
-    case ASTTOKENS_SUBTRACTION_ASSIGNMENT:
-        compiler_compileSubtractionAssignment(self);
-        break;
-    case ASTTOKENS_BITWISE_AND_ASSIGNMENT:
-        compiler_compileBitwiseAndAssignment(self);
-        break;
-    case ASTTOKENS_BITWISE_OR_ASSIGNMENT:
-        compiler_compileBitwiseOrAssignment(self);
-        break;
-    case ASTTOKENS_BITWISE_XOR_ASSIGNMENT:
-        compiler_compileBitwiseXorAssignment(self);
-        break;
-    case ASTTOKENS_BITWISE_NOT_ASSIGNMENT:
-        compiler_compileBitwiseNotAssignment(self);
-        break;
-    case ASTTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
-        compiler_compileBitwiseLeftShiftAssignment(self);
-        break;
-    case ASTTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
-        compiler_compileBitwiseRightShiftAssignment(self);
-        break;
-    default:
-        printf("unsupported parser token for compiler: %s\n",
-               astTokens_getName(self->parser->AST->IDENTIFIER)); // TODO: fix
-        break;
-    }
+	switch (self->parser->AST->IDENTIFIER) {
+	case ASTTOKENS_ASSIGNMENT:
+		compiler_compileAssignment(self);
+		break;
+	case ASTTOKENS_MODULO_ASSIGNMENT:
+		compiler_compileModuloAssignment(self);
+		break;
+	case ASTTOKENS_MULTIPLICATION_ASSIGNMENT:
+		compiler_compileMultiplicationAssignment(self);
+		break;
+	case ASTTOKENS_EXPONENT_ASSIGNMENT:
+		compiler_compileExponentAssignment(self);
+		break;
+	case ASTTOKENS_DIVISION_ASSIGNMENT:
+		compiler_compileDivisionAssignment(self);
+		break;
+	case ASTTOKENS_FLOOR_DIVISION_ASSIGNMENT:
+		compiler_compileFloorDivisionAssignment(self);
+		break;
+	case ASTTOKENS_ADDITION_ASSIGNMENT:
+		compiler_compileAdditionAssignment(self);
+		break;
+	case ASTTOKENS_SUBTRACTION_ASSIGNMENT:
+		compiler_compileSubtractionAssignment(self);
+		break;
+	case ASTTOKENS_BITWISE_AND_ASSIGNMENT:
+		compiler_compileBitwiseAndAssignment(self);
+		break;
+	case ASTTOKENS_BITWISE_OR_ASSIGNMENT:
+		compiler_compileBitwiseOrAssignment(self);
+		break;
+	case ASTTOKENS_BITWISE_XOR_ASSIGNMENT:
+		compiler_compileBitwiseXorAssignment(self);
+		break;
+	case ASTTOKENS_BITWISE_NOT_ASSIGNMENT:
+		compiler_compileBitwiseNotAssignment(self);
+		break;
+	case ASTTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT:
+		compiler_compileBitwiseLeftShiftAssignment(self);
+		break;
+	case ASTTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT:
+		compiler_compileBitwiseRightShiftAssignment(self);
+		break;
+	default:
+		printf("unsupported parser token for compiler: %s\n",
+				 astTokens_getName(self->parser->AST->IDENTIFIER)); // TODO: fix
+		break;
+	}
 }
 
 /**
@@ -213,11 +213,11 @@ void compiler_compileNext(struct Compiler *self) {
  * @return Whether compiling succeeded.
  */
 bool compiler_compile(struct Compiler *self) {
-    if (!parser_parse(self->parser, true, true)) {
-        return false;
-    }
+	if (!parser_parse(self->parser, true, true)) {
+		return false;
+	}
 
-    compiler_compileNext(self);
+	compiler_compileNext(self);
 
-    return true;
+	return true;
 }
