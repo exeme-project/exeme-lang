@@ -4,7 +4,7 @@ import "std.io"
 use cf::range
 
 ; Returns whether `n` itself is prime.
-fun isPrime(num: i32) -> bool {
+func isPrime(num: i32) -> bool {
 	for range(2, num) => div {
 		if num % div == 0 { ; Can be divided without a remainder
 			return false
@@ -14,6 +14,8 @@ fun isPrime(num: i32) -> bool {
 	return true
 }
 
-fun main() {
-	io:out(isPrime(io::in()))
+func main() {
+	io:out(isPrime(io::in("Enter a number: ")))
 }
+
+; STRUCTS NOW

@@ -17,7 +17,7 @@
 /**
  * Used to identify keywords.
  */
-static const struct Array KEYWORDS = array_new_stack("break", "case", "cls", "else", "elif", "enum", "export", "for", "fun",
+static const struct Array KEYWORDS = array_new_stack("break", "case", "cls", "else", "elif", "enum", "export", "for", "func",
 													 "if", "import", "match", "pass", "return", "struct", "use", "while");
 
 /**
