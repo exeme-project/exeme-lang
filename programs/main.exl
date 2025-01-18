@@ -6,7 +6,7 @@ use cf::range
 ; MU stands for MeasurementUnit
 
 Geometry: trait<io::Stringify>(MU: Int|UInt|Float) = {
-	area: func(Self) -> Type, ; Not defining logic, so we must define parameters later
+	area: func(Self) -> MU, ; Not defining logic, so we must define parameters later
 	toString: func(self: Self) -> String { ; Defining logic, so we must define parameters
 		return self.area() as String
 	}
@@ -14,11 +14,11 @@ Geometry: trait<io::Stringify>(MU: Int|UInt|Float) = {
 
 ; UFloat don't exist
 Rectangle: struct<Geometry>(MU: UInt|Float) = {
-	height, width: Type,
+	height, width: MU,
 }
 
 Square: struct<Geometry>(MU: UInt|Float) = {
-	side: Type,
+	side: MU,
 }
 
 ; Types are pre-defined, so only parameters have to be specified
