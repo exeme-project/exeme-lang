@@ -276,56 +276,6 @@ void parser_parseNumber(struct Parser *self, const struct LexerToken *lexerToken
 }
 
 /**
- * Parses a class.
- *
- * @param self                   The current Parser struct.
- * @param classKeywordLexerToken The current lexer token.
- */
-void parser_parseClass(struct Parser *self, const struct LexerToken *classKeywordLexerToken) {
-	struct AST *class = NULL, *identifier = NULL, *openingBrackets = NULL;
-
-	if (!parser_parse(self, false, false)) {
-		lexer_error(self->lexer, P0001, "expected 1 parser token after 'class' keyword, got 0", classKeywordLexerToken);
-	}
-
-	identifier = (struct AST *)array_get(self->parserTokens, 0);
-
-	if (identifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
-		parser_error(self, P0002,
-					 stringConcatenate("expected parser token of type '", astTokens_getName(ASTTOKENS_VARIABLE),
-									   "' after 'class' keyword, got '", astTokens_getName(identifier->IDENTIFIER), "'"),
-					 identifier);
-	}
-
-	if (!parser_parse(self, false, false)) {
-		parser_error(self, P0001,
-					 "expected 1 parser token after class identifier, "
-					 "got 0",
-					 identifier);
-	}
-
-	openingBrackets = (struct AST *)array_get(self->parserTokens, 1);
-
-	if (openingBrackets->IDENTIFIER != ASTTOKENS_OPEN_BRACE) {
-		parser_error(self, P0002,
-					 stringConcatenate("expected parser token of type '", astTokens_getName(ASTTOKENS_OPEN_BRACE),
-									   "' after class identifier, got '", astTokens_getName(openingBrackets->IDENTIFIER),
-									   "'"),
-					 openingBrackets);
-	}
-}
-
-/**
- * Parses the current class.
- *
- * @param self                   The current Parser struct.
- * @param classKeywordLexerToken The current lexer token.
- */
-void parser_parseKeyword_class(struct Parser *self, const struct LexerToken *classKeywordLexerToken) {
-	parser_parseClass(self, classKeywordLexerToken);
-}
-
-/**
  * Parses a function.
  *
  * @param self                  The current Parser struct.
@@ -436,7 +386,8 @@ void parser_parseFunction(struct Parser *self, const struct LexerToken *funcKeyw
 		printf("argumentIdentifier: %s\n", argumentIdentifier->data.AST_VARIABLE->NAME->_value);
 		printf("argumentType: %s\n\n", argumentType->data.AST_VARIABLE->NAME->_value);
 
-		// TODO: You know... work out if it is actually a type. And that requires types to be supported, and so classes...
+		// TODO: You know... work out if it is actually a type. And that requires types to be supported... EDIT ITS NOT
+		// THAT'S FOR THE COMPILER :). YAY, ITS SO MUCH EASIER NOW!
 
 		lastToken = argumentType;
 
@@ -466,12 +417,10 @@ void parser_parseKeyword_func(struct Parser *self, const struct LexerToken *func
  * @param lexerToken The current lexer token.
  */
 void parser_parseKeyword(struct Parser *self, const struct LexerToken *lexerToken) {
-	if (strcmp(lexerToken->value->_value, "class") == 0) {
-		parser_parseKeyword_class(self, lexerToken);
-	} else if (strcmp(lexerToken->value->_value, "func") == 0) {
+	if (strcmp(lexerToken->value->_value, "func") == 0) {
 		parser_parseKeyword_func(self, lexerToken);
 	} else if (strcmp(lexerToken->value->_value, "import") == 0) {
-		// TODO: Add import handling logic
+		// TODO: Add import handling logic. EDIT: No, just parse it into one import token!
 	} else { // TODO: Add support for all keywords
 		printf("unsupported keyword for parser's keyword parser: %s\n", lexerToken->value->_value);
 	}

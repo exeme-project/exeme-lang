@@ -278,9 +278,12 @@ void lexer_lexOneChar(struct Lexer *self, const enum LexerTokenIdentifiers IDENT
  * @param SECOND_CHR The second char to check for.
  * @param IF_ONE     If the token is one char.
  * @param IF_TWO     If the token is two chars.
+ * @param CONTINUATION_CHECK_IF_ONE Whether to check for an unexpected continuation if the token is one char.
+ * @param CONTINUATION_CHECK_IF_TWO Whether to check for an unexpected continuation if the token is two chars.
  */
 void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR, const enum LexerTokenIdentifiers IF_ONE,
-					  const enum LexerTokenIdentifiers IF_TWO) {
+					  const enum LexerTokenIdentifiers IF_TWO, bool CONTINUATION_CHECK_IF_ONE,
+					  bool CONTINUATION_CHECK_IF_TWO) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
@@ -288,6 +291,10 @@ void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR, const enum Lexe
 			token = lexerToken_new(IF_TWO,
 								   string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
 								   self->chrIndex - 1, self->chrIndex, self->lineIndex);
+
+			if (CONTINUATION_CHECK_IF_TWO) {
+				lexer_checkForContinuation(self, token);
+			}
 		} else { // SECOND_CHR was not found, un-get it
 			lexer_unGetChr(self);
 		}
@@ -296,10 +303,13 @@ void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR, const enum Lexe
 	if (!token) { // SECOND_CHR was not found
 		token = lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false), self->chrIndex, self->chrIndex,
 							   self->lineIndex);
+
+		if (CONTINUATION_CHECK_IF_ONE) {
+			lexer_checkForContinuation(self, token);
+		}
 	}
 
 	array_append(self->tokens, token);
-	lexer_checkForContinuation(self, token);
 }
 
 /**
@@ -310,12 +320,18 @@ void lexer_lexTwoChar(struct Lexer *self, const char SECOND_CHR, const enum Lexe
  * @param SECOND_CHR       The second char to check for.
  * @param OTHER_SECOND_CHR The other second char to check for.
  * @param IF_ONE           If the token is one char.
- * @param IF_TWO           If the token is two chars with SECOND_CHR.
- * @param IF_OTHER_TWO     If the token is two chars with OTHER_SECOND_CHR.
+ * @param IF_TWO           If the token is two chars, ending with SECOND_CHR.
+ * @param IF_OTHER_TWO     If the token is two chars, ending with OTHER_SECOND_CHR.
+ * @param CONTINUATION_CHECK_IF_ONE Whether to check for an unexpected continuation if the token is one char.
+ * @param CONTINUATION_CHECK_IF_TWO Whether to check for an unexpected continuation if the token is two chars, ending with
+ * SECOND_CHR.
+ * @param CONTINUATION_CHECK_IF_OTHER_TWO Whether to check for an unexpected continuation if the token is two chars, ending
+ * with OTHER_SECOND_CHR.
  */
 void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR, const char OTHER_SECOND_CHR,
 					   const enum LexerTokenIdentifiers IF_ONE, const enum LexerTokenIdentifiers IF_TWO,
-					   const enum LexerTokenIdentifiers IF_OTHER_TWO) {
+					   const enum LexerTokenIdentifiers IF_OTHER_TWO, bool CONTINUATION_CHECK_IF_ONE,
+					   bool CONTINUATION_CHECK_IF_TWO, bool CONTINUATION_CHECK_IF_OTHER_TWO) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
@@ -323,10 +339,18 @@ void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR, const char OTH
 			token = lexerToken_new(IF_TWO,
 								   string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
 								   self->chrIndex - 1, self->chrIndex, self->lineIndex);
+
+			if (CONTINUATION_CHECK_IF_TWO) {
+				lexer_checkForContinuation(self, token);
+			}
 		} else if (self->chr == OTHER_SECOND_CHR) {
 			token = lexerToken_new(IF_OTHER_TWO,
 								   string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
 								   self->chrIndex - 1, self->chrIndex, self->lineIndex);
+
+			if (CONTINUATION_CHECK_IF_OTHER_TWO) {
+				lexer_checkForContinuation(self, token);
+			}
 		} else {
 			lexer_unGetChr(self);
 		}
@@ -335,10 +359,13 @@ void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR, const char OTH
 	if (!token) {
 		token = lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false), self->chrIndex, self->chrIndex,
 							   self->lineIndex);
+
+		if (CONTINUATION_CHECK_IF_ONE) {
+			lexer_checkForContinuation(self, token);
+		}
 	}
 
 	array_append(self->tokens, token);
-	lexer_checkForContinuation(self, token);
 }
 
 /**
@@ -348,26 +375,40 @@ void lexer_lex2TwoChar(struct Lexer *self, const char SECOND_CHR, const char OTH
  * @param SECOND_CHR     The second char to check for.
  * @param THIRD_CHR      The third char to check for.
  * @param IF_ONE         If the token is one char.
- * @param IF_TWO         If the token is two SECOND_CHRs.
- * @param IF_ONE_AND_ONE If the token is SECOND_CHR and THIRD_CHR.
- * @param IF_TWO_AND_ONE If the token is two of SECOND_CHR and THIRD_CHR.
+ * @param IF_TWO         If the token is two chars, ending with SECOND_CHR.
+ * @param IF_TWO_AND_THIRD If the token is two chars, ending with THIRD_CHR.
+ * @param IF_THREE_AND_THIRD If the token is three chars, ending with THIRD_CHR.
+ * @param CONTINUATION_CHECK_IF_ONE Whether to check for an unexpected continuation if the token is one char.
+ * @param CONTINUATION_CHECK_IF_TWO Whether to check for an unexpected continuation if the token is two chars, ending with
+ * SECOND_CHR.
+ * @param CONTINUATION_CHECK_IF_TWO_AND_THIRD Whether to check for an unexpected continuation if the token is two chars,
+ * ending with THIRD_CHR.
+ * @param CONTINUATION_CHECK_IF_THREE_AND_THIRD Whether to check for an unexpected continuation if the token is three chars,
+ * ending with THIRD_CHR.
  */
 void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR, const char THIRD_CHR,
 						const enum LexerTokenIdentifiers IF_ONE, const enum LexerTokenIdentifiers IF_TWO,
-						const enum LexerTokenIdentifiers IF_ONE_AND_ONE, const enum LexerTokenIdentifiers IF_TWO_AND_ONE) {
+						const enum LexerTokenIdentifiers IF_TWO_AND_THIRD,
+						const enum LexerTokenIdentifiers IF_THREE_AND_THIRD, bool CONTINUATION_CHECK_IF_ONE,
+						bool CONTINUATION_CHECK_IF_TWO, bool CONTINUATION_CHECK_IF_TWO_AND_THIRD,
+						bool CONTINUATION_CHECK_IF_THREE_AND_THIRD) {
 	const struct LexerToken *token = NULL;
 
 	if (lexer_getChr(self, false)) {
 		if (self->chr == SECOND_CHR) {
 			const char prevChr = self->prevChr;
 
-			if (IF_TWO_AND_ONE && lexer_getChr(self, false)) {
+			if (IF_THREE_AND_THIRD && lexer_getChr(self, false)) {
 				if (self->chr == THIRD_CHR) {
-					token = lexerToken_new(IF_TWO_AND_ONE,
+					token = lexerToken_new(IF_THREE_AND_THIRD,
 										   string_new(stringConcatenate(chrToString(prevChr), chrToString(self->prevChr),
 																		chrToString(self->chr)),
 													  false),
 										   self->chrIndex - 2, self->chrIndex, self->lineIndex);
+
+					if (CONTINUATION_CHECK_IF_THREE_AND_THIRD) {
+						lexer_checkForContinuation(self, token);
+					}
 				}
 			}
 
@@ -375,11 +416,19 @@ void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR, const char TH
 				token = lexerToken_new(
 					IF_TWO, string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
 					self->chrIndex - 1, self->chrIndex, self->lineIndex);
+
+				if (CONTINUATION_CHECK_IF_TWO) {
+					lexer_checkForContinuation(self, token);
+				}
 			}
 		} else if (self->chr == THIRD_CHR) {
-			token = lexerToken_new(IF_ONE_AND_ONE,
+			token = lexerToken_new(IF_TWO_AND_THIRD,
 								   string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)), false),
 								   self->chrIndex - 1, self->chrIndex, self->lineIndex);
+
+			if (CONTINUATION_CHECK_IF_TWO_AND_THIRD) {
+				lexer_checkForContinuation(self, token);
+			}
 		} else { // SECOND_CHR was not found, un-get it
 			lexer_unGetChr(self);
 		}
@@ -388,10 +437,13 @@ void lexer_lexThreeChar(struct Lexer *self, const char SECOND_CHR, const char TH
 	if (!token) { // SECOND_CHR was not found
 		token = lexerToken_new(IF_ONE, string_new(chrToString(self->chr), false), self->chrIndex, self->chrIndex,
 							   self->lineIndex);
+
+		if (CONTINUATION_CHECK_IF_ONE) {
+			lexer_checkForContinuation(self, token);
+		}
 	}
 
 	array_append(self->tokens, token);
-	lexer_checkForContinuation(self, token);
 }
 
 /**
@@ -629,59 +681,63 @@ bool lexer_lexNext(struct Lexer *self) {
 
 	// Arithmetic operators
 	case '%':
-		lexer_lexTwoChar(self, '=', LEXERTOKENS_MODULO, LEXERTOKENS_MODULO_ASSIGNMENT);
+		lexer_lexTwoChar(self, '=', LEXERTOKENS_MODULO, LEXERTOKENS_MODULO_ASSIGNMENT, true, true);
 		break;
 	case '*':
 		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_MULTIPLICATION, LEXERTOKENS_EXPONENT,
-						   LEXERTOKENS_MULTIPLICATION_ASSIGNMENT, LEXERTOKENS_EXPONENT_ASSIGNMENT);
+						   LEXERTOKENS_MULTIPLICATION_ASSIGNMENT, LEXERTOKENS_EXPONENT_ASSIGNMENT, true, true, true, true);
 		break;
 	case '/':
 		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_DIVISION, LEXERTOKENS_FLOOR_DIVISION,
-						   LEXERTOKENS_DIVISION_ASSIGNMENT, LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT);
+						   LEXERTOKENS_DIVISION_ASSIGNMENT, LEXERTOKENS_FLOOR_DIVISION_ASSIGNMENT, true, true, true, true);
 		break;
 	case '+':
-		lexer_lexTwoChar(self, '=', LEXERTOKENS_ADDITION, LEXERTOKENS_ADDITION_ASSIGNMENT);
+		lexer_lexTwoChar(self, '=', LEXERTOKENS_ADDITION, LEXERTOKENS_ADDITION_ASSIGNMENT, true, true);
 		break;
 	case '-':
 		lexer_lex2TwoChar(self, '=', '>', LEXERTOKENS_SUBTRACTION, LEXERTOKENS_SUBTRACTION_ASSIGNMENT,
-						  LEXERTOKENS_TYPE_ARROW);
+						  LEXERTOKENS_TYPE_ARROW, true, true, true);
 		break;
 
 	// Comparison / Relational operators
 	case '=':
-		lexer_lex2TwoChar(self, self->chr, '>', LEXERTOKENS_ASSIGNMENT, LEXERTOKENS_EQUAL_TO, LEXERTOKENS_ASSIGNMENT_ARROW);
+		lexer_lex2TwoChar(self, self->chr, '>', LEXERTOKENS_ASSIGNMENT, LEXERTOKENS_EQUAL_TO, LEXERTOKENS_ASSIGNMENT_ARROW,
+						  true, true, true);
 		break;
 	case '!':
-		lexer_lexTwoChar(self, '=', LEXERTOKENS_LOGICAL_NOT, LEXERTOKENS_NOT_EQUAL_TO);
+		lexer_lexTwoChar(self, '=', LEXERTOKENS_LOGICAL_NOT, LEXERTOKENS_NOT_EQUAL_TO, true, true);
 		break;
 	case '>':
 		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_GREATER_THAN, LEXERTOKENS_BITWISE_RIGHT_SHIFT,
-						   LEXERTOKENS_GREATER_THAN_OR_EQUAL, LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT);
+						   LEXERTOKENS_GREATER_THAN_OR_EQUAL, LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT, false, true, true,
+						   true); // 'e.g., 'Example: trait<io::Stringify>(Type) = {}'
 		break;
 	case '<':
 		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_LESS_THAN, LEXERTOKENS_BITWISE_LEFT_SHIFT,
-						   LEXERTOKENS_LESS_THAN_OR_EQUAL, LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT);
+						   LEXERTOKENS_LESS_THAN_OR_EQUAL, LEXERTOKENS_BITWISE_LEFT_SHIFT_ASSIGNMENT, true, true, true,
+						   true);
 		break;
 
 	// Logical operators
 	case '&':
 		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_BITWISE_AND, LEXERTOKENS_LOGICAL_AND,
-						   LEXERTOKENS_BITWISE_AND_ASSIGNMENT, LEXERTOKENS_NONE);
+						   LEXERTOKENS_BITWISE_AND_ASSIGNMENT, LEXERTOKENS_NONE, true, true, true, true);
 		break;
 	case '|':
 		lexer_lexThreeChar(self, self->chr, '=', LEXERTOKENS_BITWISE_OR, LEXERTOKENS_LOGICAL_OR,
-						   LEXERTOKENS_BITWISE_OR_ASSIGNMENT, LEXERTOKENS_NONE);
+						   LEXERTOKENS_BITWISE_OR_ASSIGNMENT, LEXERTOKENS_NONE, true, true, true, true);
 		break;
 
 	// Bitwise operators
 	case '^':
-		lexer_lexTwoChar(self, '=', LEXERTOKENS_BITWISE_XOR, LEXERTOKENS_BITWISE_XOR_ASSIGNMENT);
+		lexer_lexTwoChar(self, '=', LEXERTOKENS_BITWISE_XOR, LEXERTOKENS_BITWISE_XOR_ASSIGNMENT, true, true);
 		break;
 	case '~':
-		lexer_lexTwoChar(self, '=', LEXERTOKENS_BITWISE_NOT, LEXERTOKENS_BITWISE_NOT_ASSIGNMENT);
+		lexer_lexTwoChar(self, '=', LEXERTOKENS_BITWISE_NOT, LEXERTOKENS_BITWISE_NOT_ASSIGNMENT, true, true);
 		break;
 
 	// Member / Pointer operators
+	// NOTE: These all don't call lexer_checkForContinuation
 	case '.':
 		lexer_lexOneChar(self, LEXERTOKENS_DOT);
 		break;
@@ -690,6 +746,7 @@ bool lexer_lexNext(struct Lexer *self) {
 		break;
 
 	// Syntactic constructs
+	// NOTE: These all don't call lexer_checkForContinuation
 	case '(':
 		lexer_lexOneChar(self, LEXERTOKENS_OPEN_BRACE);
 		break;
@@ -712,11 +769,13 @@ bool lexer_lexNext(struct Lexer *self) {
 		lexer_lexOneChar(self, LEXERTOKENS_COMMA);
 		break;
 	case ':':
-		lexer_lexTwoChar(self, self->chr, LEXERTOKENS_COLON, LEXERTOKENS_SCOPE_RESOLUTION);
+		lexer_lexTwoChar(self, self->chr, LEXERTOKENS_COLON, LEXERTOKENS_SCOPE_RESOLUTION, true, true);
 		break;
 	case ';':
 		lexer_lexSingleLineComment(self);
 		break;
+
+	// Misc
 	default:
 		if (isalpha(self->chr) || self->chr == '_') {
 			lexer_lexKeywordOrIdentifier(self);
