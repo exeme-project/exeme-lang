@@ -73,9 +73,10 @@ enum LexerTokenIdentifiers {
 	LEXERTOKENS_BITWISE_RIGHT_SHIFT_ASSIGNMENT, // '>>='
 
 	// Member / Pointer operators
-	LEXERTOKENS_DOT,   // '.'
-	LEXERTOKENS_ARROW, // '->'
-	LEXERTOKENS_AT,	   // '@'
+	LEXERTOKENS_DOT,			  // '.'
+	LEXERTOKENS_TYPE_ARROW,		  // '->'
+	LEXERTOKENS_ASSIGNMENT_ARROW, // '=>'
+	LEXERTOKENS_AT,				  // '@'
 
 	// Syntactic constructs
 	LEXERTOKENS_OPEN_BRACE,			// '('
@@ -129,7 +130,7 @@ static const struct Array LEXERTOKEN_NAMES = array_new_stack(
 	"bitwise NOT assignment operator", "bitwise left shift assignment operator", "bitwise right shift assignment operator",
 
 	// Member / Pointer operators
-	"dot operator", "arrow operator", "at operator",
+	"dot operator", "type arrow operator", "assignment arrow operator", "at operator",
 
 	// Syntactic constructs
 	"open brace", "open square brace", "open curly brace", "close brace", "close square brace", "close curly brace", "comma",
@@ -184,7 +185,7 @@ const struct Array LEXER_TOKEN_PRECEDENCES = array_new_stack("a",
 															 "i", "i", "i", "i", "i", "i",
 
 															 // Member / Pointer operators
-															 "b", "b", "c",
+															 "b", "b", "b", "c",
 
 															 // Syntactic constructs
 															 "b", "b", "b", "b", "b", "b", "j", "b", "a",

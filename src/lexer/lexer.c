@@ -643,12 +643,13 @@ bool lexer_lexNext(struct Lexer *self) {
 		lexer_lexTwoChar(self, '=', LEXERTOKENS_ADDITION, LEXERTOKENS_ADDITION_ASSIGNMENT);
 		break;
 	case '-':
-		lexer_lex2TwoChar(self, '=', '>', LEXERTOKENS_SUBTRACTION, LEXERTOKENS_SUBTRACTION_ASSIGNMENT, LEXERTOKENS_ARROW);
+		lexer_lex2TwoChar(self, '=', '>', LEXERTOKENS_SUBTRACTION, LEXERTOKENS_SUBTRACTION_ASSIGNMENT,
+						  LEXERTOKENS_TYPE_ARROW);
 		break;
 
 	// Comparison / Relational operators
 	case '=':
-		lexer_lexTwoChar(self, self->chr, LEXERTOKENS_ASSIGNMENT, LEXERTOKENS_EQUAL_TO);
+		lexer_lex2TwoChar(self, self->chr, '>', LEXERTOKENS_ASSIGNMENT, LEXERTOKENS_EQUAL_TO, LEXERTOKENS_ASSIGNMENT_ARROW);
 		break;
 	case '!':
 		lexer_lexTwoChar(self, '=', LEXERTOKENS_LOGICAL_NOT, LEXERTOKENS_NOT_EQUAL_TO);
