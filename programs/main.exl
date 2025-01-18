@@ -3,19 +3,48 @@ import "std.io"
 
 use cf::range
 
-; Returns whether `n` itself is prime.
-func isPrime(num: i32) -> bool {
-	for range(2, num) => div {
-		if num % div == 0 { ; Can be divided without a remainder
-			return false
-		}
+; MU stands for MeasurementUnit
+
+Geometry: trait<io::Stringify>(MU: Int|UInt|Float) = {
+	area: func(Self) -> Type, ; Not defining logic, so we must define parameters later
+	toString: func(self: Self) -> String { ; Defining logic, so we must define parameters
+		return self.area() as String
+	}
+}
+
+; UFloat don't exist
+Rectangle: struct<Geometry>(MU: UInt|Float) = {
+	height, width: Type,
+}
+
+Square: struct<Geometry>(MU: UInt|Float) = {
+	side: Type,
+}
+
+; Types are pre-defined, so only parameters have to be specified
+Rectangle.area = func(self) {
+	return self.height * self.width
+}
+
+Square.area = func(self) {
+	return self.side ** 2
+}
+
+main: func() = {
+	; Default int type is i32
+
+	my_rectangle = Rectangle(i32) {
+		height = 5,
+		width = 10
 	}
 
-	return true
-}
+	my_square = Square(i32) {
+		side = 5
+	}
 
-func main() {
-	io:out(isPrime(io::in("Enter a number: ")))
-}
+	my_shapes = [my_rectangle, my_square] ; Again, type inference
 
-; STRUCTS NOW
+	for range(0, my_shapes.length) => shape {
+		io::out(shape.area()) ; Requires the variable to infer from and implement 'io::Stringify'
+    }
+}
