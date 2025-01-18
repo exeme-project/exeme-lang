@@ -13,7 +13,7 @@
  * Represents a string.
  */
 struct String {
-	char *_value;
+	char*  _value;
 	size_t length;
 };
 
@@ -24,8 +24,8 @@ struct String {
  *
  * @return The created String struct.
  */
-struct String *string_new(char *string, bool copy) {
-	struct String *self = malloc(STRING_STRUCT_SIZE);
+struct String* string_new(char* string, bool copy) {
+	struct String* self = malloc(STRING_STRUCT_SIZE);
 
 	if (!self) {
 		panic("failed to malloc String struct");
@@ -35,7 +35,7 @@ struct String *string_new(char *string, bool copy) {
 		self->length = 0;
 
 		if (copy) {
-			self->_value = malloc(1);
+			self->_value			   = malloc(1);
 			self->_value[self->length] = '\0';
 		} else {
 			self->_value = string;
@@ -67,7 +67,7 @@ struct String *string_new(char *string, bool copy) {
  * @param self The current String struct.
  * @param size The new size of the string.
  */
-void string___realloc(struct String *self, size_t size) {
+void string___realloc(struct String* self, size_t size) {
 	self->_value = realloc(self->_value, size);
 
 	if (!self->_value) {
@@ -81,14 +81,14 @@ void string___realloc(struct String *self, size_t size) {
  * @param self The current String struct.
  * @param chr  The string to append.
  */
-void string_appendChr(struct String *self, char chr) {
+void string_appendChr(struct String* self, char chr) {
 	string___realloc(self, self->length + 2); // 1 for new char and 1 for null terminator
 
 	self->_value[self->length++] = chr;
-	self->_value[self->length] = '\0';
+	self->_value[self->length]	 = '\0';
 }
 
-void string_appendStr(struct String *self, const char *string) {
+void string_appendStr(struct String* self, const char* string) {
 	size_t length = strlen(string);
 
 	string___realloc(self, self->length + length + 1); // 1 for null terminator
@@ -105,9 +105,9 @@ void string_appendStr(struct String *self, const char *string) {
  *
  * @param self The current String struct.
  */
-void string_clear(struct String *self) {
+void string_clear(struct String* self) {
 	self->_value[0] = '\0';
-	self->length = 0;
+	self->length	= 0;
 	string___realloc(self, 1);
 }
 
@@ -116,7 +116,7 @@ void string_clear(struct String *self) {
  *
  * @param self The current String struct.
  */
-void string_free(struct String **self) {
+void string_free(struct String** self) {
 	if (self && *self) {
 		free((*self)->_value);
 
@@ -135,7 +135,7 @@ void string_free(struct String **self) {
  *
  * @return The concatenated string.
  */
-char *stringConcatenate_(const char *firstString, ...) {
+char* stringConcatenate_(const char* firstString, ...) {
 	if (!firstString) {
 		return NULL;
 	}
@@ -143,7 +143,7 @@ char *stringConcatenate_(const char *firstString, ...) {
 	va_list arguments;
 	va_start(arguments, firstString);
 
-	char *string = malloc(strlen(firstString) + 1); // 1 for null terminator
+	char* string = malloc(strlen(firstString) + 1); // 1 for null terminator
 
 	if (!string) {
 		panic("failed to malloc string while concatenating");
@@ -151,9 +151,9 @@ char *stringConcatenate_(const char *firstString, ...) {
 
 	strcpy(string, firstString);
 
-	const char *appendString;
+	const char* appendString;
 
-	while ((appendString = va_arg(arguments, const char *))) { // Doesn't equal NULL
+	while ((appendString = va_arg(arguments, const char*))) { // Doesn't equal NULL
 		string = realloc(string, strlen(string) + strlen(appendString) + 1);
 
 		if (!string) {
@@ -170,8 +170,8 @@ char *stringConcatenate_(const char *firstString, ...) {
 
 #define stringConcatenate(...) stringConcatenate_(__VA_ARGS__, NULL)
 
-char *stringDuplicate(const char *string) {
-	char *duplicate = malloc(strlen(string) + 1);
+char* stringDuplicate(const char* string) {
+	char* duplicate = malloc(strlen(string) + 1);
 
 	if (!duplicate) {
 		panic("failed to malloc string while duplicating");
@@ -190,8 +190,8 @@ char *stringDuplicate(const char *string) {
  *
  * @return The repeated string.
  */
-char *repeatChr(char chr, size_t length) {
-	char *string = malloc(length + 1);
+char* repeatChr(char chr, size_t length) {
+	char* string = malloc(length + 1);
 
 	if (!string) {
 		panic("failed to malloc string while repeating car");

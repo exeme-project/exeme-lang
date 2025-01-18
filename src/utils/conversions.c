@@ -16,8 +16,8 @@
  *
  * @return The repeated string.
  */
-char *chrToString(char chr) {
-	char *string = malloc(2);
+char* chrToString(char chr) {
+	char* string = malloc(2);
 
 	if (!string) {
 		panic("failed to malloc string");
@@ -36,10 +36,10 @@ char *chrToString(char chr) {
  *
  * @return The converted string.
  */
-char *ulToString(size_t num) {
+char* ulToString(size_t num) {
 	size_t length = (size_t)snprintf(NULL, 0, "%zu", num);
 
-	char *str = malloc(length + 1); // + 1 for null terminator
+	char* str = malloc(length + 1); // + 1 for null terminator
 
 	if (!str) {
 		panic("failed to malloc string");
@@ -58,20 +58,20 @@ char *ulToString(size_t num) {
  *
  * @return The converted data.
  */
-void *convertToType(char *data, enum VariableType type) {
+void* convertToType(char* data, enum VariableType type) {
 	switch (type) {
 	case VARIABLE_TYPE_NONE:
 		return NULL;
 	case VARIABLE_TYPE_STRING:
 		return data;
 	case VARIABLE_TYPE_INT: {
-		long *result = malloc(LONG_SIZE);
+		long* result = malloc(LONG_SIZE);
 
 		if (!result) {
 			panic("failed to malloc long while converting to int");
 		}
 
-		char *endptr;
+		char* endptr;
 		*result = strtol(data, &endptr, 10);
 
 		if (endptr == data || *endptr != '\0') {
@@ -83,13 +83,13 @@ void *convertToType(char *data, enum VariableType type) {
 		return result;
 	}
 	case VARIABLE_TYPE_FLOAT: {
-		float *result = malloc(FLOAT_SIZE);
+		float* result = malloc(FLOAT_SIZE);
 
 		if (!result) {
 			panic("failed to malloc float while converting to float");
 		}
 
-		char *endptr;
+		char* endptr;
 		*result = strtof(data, &endptr);
 
 		if (endptr == data || *endptr != '\0') {
@@ -101,7 +101,7 @@ void *convertToType(char *data, enum VariableType type) {
 		return result;
 	}
 	case VARIABLE_TYPE_BOOL:
-		return strcmp(data, "true") == 0 ? (void *)1 : (void *)0;
+		return strcmp(data, "true") == 0 ? (void*)1 : (void*)0;
 	default:
 		panic("invalid variable type for conversion");
 	}

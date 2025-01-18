@@ -11,7 +11,7 @@
 #include "./tokens.c"
 
 struct Compiler {
-	struct Parser *parser;
+	struct Parser* parser;
 };
 
 #define COMPILER_STRUCT_SIZE sizeof(struct Compiler)
@@ -23,8 +23,8 @@ struct Compiler {
  *
  * @return The created Compiler struct.
  */
-struct Compiler *compiler_new(const char *FILE_PATH) {
-	struct Compiler *compiler = malloc(COMPILER_STRUCT_SIZE);
+struct Compiler* compiler_new(const char* FILE_PATH) {
+	struct Compiler* compiler = malloc(COMPILER_STRUCT_SIZE);
 
 	compiler->parser = parser_new(FILE_PATH);
 
@@ -36,7 +36,7 @@ struct Compiler *compiler_new(const char *FILE_PATH) {
  *
  * @param self The current Compiler struct.
  */
-void compiler_free(struct Compiler **self) {
+void compiler_free(struct Compiler** self) {
 	if (self && *self) {
 		parser_free(&(*self)->parser);
 
@@ -52,91 +52,113 @@ void compiler_free(struct Compiler **self) {
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileAssignment(struct Compiler *self) { printf("compiling assignment\n"); }
+void compiler_compileAssignment(struct Compiler* self) { printf("compiling assignment\n"); }
 
 /**
  * Compiles the current modulo assignment.
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileModuloAssignment(struct Compiler *self) { printf("compiling modulo assignment\n"); }
+void compiler_compileModuloAssignment(struct Compiler* self) {
+	printf("compiling modulo assignment\n");
+}
 
 /**
  * Compiles the current multiplication assignment.
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileMultiplicationAssignment(struct Compiler *self) { printf("compiling multiplication assignment\n"); }
+void compiler_compileMultiplicationAssignment(struct Compiler* self) {
+	printf("compiling multiplication assignment\n");
+}
 
 /**
  * Compiles the current exponent assignment.
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileExponentAssignment(struct Compiler *self) { printf("compiling exponent assignment\n"); }
+void compiler_compileExponentAssignment(struct Compiler* self) {
+	printf("compiling exponent assignment\n");
+}
 
 /**
  * Compiles the current division assignment.
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileDivisionAssignment(struct Compiler *self) { printf("compiling division assignment\n"); }
+void compiler_compileDivisionAssignment(struct Compiler* self) {
+	printf("compiling division assignment\n");
+}
 
 /**
  * Compiles the current floor division assignment.
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileFloorDivisionAssignment(struct Compiler *self) { printf("compiling floor division assignment\n"); }
+void compiler_compileFloorDivisionAssignment(struct Compiler* self) {
+	printf("compiling floor division assignment\n");
+}
 
 /**
  * Compiles the current addition assignment.
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileAdditionAssignment(struct Compiler *self) { printf("compiling addition assignment\n"); }
+void compiler_compileAdditionAssignment(struct Compiler* self) {
+	printf("compiling addition assignment\n");
+}
 
 /**
  * Compiles the current subtraction assignment.
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileSubtractionAssignment(struct Compiler *self) { printf("compiling subtraction assignment\n"); }
+void compiler_compileSubtractionAssignment(struct Compiler* self) {
+	printf("compiling subtraction assignment\n");
+}
 
 /**
  * Compiles the current bitwise and assignment.
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileBitwiseAndAssignment(struct Compiler *self) { printf("compiling bitwise and assignment\n"); }
+void compiler_compileBitwiseAndAssignment(struct Compiler* self) {
+	printf("compiling bitwise and assignment\n");
+}
 
 /**
  * Compiles the current bitwise or assignment.
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileBitwiseOrAssignment(struct Compiler *self) { printf("compiling bitwise or assignment\n"); }
+void compiler_compileBitwiseOrAssignment(struct Compiler* self) {
+	printf("compiling bitwise or assignment\n");
+}
 
 /**
  * Compiles the current bitwise xor assignment.
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileBitwiseXorAssignment(struct Compiler *self) { printf("compiling bitwise xor assignment\n"); }
+void compiler_compileBitwiseXorAssignment(struct Compiler* self) {
+	printf("compiling bitwise xor assignment\n");
+}
 
 /**
  * Compiles the current bitwise not assignment.
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileBitwiseNotAssignment(struct Compiler *self) { printf("compiling bitwise not assignment\n"); }
+void compiler_compileBitwiseNotAssignment(struct Compiler* self) {
+	printf("compiling bitwise not assignment\n");
+}
 
 /**
  * Compiles the current bitwise left shift assignment.
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileBitwiseLeftShiftAssignment(struct Compiler *self) {
+void compiler_compileBitwiseLeftShiftAssignment(struct Compiler* self) {
 	printf("compiling bitwise left shift assignment\n");
 }
 
@@ -145,7 +167,7 @@ void compiler_compileBitwiseLeftShiftAssignment(struct Compiler *self) {
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileBitwiseRightShiftAssignment(struct Compiler *self) {
+void compiler_compileBitwiseRightShiftAssignment(struct Compiler* self) {
 	printf("compiling bitwise right shift assignment\n");
 }
 
@@ -154,7 +176,7 @@ void compiler_compileBitwiseRightShiftAssignment(struct Compiler *self) {
  *
  * @param self The current Compiler struct.
  */
-void compiler_compileNext(struct Compiler *self) {
+void compiler_compileNext(struct Compiler* self) {
 	switch (self->parser->AST->IDENTIFIER) {
 	case ASTTOKENS_ASSIGNMENT:
 		compiler_compileAssignment(self);
@@ -212,7 +234,7 @@ void compiler_compileNext(struct Compiler *self) {
  *
  * @return Whether compiling succeeded.
  */
-bool compiler_compile(struct Compiler *self) {
+bool compiler_compile(struct Compiler* self) {
 	if (!parser_parse(self->parser, true, true)) {
 		return false;
 	}

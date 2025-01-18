@@ -1,8 +1,24 @@
-BasedOnStyle: LLVM
-UseTab: Always
-IndentWidth: 4
-TabWidth: 4
-ColumnLimit: 125
-ReflowComments: true
-BreakBeforeBraces: Attach
 AllowShortIfStatementsOnASingleLine: Never
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignConsecutiveMacros: true
+AlignTrailingComments: true
+BreakBeforeBinaryOperators: NonAssignment  # Keep assignments visually aligned.
+BreakBeforeBraces: Attach
+BreakConstructorInitializers: BeforeColon
+ColumnLimit: 100  # Adjust to balance line length and readability.
+ContinuationIndentWidth: 4
+EmptyLineBeforeAccessModifier: Always
+IndentWidth: 4
+IncludeBlocks: Preserve     # Preserves grouping with blank lines.
+PointerAlignment: Left
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 0
+PenaltyBreakString: 100
+ReflowComments: true
+SortIncludes: true          # Enables sorting of includes.
+SpaceBeforeParens: ControlStatements
+SpacesInParentheses: false
+TabWidth: 4
+UseTab: Always

@@ -8,9 +8,9 @@
 #include "./includes.c"
 #include "./utils/array.c"
 
-#define LONG_SIZE sizeof(long)
-#define FLOAT_SIZE sizeof(float)
-#define STRING_SIZE sizeof(char *)
+#define LONG_SIZE	sizeof(long)
+#define FLOAT_SIZE	sizeof(float)
+#define STRING_SIZE sizeof(char*)
 
 const size_t negativeULL = (size_t)-1;
 
@@ -37,7 +37,7 @@ const struct Array VARIABLETYPE_NAMES = array_new_stack("none", "string", "int",
  *
  * @return The name of the variable type.
  */
-const char *variableType_get(const enum VariableType TYPE) {
+const char* variableType_get(const enum VariableType TYPE) {
 	if ((size_t)TYPE + 1 > VARIABLETYPE_NAMES.length) {
 		panic("VariableType get index out of bounds");
 	}
