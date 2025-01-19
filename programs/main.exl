@@ -27,11 +27,11 @@ Square.area = func(self) {
 	return self.side ** 2
 }
 
-display_area = func<T: Geometry<MU>>(shape: T) -> MU {
+display_area: func<T: Geometry<MU>>(shape: T) -> MU = {
 	return shape.area()
 }
 
-main = func() {
+main: func() = {
 	; Default int type is i32
 
 	my_rectangle = Rectangle<i32> {
