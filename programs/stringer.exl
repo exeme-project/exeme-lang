@@ -1,0 +1,33 @@
+import "std.io"
+import "std.traits"
+import "std.types.{number, string}"
+
+use string::String
+use number::*
+
+Stringer: trait<Type: Any> = {
+	stringify: func(Self, Type) -> String,
+}
+
+IntPrinter: struct<Type: Int>(Stringer) = { }
+UIntPrinter: struct<Type: UInt>(Stringer) = { }
+
+IntPrinter.stringify = func(self, value) {
+	return String.from(value)
+}
+
+UIntPrinter.stringify = func(self, value) {
+	return String.from(value)
+}
+
+print: func<Type: Any>(printer: Stringer<Type>, value: Type) = {
+	io::out(printer.stringify(value))
+}
+
+main: func() = {
+	int_printer = IntPrinter<i32> { }
+	uint_printer = UIntPrinter<u32> { }
+
+	print(int_printer, -1)
+	print(uint_printer, 1)
+}

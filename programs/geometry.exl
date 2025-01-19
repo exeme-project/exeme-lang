@@ -1,8 +1,10 @@
 import "std.cf"
 import "std.io"
-import "std.types::Array"
+import "std.types.{array, number}"
 
+use array::Array
 use cf::range
+use number::*
 
 ; MU stands for MeasurementUnit
 Geometry: trait<MU: Int|UInt|Float> = {
