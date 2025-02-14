@@ -1,0 +1,31 @@
+# Try restarting after change to make sure clangd server updates.
+
+Checks: >
+    bugprone-*,
+    cert-*,
+    clang-analyzer-*,
+    concurrency-*,
+    cppcoreguidelines-*,
+    hicpp-*,
+    misc-*,
+    modernize-*,
+    performance-*,
+    portability-*,
+    readability-*
+
+CheckOptions:
+    - { key: readability-identifier-naming.EnumConstantCase,    value: UPPER_CASE }  # Enum values
+    - { key: readability-identifier-naming.FunctionCase,        value: lower_case }  # Function
+    - { key: readability-identifier-naming.GlobalConstantCase,  value: UPPER_CASE }  # Global constants
+    - { key: readability-identifier-naming.GlobalVariableCase,  value: lower_case }  # Global variables
+    - { key: readability-identifier-naming.MacroDefinitionCase, value: UPPER_CASE }  # Preprocessor macros
+    - { key: readability-identifier-naming.ParameterCase,       value: lower_case }  # Function parameters
+    - { key: readability-identifier-naming.StaticVariableCase,  value: lower_case }  # Static variables
+    - { key: readability-identifier-naming.StructCase,          value: lower_case }  # Class/struct members
+    - { key: readability-identifier-naming.VariableCase,        value: lower_case }  # Local variables
+
+FormatStyle: 'file'
+HeaderFilterRegex: ''
+
+# Turn all the warnings from the checks above into errors.
+WarningsAsErrors: "*"

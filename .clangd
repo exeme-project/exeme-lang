@@ -3,15 +3,15 @@ CompileFlags:
 Diagnostics:
   Suppress:
     [
-      missing-prototypes,
-      empty-translation-unit,
       cast-qual,
-      unused-includes,
-      padded,
-      unsafe-buffer-usage,
-      sign-conversion,
-      declaration-after-statement,
-      initializer-overrides,
       covered-switch-default,
+      declaration-after-statement,
+      empty-translation-unit,
+      initializer-overrides,
+      missing-prototypes,
+      padded,
+      sign-conversion,
+      unsafe-buffer-usage,
+      unused-includes,
       unused-macros
     ]

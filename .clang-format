@@ -10,8 +10,9 @@ BreakConstructorInitializers: BeforeColon
 ColumnLimit: 100  # Adjust to balance line length and readability.
 ContinuationIndentWidth: 4
 EmptyLineBeforeAccessModifier: Always
-IndentWidth: 4
 IncludeBlocks: Preserve     # Preserves grouping with blank lines.
+IndentWidth: 4
+InsertNewlineAtEOF: true
 PointerAlignment: Left
 PenaltyBreakComment: 300
 PenaltyBreakFirstLessLess: 0

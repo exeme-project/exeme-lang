@@ -1,1 +1,6 @@
+
+clang-tidy
+flawfinder
+lizard
 pre-commit
+scan-build

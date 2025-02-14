@@ -1,12 +1,12 @@
 {
-  "customizations": {
-    "codespaces": {
-      "repositories": {
-        "exeme-project/utils": {
-          "permissions": "write-all"
-        }
-      }
-    }
-  },
-  "onCreateCommand": "sudo apt update && sudo apt-get -y install clang-format ninja-build fonts-firacode llvm-dev && pip install -r ./requirements.txt && pre-commit install"
+	"customizations": {
+		"codespaces": {
+			"repositories": {
+				"exeme-project/utils": {
+					"permissions": "write-all"
+				}
+			}
+		}
+	},
+	"onCreateCommand": "sudo apt update && sudo apt-get -y install clang clang-format ninja-build fonts-firacode llvm-dev cppcheck && pip install -r ./requirements.txt && pre-commit install"
 }

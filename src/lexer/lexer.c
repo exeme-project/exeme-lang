@@ -820,7 +820,7 @@ bool lexer_lexNext(struct Lexer* self) {
 		break;
 	case ':':
 		lexer_lexTwoChar(self, self->chr, LEXERTOKENS_COLON, LEXERTOKENS_SCOPE_RESOLUTION, true,
-						 true);
+						 false);
 		break;
 	case ';':
 		lexer_lexSingleLineComment(self);
