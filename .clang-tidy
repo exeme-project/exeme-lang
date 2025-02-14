@@ -14,15 +14,46 @@ Checks: >
     readability-*
 
 CheckOptions:
-    - { key: readability-identifier-naming.EnumConstantCase,    value: UPPER_CASE }  # Enum values
-    - { key: readability-identifier-naming.FunctionCase,        value: lower_case }  # Function
-    - { key: readability-identifier-naming.GlobalConstantCase,  value: UPPER_CASE }  # Global constants
-    - { key: readability-identifier-naming.GlobalVariableCase,  value: lower_case }  # Global variables
-    - { key: readability-identifier-naming.MacroDefinitionCase, value: UPPER_CASE }  # Preprocessor macros
-    - { key: readability-identifier-naming.ParameterCase,       value: lower_case }  # Function parameters
-    - { key: readability-identifier-naming.StaticVariableCase,  value: lower_case }  # Static variables
-    - { key: readability-identifier-naming.StructCase,          value: lower_case }  # Class/struct members
-    - { key: readability-identifier-naming.VariableCase,        value: lower_case }  # Local variables
+    - { key: readability-identifier-naming.EnumCase, value: CamelCase }
+    - { key: readability-identifier-naming.ConstantCase, value: UPPER_CASE }
+    - { key: readability-identifier-naming.FunctionCase, value: lower_case }
+    - { key: readability-identifier-naming.VariableCase, value: camelBack }
+    - { key: readability-identifier-naming.ParameterCase, value: camelBack }
+
+    - { key: readability-identifier-naming.ConstantPointerParameterCase, value: UPPER_CASE }
+    - { key: readability-identifier-naming.ConstantPointerParameterPrefix, value: p_ }
+    - { key: readability-identifier-naming.ConstantPointerParameterIgnoredRegexp, value: p_ }
+    - { key: readability-identifier-naming.GlobalConstantPointerCase, value: UPPER_CASE }
+    - { key: readability-identifier-naming.GlobalConstantPointerPrefix, value: gp_ }
+    - { key: readability-identifier-naming.GlobalPointerCase, value: camelBack }
+    - { key: readability-identifier-naming.GlobalPointerPrefix, value: gp_ }
+    - { key: readability-identifier-naming.LocalConstantPointerCase, value: UPPER_CASE }
+    - { key: readability-identifier-naming.LocalConstantPointerPrefix, value: lp_ }
+    - { key: readability-identifier-naming.LocalConstantPointerIgnoredRegexp, value: 'p([A-Z0-9][a-z]*)*' }
+    - { key: readability-identifier-naming.LocalPointerCase, value: camelBack }
+    - { key: readability-identifier-naming.LocalPointerPrefix, value: lp_ }
+    - { key: readability-identifier-naming.LocalPointerIgnoredRegexp, value: lp_ }
+    - { key: readability-identifier-naming.PointerParameterCase, value: camelBack }
+    - { key: readability-identifier-naming.PointerParameterPrefix, value: p_ }
+    - { key: readability-identifier-naming.PointerParameterIgnoredRegexp, value: p_ }
+
+    - { key: readability-identifier-naming.GlobalVariablePrefix, value: g_ }
+
+    - { key: readability-identifier-naming.ConstantParameterCase, value: UPPER_CASE }
+    - { key: readability-identifier-naming.ConstantParameterPrefix, value: '' }
+    - { key: readability-identifier-naming.GlobalConstantCase, value: UPPER_CASE }
+    - { key: readability-identifier-naming.GlobalConstantPrefix, value: g_ }
+    - { key: readability-identifier-naming.LocalConstantCase, value: UPPER_CASE }
+    - { key: readability-identifier-naming.LocalConstantPrefix, value: l_ }
+
+    - { key: readability-identifier-naming.StaticConstantCase, value: UPPER_CASE }
+    - { key: readability-identifier-naming.StaticConstantPrefix, value: s_ }
+    - { key: readability-identifier-naming.StaticVariableCase, value: UPPER_CASE }
+    - { key: readability-identifier-naming.StaticVariablePrefix, value: s_ }
+
+    - { key: readability-identifier-naming.MacroDefinitionCase, value: UPPER_CASE }
+    - { key: readability-identifier-naming.StructCase, value: lower_case }
+
 
 FormatStyle: 'file'
 HeaderFilterRegex: ''
