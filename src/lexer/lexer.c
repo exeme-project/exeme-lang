@@ -47,7 +47,7 @@ struct Lexer* lexer_new(const char* FILE_PATH) {
 	struct Lexer* self = malloc(LEXER_STRUCT_SIZE);
 
 	if (!self) {
-		panic("failed to malloc Lexer struct");
+		PANIC("failed to malloc Lexer struct");
 	}
 
 	self->nextLine	   = true;
@@ -85,7 +85,7 @@ void lexer_free(struct Lexer** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("Lexer struct has already been freed");
+		PANIC("Lexer struct has already been freed");
 	}
 }
 

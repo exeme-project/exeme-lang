@@ -35,7 +35,7 @@ struct Parser* parser_new(const char* FILE_PATH) {
 	struct Parser* self = malloc(PARSER_STRUCT_SIZE);
 
 	if (!self) {
-		panic("failed to malloc Parser struct");
+		PANIC("failed to malloc Parser struct");
 	}
 
 	self->inParsing = false;
@@ -78,7 +78,7 @@ void parser_free(struct Parser** self) {
 		free((*self));
 		(*self) = NULL;
 	} else {
-		panic("Parser struct has already been freed");
+		PANIC("Parser struct has already been freed");
 	}
 }
 

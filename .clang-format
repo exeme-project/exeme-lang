@@ -18,7 +18,7 @@ PenaltyBreakComment: 300
 PenaltyBreakFirstLessLess: 0
 PenaltyBreakString: 100
 ReflowComments: true
-SortIncludes: true          # Enables sorting of includes.
+SortIncludes: CaseSensitive          # Enables sorting of includes.
 SpaceBeforeParens: ControlStatements
 SpacesInParentheses: false
 TabWidth: 4

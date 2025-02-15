@@ -103,7 +103,7 @@ struct ArgsFormat* argsFormat_new_(struct Array argumentsFormat, const char* NAM
 	struct ArgsFormat* self = malloc(ARGSFORMAT_STRUCT_SIZE);
 
 	if (!self) {
-		panic("failed to malloc Args struct");
+		PANIC("failed to malloc Args struct");
 	}
 
 	self->NAME				= NAME;
@@ -156,7 +156,7 @@ bool argsFormat___check_parsedArgumentsNameMatch_(const void* element, const voi
 		elementName = ((struct Command*)element)->data.subcommand.name;
 		break;
 	default:
-		panic("invalid command type while checking parsed arguments name match");
+		PANIC("invalid command type while checking parsed arguments name match");
 	}
 
 	return strcmp(elementName, match) == 0;
@@ -172,7 +172,7 @@ bool argsFormat___check_parsedArgumentsShortFlagMatch_(const void* element, cons
 	case COMMAND_TYPE_SUBCOMMAND:
 		return false;
 	default:
-		panic("invalid command type while checking parsed arguments short flag match");
+		PANIC("invalid command type while checking parsed arguments short flag match");
 	}
 
 	if (!elementFlagShort) { // Some arguments don't have a short flag
@@ -192,7 +192,7 @@ bool argsFormat___check_parsedArgumentsLongFlagMatch_(const void* element, const
 	case COMMAND_TYPE_SUBCOMMAND:
 		return false;
 	default:
-		panic("invalid command type while checking parsed arguments long flag match");
+		PANIC("invalid command type while checking parsed arguments long flag match");
 	}
 
 	return strcmp(elementFlagLong, match) == 0;
@@ -221,54 +221,54 @@ void argsFormat___check(struct ArgsFormat* self) {
 
 			if (array_contains(parsed_arguments, argsFormat___check_parsedArgumentsNameMatch_,
 							   arg->name)) {
-				panic("duplicate argument / subcommand name");
+				PANIC("duplicate argument / subcommand name");
 			}
 
 			if (!arg->name) {
-				panic("argument must have a name");
+				PANIC("argument must have a name");
 			} else if (!arg->description) {
-				panic("argument must have a description");
+				PANIC("argument must have a description");
 			}
 
 			if (arg->position != -1) { /* Required argument */
 				if (array_index_occupied(self->requiredArguments, arg->position)) {
-					panic("duplicate required argument position");
+					PANIC("duplicate required argument position");
 				} else if (arg->flagShort || arg->flagLong) {
-					panic("required argument cannot have a flag");
+					PANIC("required argument cannot have a flag");
 				} else if (arg->def) {
-					panic("required argument cannot have a default value");
+					PANIC("required argument cannot have a default value");
 				} else if ((size_t)arg->position != self->requiredArguments->length + 1) {
-					panic("required argument position must be in order");
+					PANIC("required argument position must be in order");
 				}
 
 				array_append(self->requiredArguments, arg);
 			} else { /* Optional argument/flag */
 				if (!arg->flagLong) {
-					panic("optional argument must have at least a long flag");
+					PANIC("optional argument must have at least a long flag");
 				} else if (arg->type != VARIABLE_TYPE_NONE && !arg->def) {
-					panic("optional argument must have a non-NULL default value");
+					PANIC("optional argument must have a non-NULL default value");
 				} else if (arg->type == VARIABLE_TYPE_NONE && arg->def) {
-					panic("optional flag must have a NULL default value");
+					PANIC("optional flag must have a NULL default value");
 				} else if (arg->flagShort && strncmp(arg->flagShort, "-", 1) != 0) {
-					panic("short flag must start with '-'");
+					PANIC("short flag must start with '-'");
 				} else if (strncmp(arg->flagLong, "--", 2) != 0) {
-					panic("long flag must start with '--'");
+					PANIC("long flag must start with '--'");
 				} else if (arg->flagShort
 						   && array_contains(parsed_arguments,
 											 argsFormat___check_parsedArgumentsShortFlagMatch_,
 											 arg->flagShort)) {
-					panic("duplicate short flag");
+					PANIC("duplicate short flag");
 				} else if (array_contains(parsed_arguments,
 										  argsFormat___check_parsedArgumentsLongFlagMatch_,
 										  arg->flagLong)) {
-					panic("duplicate long flag");
+					PANIC("duplicate long flag");
 				} else if (arg->flagShort
 						   && array_contains(self->reservedFlags, array___match_string,
 											 arg->flagShort)) {
-					panic("reserved short flag");
+					PANIC("reserved short flag");
 				} else if (array_contains(self->reservedFlags, array___match_string,
 										  arg->flagLong)) {
-					panic("reserved long flag");
+					PANIC("reserved long flag");
 				}
 
 				if (arg->def) { // Optional argument (not flag)
@@ -285,15 +285,15 @@ void argsFormat___check(struct ArgsFormat* self) {
 
 			if (array_contains(parsed_arguments, argsFormat___check_parsedArgumentsNameMatch_,
 							   subcommandRaw->name)) {
-				panic("duplicate subcommand / argument name");
+				PANIC("duplicate subcommand / argument name");
 			}
 
 			if (!subcommandRaw->name) {
-				panic("subcommand must have a name");
+				PANIC("subcommand must have a name");
 			} else if (!subcommandRaw->help) {
-				panic("subcommand must have a help message");
+				PANIC("subcommand must have a help message");
 			} else if (subcommandRaw->argumentsFormat.length == 0) {
-				panic("subcommand must have arguments");
+				PANIC("subcommand must have arguments");
 			}
 
 			struct ArgsFormat* subcommandFormat = argsFormat_new_(
@@ -310,7 +310,7 @@ void argsFormat___check(struct ArgsFormat* self) {
 			break;
 		}
 		default:
-			panic("invalid command type while parsing arguments format");
+			PANIC("invalid command type while parsing arguments format");
 		}
 	}
 
@@ -375,7 +375,7 @@ bool argsFormat_parse_optionalArgumentFlagMatch_(const void* element, const void
 	case COMMAND_TYPE_SUBCOMMAND:
 		return false;
 	default:
-		panic("invalid command type while parsing optional argument flag match");
+		PANIC("invalid command type while parsing optional argument flag match");
 	}
 }
 
@@ -447,7 +447,7 @@ __attribute__((noreturn)) void argsFormat_help_(struct ArgsFormat* self) {
 			break;
 		}
 		default:
-			panic("invalid command type while printing help message");
+			PANIC("invalid command type while printing help message");
 		}
 	}
 
@@ -511,7 +511,7 @@ struct Hashmap* argsFormat_parse_(struct ArgsFormat* self, struct Array args, si
 						printf("%s %s\n", self->NAME, self->VERSION);
 						exit(EXIT_SUCCESS);
 					default:
-						panic("invalid reserved flag index");
+						PANIC("invalid reserved flag index");
 					}
 				} else {
 					args_error(args, A0001,
@@ -623,6 +623,6 @@ void argsFormat_free(struct ArgsFormat** self) {
 
 		*self = NULL;
 	} else {
-		panic("ArgsFormat struct has already been freed");
+		PANIC("ArgsFormat struct has already been freed");
 	}
 }

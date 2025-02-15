@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 3.5.0)
 project(exeme LANGUAGES C)
 
 set(CMAKE_C_COMPILER clang)
-set(CMAKE_C_CLANG_TIDY "clang-tidy;-checks=*")
 
 # Create the executable
 add_executable(exeme src/main.c)

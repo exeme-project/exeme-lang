@@ -5,34 +5,21 @@
 
 #pragma once
 
-#include "../includes.c"
+#include "../globals.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-#include "./console.c"
+__attribute__((noreturn)) void panic_internal(const char* p_panicMsg, const char* p_file,
+											  const int LINE, const char* p_function) {
+	printf("%s%spanic%s(line=%s%d%s, function=%s%s%s, file=%s%s%s): %s\n", gp_F_BRIGHT_RED,
+		   gp_S_BOLD, gp_S_RESET, gp_S_BOLD, LINE, gp_S_RESET, gp_S_ITALIC, p_function, gp_S_RESET,
+		   gp_S_UNDERLINE, p_file, gp_S_RESET, p_panicMsg);
 
-/**
- * Prints a panic and exits. Used for when our code is failing.
- *
- * @param PANIC_MSG The panic message.
- */
-__attribute__((noreturn)) void _panic(const char* PANIC_MSG, const char* FILE, const int LINE,
-									  const char* FUNCTION) {
-	printf("%s%spanic%s(line=%s%d%s, function=%s%s%s, file=%s%s%s): %s\n", F_BRIGHT_RED, S_BOLD,
-		   S_RESET, S_BOLD, LINE, S_RESET, S_ITALIC, FUNCTION, S_RESET, S_UNDERLINE, FILE, S_RESET,
-		   PANIC_MSG);
-
-	exit(EXIT_FAILURE);
+	exit(EXIT_FAILURE); // NOLINT(concurrency-mt-unsafe)
 }
 
-/**
- * Prints an error and exits. Used for when something related to the user (and their input(s)) are
- * failing.
- *
- * @param ERROR_MSG The error message.
- */
-__attribute__((noreturn)) void error(const char* ERROR_MSG) {
-	printf("%s%serror: %s%s\n", F_BRIGHT_RED, S_BOLD, S_RESET, ERROR_MSG);
+__attribute__((noreturn)) void error(const char* p_errorMsg) {
+	printf("%s%serror: %s%s\n", gp_F_BRIGHT_RED, gp_S_BOLD, gp_S_RESET, p_errorMsg);
 
-	exit(EXIT_FAILURE);
+	exit(EXIT_FAILURE); // NOLINT(concurrency-mt-unsafe)
 }
-
-#define panic(PANIC_MSG) _panic(PANIC_MSG, __FILE__, __LINE__, __func__)

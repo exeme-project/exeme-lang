@@ -2,6 +2,12 @@
 	"[c]": {
 		"editor.defaultFormatter": "xaver.clang-format"
 	},
+	"[cpp]": {
+		"editor.defaultFormatter": "xaver.clang-format"
+	},
+	"[h]": {
+		"editor.defaultFormatter": "xaver.clang-format"
+	},
 	"c-cpp-flylint.cppcheck.enable": true,
 	"c-cpp-flylint.cppcheck.verbose": false,
 	"c-cpp-flylint.flawfinder.enable": true,

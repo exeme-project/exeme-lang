@@ -43,7 +43,7 @@ void compiler_free(struct Compiler** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("Compiler struct has already been freed");
+		PANIC("Compiler struct has already been freed");
 	}
 }
 

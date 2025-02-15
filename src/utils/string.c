@@ -5,203 +5,197 @@
 
 #pragma once
 
-#include "../includes.c"
+#include "./string.h"
+#include "../globals.h"
+#include "./panic.h"
+#include <string.h> // NOLINT(readability-duplicate-include)
 
-#include "./panic.c"
+struct String* string_new(char* p_string, bool copy) {
+	struct String* lp_self = malloc(STRING_STRUCT_SIZE);
 
-/**
- * Represents a string.
- */
-struct String {
-	char*  _value;
-	size_t length;
-};
-
-#define STRING_STRUCT_SIZE sizeof(struct String)
-
-/**
- * Creates a new String struct.
- *
- * @return The created String struct.
- */
-struct String* string_new(char* string, bool copy) {
-	struct String* self = malloc(STRING_STRUCT_SIZE);
-
-	if (!self) {
-		panic("failed to malloc String struct");
+	if (!lp_self) {
+		PANIC("failed to malloc String struct");
 	}
 
-	if (string[0] == '\0') {
-		self->length = 0;
+	if (p_string[0] == '\0') {
+		lp_self->length = 0;
 
 		if (copy) {
-			self->_value			   = malloc(1);
-			self->_value[self->length] = '\0';
+			lp_self->_value					 = malloc(1);
+			lp_self->_value[lp_self->length] = '\0';
 		} else {
-			self->_value = string;
+			lp_self->_value = p_string;
 		}
 	} else if (copy) {
-		self->length = strlen(string);
-		self->_value = malloc(self->length + 1);
+		lp_self->length = strlen_safe(p_string);
+		lp_self->_value = malloc(lp_self->length + 1);
 
-		if (!self->_value) {
-			panic("failed to malloc string while initialising String struct");
+		if (!lp_self->_value) {
+			PANIC("failed to malloc string while initialising String struct");
 		}
 
-		for (size_t index = 0; index < self->length; index++) {
-			self->_value[index] = string[index];
+		for (size_t index = 0; index < lp_self->length; index++) {
+			lp_self->_value[index] = p_string[index];
 		}
 
-		self->_value[self->length] = '\0';
+		lp_self->_value[lp_self->length] = '\0';
 	} else {
-		self->_value = string;
-		self->length = strlen(self->_value);
+		lp_self->_value = p_string;
+		lp_self->length = strlen_safe(lp_self->_value);
 	}
 
-	return self;
+	return lp_self;
 }
 
 /**
  * Reallocates the struct's string.
  *
- * @param self The current String struct.
+ * @param p_self The current String struct.
  * @param size The new size of the string.
  */
-void string___realloc(struct String* self, size_t size) {
-	self->_value = realloc(self->_value, size);
+void string___realloc(struct String* p_self, size_t size) {
+	void* lp_reallocTemp = realloc(p_self->_value, size);
 
-	if (!self->_value) {
-		panic("failed to realloc string");
+	if (!lp_reallocTemp) {
+		PANIC("failed to realloc string");
 	}
+
+	p_self->_value = lp_reallocTemp;
 }
 
-/**
- * Appends a char to the String.
- *
- * @param self The current String struct.
- * @param chr  The string to append.
- */
-void string_appendChr(struct String* self, char chr) {
-	string___realloc(self, self->length + 2); // 1 for new char and 1 for null terminator
+void string_append_chr(struct String* p_self, char chr) {
+	string___realloc(p_self, p_self->length + 2); // 1 for new char and 1 for null terminator
 
-	self->_value[self->length++] = chr;
-	self->_value[self->length]	 = '\0';
+	p_self->_value[p_self->length++] = chr;
+	p_self->_value[p_self->length]	 = '\0';
 }
 
-void string_appendStr(struct String* self, const char* string) {
-	size_t length = strlen(string);
+void string_append_str(struct String* p_self, const char* p_string) {
+	size_t length = strlen_safe(p_string);
 
-	string___realloc(self, self->length + length + 1); // 1 for null terminator
+	string___realloc(p_self, p_self->length + length + 1); // 1 for null terminator
 
 	for (size_t index = 0; index < length; index++) {
-		self->_value[self->length++] = string[index];
+		p_self->_value[p_self->length++] = p_string[index];
 	}
 
-	self->_value[self->length] = '\0';
+	p_self->_value[p_self->length] = '\0';
 }
 
-/**
- * Removes all the elements from the String.
- *
- * @param self The current String struct.
- */
-void string_clear(struct String* self) {
-	self->_value[0] = '\0';
-	self->length	= 0;
-	string___realloc(self, 1);
+void string_clear(struct String* p_self) {
+	p_self->_value[0] = '\0';
+	p_self->length	  = 0;
+	string___realloc(p_self, 1);
 }
 
-/**
- * Frees an String struct.
- *
- * @param self The current String struct.
- */
-void string_free(struct String** self) {
-	if (self && *self) {
-		free((*self)->_value);
+void string_free(struct String** p_self) {
+	if (p_self && *p_self) {
+		free((*p_self)->_value);
 
-		free(*self);
-		*self = NULL;
+		free(*p_self);
+		*p_self = NULL;
 	} else {
-		panic("String struct has already been freed");
+		PANIC("String struct has already been freed");
 	}
 }
 
-/**
- * Concatenates the specified strings together.
- *
- * @param firstString The first string to concatenate.
- * @param ... The strings to concatenate, terminated by a NULL sentinel.
- *
- * @return The concatenated string.
- */
-char* stringConcatenate_(const char* firstString, ...) {
-	if (!firstString) {
+char* concatenate_string_internal(struct Array array) {
+	if (array.length == 0 || !array._values[0]) {
 		return NULL;
 	}
 
-	va_list arguments;
-	va_start(arguments, firstString);
+	size_t totalLength = 0;
 
-	char* string = malloc(strlen(firstString) + 1); // 1 for null terminator
-
-	if (!string) {
-		panic("failed to malloc string while concatenating");
-	}
-
-	strcpy(string, firstString);
-
-	const char* appendString;
-
-	while ((appendString = va_arg(arguments, const char*))) { // Doesn't equal NULL
-		string = realloc(string, strlen(string) + strlen(appendString) + 1);
-
-		if (!string) {
-			panic("failed to realloc string while concatenating");
+	for (size_t i = 0; i < array.length; i++) {
+		if (array._values[i]) {
+			totalLength += strlen_safe((const char*)array._values[i]);
 		}
-
-		strcat(string, appendString);
 	}
 
-	va_end(arguments);
+	char* lp_string = malloc(totalLength + 1); // 1 for null terminator
 
-	return string;
+	if (!lp_string) {
+		PANIC("failed to concatenate string: string malloc failed");
+	}
+
+	lp_string[0] = '\0'; // Initialize the string
+
+	size_t offset = 0;
+
+	for (size_t stringIndex = 0; stringIndex < array.length; stringIndex++) {
+		if (array._values[stringIndex]) {
+			for (size_t charIndex = 0;
+				 charIndex < strlen_safe((const char*)array._values[stringIndex]); charIndex++) {
+				lp_string[offset++] = ((const char*)array._values[stringIndex])[charIndex];
+			}
+		}
+	}
+
+	return lp_string;
 }
 
-#define stringConcatenate(...) stringConcatenate_(__VA_ARGS__, NULL)
+char* duplicate_string(const char* p_string) {
+	char* lp_duplicate = malloc(strlen_safe(p_string) + 1);
 
-char* stringDuplicate(const char* string) {
-	char* duplicate = malloc(strlen(string) + 1);
-
-	if (!duplicate) {
-		panic("failed to malloc string while duplicating");
+	if (!lp_duplicate) {
+		PANIC("failed to duplicate string: string malloc failed");
 	} else {
-		strcpy(duplicate, string);
+		strcpy_safe(lp_duplicate, p_string);
 	}
 
-	return duplicate;
+	return lp_duplicate;
 }
 
-/**
- * Repeats the char the specified amount of times.
- *
- * @param chr    The char to repeat.
- * @param length The amount of times to repeat the char.
- *
- * @return The repeated string.
- */
-char* repeatChr(char chr, size_t length) {
-	char* string = malloc(length + 1);
+char* repeat_chr(const char CHR, size_t length) {
+	char* lp_string = malloc(length + 1);
 
-	if (!string) {
-		panic("failed to malloc string while repeating car");
+	if (!lp_string) {
+		PANIC("failed to repeat chr: string malloc failed");
 	}
 
 	for (size_t index = 0; index < length; index++) {
-		string[index] = chr;
+		lp_string[index] = CHR;
 	}
 
-	string[length] = '\0';
+	lp_string[length] = '\0';
 
-	return string;
+	return lp_string;
+}
+
+void strcpy_safe(char* p_dest, const char* p_src) {
+	if (!p_dest || !p_src) {
+		PANIC("failed to safely strcpy: null pointer passed");
+	} else if (strlen_safe(p_src) != strlen_safe(p_dest)) {
+		PANIC("failed to safely strcpy: source and destination strings are not the same length");
+	}
+
+	size_t index = 0;
+
+	while (p_src[index] != '\0') {
+		p_dest[index] = p_src[index];
+
+		index++;
+	}
+
+	p_dest[index] = '\0';
+}
+
+size_t strlen_safe(const char* p_string) {
+	if (!p_string) {
+		// Handle null pointer case, return 0 or an error code
+		return 0;
+	}
+
+	size_t length = 0;
+
+	while (length < MAX_STRING_LENGTH && p_string[length] != '\0') {
+		length++;
+	}
+
+	// If we hit the max length, we can assume the string is potentially not null-terminated
+	if (length == MAX_STRING_LENGTH) {
+		PANIC("failed to safely strlen: string is too long to obtain length");
+	}
+
+	return length;
 }

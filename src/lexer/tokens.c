@@ -150,7 +150,7 @@ static const struct Array LEXERTOKEN_NAMES = array_new_stack(
  */
 const char* lexerTokens_getName(const enum LexerTokenIdentifiers IDENTIFIER) {
 	if ((size_t)IDENTIFIER + 1 > LEXERTOKEN_NAMES.length) {
-		panic("LEXERTOKEN_NAMES get index out of bounds");
+		PANIC("LEXERTOKEN_NAMES get index out of bounds");
 	}
 
 	return LEXERTOKEN_NAMES._values[IDENTIFIER];
@@ -224,7 +224,7 @@ const struct LexerToken* lexerToken_new(enum LexerTokenIdentifiers identifier, s
 	struct LexerToken* self = malloc(LEXERTOKEN_STRUCT_SIZE);
 
 	if (!self) {
-		panic("failed to malloc LexerToken struct");
+		PANIC("failed to malloc LexerToken struct");
 	}
 
 	self->identifier	= identifier;
@@ -248,6 +248,6 @@ void lexerToken_free(struct LexerToken** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("LexerToken struct has already been freed");
+		PANIC("LexerToken struct has already been freed");
 	}
 }

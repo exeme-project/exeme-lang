@@ -5,172 +5,103 @@
 
 #pragma once
 
-#include "../includes.c"
+#include "./array.h"
+#include "./panic.h"
+#include "./string.h"
+#include <string.h> // NOLINT(readability-duplicate-include)
 
-#include "./panic.c"
-#include "./string.c"
-
-/**
- * Represents an array.
- */
-struct Array {
-	size_t		 length;
-	const void** _values;
-};
-
-#define ARRAY_STRUCT_SIZE		  sizeof(struct Array)
-#define ARRAY_STRUCT_ELEMENT_SIZE sizeof(const void*)
-#define array_new_stack(...)                                                                       \
-	((struct Array){.length	 = sizeof((const void*[]){__VA_ARGS__}) / ARRAY_STRUCT_ELEMENT_SIZE,   \
-					._values = (const void*[]){__VA_ARGS__}}) // Variadic args to the rescue!
-#define array_upgrade_stack(array, _length)                                                        \
-	((struct Array){.length	 = _length,                                                            \
-					._values = array}) // Changes a const void *[] to a struct Array on the stack
-
-/**
- * Creates a new Array struct.
- *
- * @return The created Array struct.
- */
 struct Array* array_new(void) {
-	struct Array* self = malloc(ARRAY_STRUCT_SIZE);
+	struct Array* lp_self = malloc(ARRAY_STRUCT_SIZE);
 
-	if (!self) {
-		panic("failed to malloc Array struct");
+	if (!lp_self) {
+		PANIC("failed to malloc Array struct");
 	}
 
-	self->length  = 0;
-	self->_values = calloc(1, ARRAY_STRUCT_ELEMENT_SIZE);
+	lp_self->length	 = 0;
+	lp_self->_values = calloc(1, ARRAY_STRUCT_ELEMENT_SIZE);
 
-	return self;
+	if (!lp_self->_values) {
+		PANIC("failed to malloc Array values");
+	}
+
+	return lp_self;
 }
 
-/**
- * Reallocates the struct's array.
- *
- * @param self       The current Array struct.
- * @param new_length The new length of the array.
- */
-void array___realloc(struct Array* self, size_t new_length) {
-	self->_values =
-		realloc(self->_values, new_length == 0 ? 1 : (new_length * ARRAY_STRUCT_ELEMENT_SIZE));
+void array___realloc(struct Array* p_self, size_t newLength) {
+	const void** lp_valuesTemp =
+		realloc(p_self->_values, newLength == 0 ? 1 : (newLength * ARRAY_STRUCT_ELEMENT_SIZE));
 
-	if (new_length > self->length) {
-		memset(self->_values + self->length, 0,
-			   (new_length - self->length)
+	if (lp_valuesTemp == NULL) {
+		PANIC("failed to realloc array");
+	}
+
+	p_self->_values = lp_valuesTemp;
+
+	if (newLength > p_self->length) {
+		memset(p_self->_values + p_self->length, 0,
+			   (newLength - p_self->length)
 				   * ARRAY_STRUCT_ELEMENT_SIZE); // Zero out the new memory. First parameter is the
 												 // pointer for the array, starting from where we
 												 // reallocated from. The third parameter is the
 												 // size of the newly allocated memory.
 	}
 
-	if (!self->_values) {
-		panic("failed to realloc array");
+	if (!p_self->_values) {
+		PANIC("failed to realloc array");
 	}
 
-	self->length = new_length;
+	p_self->length = newLength;
 }
 
-/**
- * Inserts a value at the specified index. Will expand the array's size if
- * needed.
- *
- * @param self  The current Array struct.
- * @param index The index at which to insert the value.
- * @param value The value to insert.
- */
-void array_insert(struct Array* self, size_t index, const void* value) {
-	if (index + 1 > self->length) {
-		array___realloc(self, index + 1);
+void array_insert(struct Array* p_self, size_t index, const void* p_value) {
+	if (index + 1 > p_self->length) {
+		array___realloc(p_self, index + 1);
 	}
 
-	self->_values[index] = value;
+	p_self->_values[index] = p_value;
 }
 
-/**
- * Appends a value to the end of the array.
- *
- * @param self  The current Array struct.
- * @param value The value to append.
- */
-void array_append(struct Array* self, const void* value) {
-	array_insert(self, self->length, value);
+void array_append(struct Array* p_self, const void* p_value) {
+	array_insert(p_self, p_self->length, p_value);
 }
 
-/**
- * Removes the last element from the array.
- *
- * @param self The current Array struct.
- */
-void array_pop(struct Array* self) {
-	if (self->length < 1) {
-		panic("nothing to pop from array");
-	} else if (self->length == 1) {
-		array___realloc(self, 0);
+void array_pop(struct Array* p_self) {
+	if (p_self->length < 1) {
+		PANIC("nothing to pop from array");
+	} else if (p_self->length == 1) {
+		array___realloc(p_self, 0);
 	} else {
-		array___realloc(self, self->length - 1);
+		array___realloc(p_self, p_self->length - 1);
 	}
 }
 
-/**
- * Removes all the elements from the array.
- *
- * @param self         The current Array struct.
- * @param free_element The function to free the elements with.
- */
-void array_clear(struct Array* self, void (*free_element)(const void*)) {
-	if (free_element) {
-		for (size_t index = 0; index < self->length; index++) {
-			free_element(self->_values[index]);
+void array_clear(struct Array* p_self, void (*p_freeElement)(const void*)) {
+	if (p_freeElement) {
+		for (size_t index = 0; index < p_self->length; index++) {
+			p_freeElement(p_self->_values[index]);
 		}
 	}
 
-	array___realloc(self, 0);
+	array___realloc(p_self, 0);
 }
 
-/**
- * Returns the element at the specified index in the array.
- *
- * @param self  The current Array struct.
- * @param index The index from which to get the element.
- *
- * @return The retrieved element.
- */
-const void* array_get(struct Array* self, size_t index) {
-	if (index + 1 > self->length) {
-		panic("array get index out of bounds");
+const void* array_get(struct Array* p_self, size_t index) {
+	if (index + 1 > p_self->length) {
+		PANIC("array get index out of bounds");
 	}
 
-	return self->_values[index];
+	return p_self->_values[index];
 }
 
-/**
- * Used to check for string matches in the array.
- *
- * @param element The element to check.
- * @param match   The value to match against.
- *
- * @return If the element matches the match.
- */
-bool array___match_string(const void* element, const void* match) {
-	return strcmp(element, match) == 0;
+bool array___match_string(const void* p_element, const void* p_match) {
+	return strcmp(p_element, p_match) == 0;
 }
 
-/**
- * Iterates through the array, using the passed function to check for matches. If a match is found
- * then the index is returned.
- *
- * @param self    The current Array struct.
- * @param matcher The function to check for matches.
- * @param match   The value to match against.
- *
- * @return The index of the match.
- */
-int array_find(struct Array* self, bool (*matcher)(const void*, const void*), void* match) {
-	for (size_t index = 0; index < self->length; index++) {
-		const void* element = self->_values[index];
+int array_find(struct Array* p_self, bool (*p_matcher)(const void*, const void*), void* p_match) {
+	for (size_t index = 0; index < p_self->length; index++) {
+		const void* lp_element = p_self->_values[index];
 
-		if (matcher(element, match)) {
+		if (p_matcher(lp_element, p_match)) {
 			return (int)index;
 		}
 	}
@@ -178,64 +109,44 @@ int array_find(struct Array* self, bool (*matcher)(const void*, const void*), vo
 	return -1;
 }
 
-/**
- * Checks if the array contains a value, internally using the array_find function.
- *
- * @param self    The current Array struct.
- * @param matcher The function to check for matches.
- * @param match   The value to match against.
- *
- * @return If a match was found.
- */
-bool array_contains(struct Array* self, bool (*matcher)(const void*, const void*), void* match) {
-	return array_find(self, matcher, match) != -1;
+bool array_contains(struct Array* p_self, bool (*p_matcher)(const void*, const void*),
+					void*		  p_match) {
+	return array_find(p_self, p_matcher, p_match) != -1;
 }
 
-/**
- * Checks if the array contains a value at the specified index.
- *
- * @param self  The current Array struct.
- * @param index The index to check.
- *
- * @return If the index is occupied.
- */
-bool array_index_occupied(struct Array* self, size_t index) {
-	if (index + 1 > self->length) {
+bool array_index_occupied(struct Array* p_self, size_t index) {
+	if (index + 1 > p_self->length) {
 		return false;
 	}
 
-	return self->_values[index] != NULL;
+	return p_self->_values[index] != NULL;
 }
 
-char* array_join(struct Array* self, const char* separator, char* (*stringify)(const void*)) {
-	char* joined =
-		stringDuplicate(stringify(self->_values[0])); // Malloc a duplicate of the first element
+char* array_join(struct Array* p_self, const char* p_separator, char* (*p_stringify)(const void*)) {
+	char* lp_joined = duplicate_string(
+		p_stringify(p_self->_values[0])); // Malloc a duplicate of the first element
 
-	for (size_t index = 1; index < self->length; index++) {
-		char* temp = stringConcatenate(
-			joined, separator,
-			stringify(self->_values[index])); // Concatenate the next element with the
-											  // separator in-between the previous.
-		free(joined); // Since stringConcatenate mallocs a new string, we need to free the old one
+	for (size_t index = 1; index < p_self->length; index++) {
+		char* lp_temp = CONCATENATE_STRING(
+			lp_joined, p_separator,
+			p_stringify(p_self->_values[index])); // Concatenate the next element with the separator
+												  // in-between the previous.
+		free(
+			lp_joined); // Since stringConcatenate mallocs a new string, we need to free the old one
 
-		joined = temp;
+		lp_joined = lp_temp;
 	}
 
-	return joined;
+	return lp_joined;
 }
 
-/**
- * Frees an Array struct.
- *
- * @param self The current Array struct.
- */
-void array_free(struct Array** self) {
-	if (self && *self) {
-		free((*self)->_values);
+void array_free(struct Array** p_self) {
+	if (p_self && *p_self) {
+		free((*p_self)->_values);
 
-		free(*self);
-		*self = NULL;
+		free(*p_self);
+		*p_self = NULL;
 	} else {
-		panic("Array struct has already been freed");
+		PANIC("Array struct has already been freed");
 	}
 }

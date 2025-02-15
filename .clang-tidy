@@ -52,7 +52,7 @@ CheckOptions:
     - { key: readability-identifier-naming.StaticVariablePrefix, value: s_ }
 
     - { key: readability-identifier-naming.MacroDefinitionCase, value: UPPER_CASE }
-    - { key: readability-identifier-naming.StructCase, value: lower_case }
+    - { key: readability-identifier-naming.StructCase, value: CamelCase }
 
 
 FormatStyle: 'file'

@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 	char* lp_updatedLocale = setlocale(LC_ALL, ""); // NOLINT(concurrency-mt-unsafe)
 
 	if (lp_updatedLocale == NULL) {
-		panic("failed to update locale to ALL");
+		PANIC("failed to update locale to ALL");
 	}
 
 	struct ArgsFormat* lp_argsFormat = argsFormat_new(

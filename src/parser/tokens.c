@@ -258,7 +258,7 @@ static const struct Array ASTTOKEN_NAMES = array_new_stack(
  */
 const char* astTokens_getName(const enum ASTTokenIdentifiers IDENTIFIER) {
 	if ((size_t)IDENTIFIER + 1 > ASTTOKEN_NAMES.length) {
-		panic("ASTTOKEN_NAMES get index out of bounds");
+		PANIC("ASTTOKEN_NAMES get index out of bounds");
 	}
 
 	return ASTTOKEN_NAMES._values[IDENTIFIER];
@@ -280,7 +280,7 @@ void astChr_free(struct AST_CHR** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_CHR struct has already been freed");
+		PANIC("AST_CHR struct has already been freed");
 	}
 }
 
@@ -297,7 +297,7 @@ void astString_free(struct AST_STRING** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_STRING struct has already been freed");
+		PANIC("AST_STRING struct has already been freed");
 	}
 }
 
@@ -313,7 +313,7 @@ void astInteger_free(struct AST_INTEGER** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_INTEGER struct has already been freed");
+		PANIC("AST_INTEGER struct has already been freed");
 	}
 }
 
@@ -329,7 +329,7 @@ void astFloat_free(struct AST_FLOAT** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_FLOAT struct has already been freed");
+		PANIC("AST_FLOAT struct has already been freed");
 	}
 }
 
@@ -346,7 +346,7 @@ void astVariable_free(struct AST_VARIABLE** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_VARIABLE struct has already been freed");
+		PANIC("AST_VARIABLE struct has already been freed");
 	}
 }
 
@@ -364,7 +364,7 @@ void astAssignment_free(struct AST_ASSIGNMENT** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_ASSIGNMENT struct has already been freed");
+		PANIC("AST_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -382,7 +382,7 @@ void astModuloAssignment_free(struct AST_MODULO_ASSIGNMENT** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_MODULO_ASSIGNMENT struct has already been freed");
+		PANIC("AST_MODULO_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -400,7 +400,7 @@ void astMultiplicationAssignment_free(struct AST_MULTIPLICATION_ASSIGNMENT** sel
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_MULTIPLICATION_ASSIGNMENT struct has already been freed");
+		PANIC("AST_MULTIPLICATION_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -418,7 +418,7 @@ void astExponentAssignment_free(struct AST_EXPONENT_ASSIGNMENT** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_EXPONENT_ASSIGNMENT struct has already been freed");
+		PANIC("AST_EXPONENT_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -436,7 +436,7 @@ void astDivisionAssignment_free(struct AST_DIVISION_ASSIGNMENT** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_DIVISION_ASSIGNMENT struct has already been freed");
+		PANIC("AST_DIVISION_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -454,7 +454,7 @@ void astFloorDivisionAssignment_free(struct AST_FLOOR_DIVISION_ASSIGNMENT** self
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_FLOOR_DIVISION_ASSIGNMENT struct has already been freed");
+		PANIC("AST_FLOOR_DIVISION_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -472,7 +472,7 @@ void astAdditionAssignment_free(struct AST_ADDITION_ASSIGNMENT** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_ADDITION_ASSIGNMENT struct has already been freed");
+		PANIC("AST_ADDITION_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -490,7 +490,7 @@ void astSubtractionAssignment_free(struct AST_SUBTRACTION_ASSIGNMENT** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_SUBTRACTION_ASSIGNMENT struct has already been freed");
+		PANIC("AST_SUBTRACTION_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -508,7 +508,7 @@ void astBitwiseAndAssignment_free(struct AST_BITWISE_AND_ASSIGNMENT** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_BITWISE_AND_ASSIGNMENT struct has already been freed");
+		PANIC("AST_BITWISE_AND_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -526,7 +526,7 @@ void astBitwiseOrAssignment_free(struct AST_BITWISE_OR_ASSIGNMENT** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_BITWISE_OR_ASSIGNMENT struct has already been freed");
+		PANIC("AST_BITWISE_OR_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -544,7 +544,7 @@ void astBitwiseXorAssignment_free(struct AST_BITWISE_XOR_ASSIGNMENT** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_BITWISE_XOR_ASSIGNMENT struct has already been freed");
+		PANIC("AST_BITWISE_XOR_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -562,7 +562,7 @@ void astBitwiseNotAssignment_free(struct AST_BITWISE_NOT_ASSIGNMENT** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_BITWISE_NOT_ASSIGNMENT struct has already been freed");
+		PANIC("AST_BITWISE_NOT_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -580,7 +580,7 @@ void astBitwiseLeftShiftAssignment_free(struct AST_BITWISE_LEFT_SHIFT_ASSIGNMENT
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_BITWISE_LEFT_SHIFT_ASSIGNMENT struct has already been freed");
+		PANIC("AST_BITWISE_LEFT_SHIFT_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -598,7 +598,7 @@ void astBitwiseRightShiftAssignment_free(struct AST_BITWISE_RIGHT_SHIFT_ASSIGNME
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT struct has already been freed");
+		PANIC("AST_BITWISE_RIGHT_SHIFT_ASSIGNMENT struct has already been freed");
 	}
 }
 
@@ -614,7 +614,7 @@ void astOpenBrace_free(struct AST_OPEN_BRACE** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_OPEN_BRACE struct has already been freed");
+		PANIC("AST_OPEN_BRACE struct has already been freed");
 	}
 }
 
@@ -630,7 +630,7 @@ void astCloseBrace_free(struct AST_CLOSE_BRACE** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_CLOSE_BRACE struct has already been freed");
+		PANIC("AST_CLOSE_BRACE struct has already been freed");
 	}
 }
 
@@ -646,7 +646,7 @@ void astComma_free(struct AST_COMMA** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_COMMA struct has already been freed");
+		PANIC("AST_COMMA struct has already been freed");
 	}
 }
 
@@ -662,7 +662,7 @@ void astColon_free(struct AST_COLON** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_COLON struct has already been freed");
+		PANIC("AST_COLON struct has already been freed");
 	}
 }
 
@@ -683,7 +683,7 @@ void astFunctionDefinition_free(struct AST_FUNCTION_DEFINITION** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST_FUNCTION_DEFINITION struct has already been freed");
+		PANIC("AST_FUNCTION_DEFINITION struct has already been freed");
 	}
 }
 
@@ -701,7 +701,7 @@ struct AST* ast_new__(enum ASTTokenIdentifiers IDENTIFIER, void* data) {
 	struct AST* self = malloc(AST_STRUCT_SIZE);
 
 	if (!self) {
-		panic("failed to malloc AST struct");
+		PANIC("failed to malloc AST struct");
 	}
 
 	self->IDENTIFIER = IDENTIFIER;
@@ -904,6 +904,6 @@ void ast_free(struct AST** self) {
 		free(*self);
 		*self = NULL;
 	} else {
-		panic("AST struct has already been freed");
+		PANIC("AST struct has already been freed");
 	}
 }

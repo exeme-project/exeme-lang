@@ -5,104 +5,90 @@
 
 #pragma once
 
-#include "../includes.c"
+#include "../globals.h"
+#include "./panic.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include "./panic.c"
+char* chr_to_string(char chr) {
+	char* lp_string = malloc(2);
 
-/**
- * Converts the char into a string.
- *
- * @param chr The char to convert into a string.
- *
- * @return The repeated string.
- */
-char* chrToString(char chr) {
-	char* string = malloc(2);
-
-	if (!string) {
-		panic("failed to malloc string");
+	if (!lp_string) {
+		PANIC("failed to malloc string");
 	}
 
-	string[0] = chr;
-	string[1] = '\0'; // Null terminator
+	lp_string[0] = chr;
+	lp_string[1] = '\0'; // Null terminator
 
-	return string;
+	return lp_string;
 }
 
-/**
- * Converts the unsigned long into a string.
- *
- * @param num The unsigned long to convert into a string.
- *
- * @return The converted string.
- */
-char* ulToString(size_t num) {
+char* ul_to_string(size_t num) {
 	size_t length = (size_t)snprintf(NULL, 0, "%zu", num);
 
-	char* str = malloc(length + 1); // + 1 for null terminator
+	char* lp_str = malloc(length + 1); // + 1 for null terminator
 
-	if (!str) {
-		panic("failed to malloc string");
+	if (!lp_str) {
+		PANIC("failed to malloc string");
 	}
 
-	snprintf(str, length + 1, "%zu", num);
+	int ret = snprintf(lp_str, length + 1, "%zu", num);
 
-	return str;
+	if (ret < 0) {
+		PANIC("failed to convert unsigned long to string - encoding error");
+	} else if ((size_t)ret != length) {
+		PANIC("failed to convert unsigned long to string - mismatched length (truncation)");
+	}
+
+	return lp_str;
 }
 
-/**
- * Converts the data contained in a string into its corresponding type.
- *
- * @param data The data to convert.
- * @param type The type to convert to.
- *
- * @return The converted data.
- */
-void* convertToType(char* data, enum VariableType type) {
+void* convert_to_type(char* p_data, enum VariableType type) {
 	switch (type) {
 	case VARIABLE_TYPE_NONE:
 		return NULL;
 	case VARIABLE_TYPE_STRING:
-		return data;
+		return p_data;
 	case VARIABLE_TYPE_INT: {
-		long* result = malloc(LONG_SIZE);
+		long* lp_result = malloc(LONG_SIZE);
 
-		if (!result) {
-			panic("failed to malloc long while converting to int");
+		if (!lp_result) {
+			PANIC("failed to malloc long while converting to int");
 		}
 
-		char* endptr;
-		*result = strtol(data, &endptr, 10);
+		char* lp_endptr = NULL;
+		*lp_result		= strtol(p_data, &lp_endptr, DENARY_BASE);
 
-		if (endptr == data || *endptr != '\0') {
-			free(result);
+		if (lp_endptr == p_data || *lp_endptr != '\0') {
+			free(lp_result);
 
 			return NULL;
 		}
 
-		return result;
+		return lp_result;
 	}
 	case VARIABLE_TYPE_FLOAT: {
-		float* result = malloc(FLOAT_SIZE);
+		float* lp_result = malloc(FLOAT_SIZE);
 
-		if (!result) {
-			panic("failed to malloc float while converting to float");
+		if (!lp_result) {
+			PANIC("failed to malloc float while converting to float");
 		}
 
-		char* endptr;
-		*result = strtof(data, &endptr);
+		char* lp_endptr = NULL;
+		*lp_result		= strtof(p_data, &lp_endptr);
 
-		if (endptr == data || *endptr != '\0') {
-			free(result);
+		if (lp_endptr == p_data || *lp_endptr != '\0') {
+			free(lp_result);
 
 			return NULL;
 		}
 
-		return result;
+		return lp_result;
 	}
 	case VARIABLE_TYPE_BOOL:
-		return strcmp(data, "true") == 0 ? (void*)1 : (void*)0;
+		return strcmp(p_data, "true") == 0 ? (void*)1 : (void*)0;
 	default:
-		panic("invalid variable type for conversion");
+		PANIC("invalid variable type for conversion");
 	}
 }
