@@ -3,11 +3,10 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
-#include "./includes.c"
-
-#include "./args/args.c"
-#include "./compiler/compiler.c"
-#include "./utils/hashmap.c"
+#include "./args/args.h"
+#include "./compiler/compiler.h"
+#include "./utils/hashmap.h"
+#include "./utils/panic.h"
 
 #define NAME	"exeme"
 #define VERSION "v0.0.1-alpha"

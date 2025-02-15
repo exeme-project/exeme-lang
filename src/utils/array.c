@@ -131,8 +131,8 @@ char* array_join(struct Array* p_self, const char* p_separator, char* (*p_string
 			lp_joined, p_separator,
 			p_stringify(p_self->_values[index])); // Concatenate the next element with the separator
 												  // in-between the previous.
-		free(
-			lp_joined); // Since stringConcatenate mallocs a new string, we need to free the old one
+		free(lp_joined); // Since CONCATENATE_STRING mallocs a new string, we need to free the old
+						 // one
 
 		lp_joined = lp_temp;
 	}

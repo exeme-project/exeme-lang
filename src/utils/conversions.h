@@ -5,18 +5,8 @@
 
 #pragma once
 
+#include "../globals.h"
 #include <stddef.h>
-
-/**
- * Represents the types of variables.
- */
-enum VariableType {
-	VARIABLE_TYPE_NONE,
-	VARIABLE_TYPE_STRING,
-	VARIABLE_TYPE_INT,
-	VARIABLE_TYPE_FLOAT,
-	VARIABLE_TYPE_BOOL
-};
 
 /**
  * Converts the char into a string.

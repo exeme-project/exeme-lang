@@ -63,7 +63,7 @@ struct Lexer* lexer_new(const char* FILE_PATH) {
 	if (!self->filePointer ||		 // Only POSIX requires errno is set, and so for
 									 // other platforms we have to check for NULL
 		ferror(self->filePointer)) { // Probably file doesn't exist
-		error(stringConcatenate("failed to open file '", self->FILE_PATH, "'"));
+		error(CONCATENATE_STRING("failed to open file '", self->FILE_PATH, "'"));
 	}
 
 	return self;
@@ -256,7 +256,7 @@ void lexer_checkForContinuation(struct Lexer* self, const struct LexerToken* tok
 		if (!isspace(self->chr) && !isalnum(self->chr)) {
 			lexer_error(
 				self, L0002,
-				stringConcatenate("unexpected continuation of token '", token->value->_value, "'"),
+				CONCATENATE_STRING("unexpected continuation of token '", token->value->_value, "'"),
 				lexerToken_new(LEXERTOKENS_NONE, string_new(chrToString(self->chr), true),
 							   self->chrIndex, self->chrIndex, self->lineIndex));
 		}
@@ -301,7 +301,7 @@ void lexer_lexTwoChar(struct Lexer* self, const char SECOND_CHR,
 		if (self->chr == SECOND_CHR) {
 			token = lexerToken_new(
 				IF_TWO,
-				string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)),
+				string_new(CONCATENATE_STRING(chrToString(self->prevChr), chrToString(self->chr)),
 						   false),
 				self->chrIndex - 1, self->chrIndex, self->lineIndex);
 
@@ -355,7 +355,7 @@ void lexer_lex2TwoChar(struct Lexer* self, const char SECOND_CHR, const char OTH
 		if (self->chr == SECOND_CHR) {
 			token = lexerToken_new(
 				IF_TWO,
-				string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)),
+				string_new(CONCATENATE_STRING(chrToString(self->prevChr), chrToString(self->chr)),
 						   false),
 				self->chrIndex - 1, self->chrIndex, self->lineIndex);
 
@@ -365,7 +365,7 @@ void lexer_lex2TwoChar(struct Lexer* self, const char SECOND_CHR, const char OTH
 		} else if (self->chr == OTHER_SECOND_CHR) {
 			token = lexerToken_new(
 				IF_OTHER_TWO,
-				string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)),
+				string_new(CONCATENATE_STRING(chrToString(self->prevChr), chrToString(self->chr)),
 						   false),
 				self->chrIndex - 1, self->chrIndex, self->lineIndex);
 
@@ -425,9 +425,9 @@ void lexer_lexThreeChar(struct Lexer* self, const char SECOND_CHR, const char TH
 			if (IF_THREE_AND_THIRD && lexer_getChr(self, false)) {
 				if (self->chr == THIRD_CHR) {
 					token = lexerToken_new(IF_THREE_AND_THIRD,
-										   string_new(stringConcatenate(chrToString(prevChr),
-																		chrToString(self->prevChr),
-																		chrToString(self->chr)),
+										   string_new(CONCATENATE_STRING(chrToString(prevChr),
+																		 chrToString(self->prevChr),
+																		 chrToString(self->chr)),
 													  false),
 										   self->chrIndex - 2, self->chrIndex, self->lineIndex);
 
@@ -439,8 +439,8 @@ void lexer_lexThreeChar(struct Lexer* self, const char SECOND_CHR, const char TH
 
 			if (!token) { // THIRD_CHR was not found
 				token = lexerToken_new(IF_TWO,
-									   string_new(stringConcatenate(chrToString(self->prevChr),
-																	chrToString(self->chr)),
+									   string_new(CONCATENATE_STRING(chrToString(self->prevChr),
+																	 chrToString(self->chr)),
 												  false),
 									   self->chrIndex - 1, self->chrIndex, self->lineIndex);
 
@@ -451,7 +451,7 @@ void lexer_lexThreeChar(struct Lexer* self, const char SECOND_CHR, const char TH
 		} else if (self->chr == THIRD_CHR) {
 			token = lexerToken_new(
 				IF_TWO_AND_THIRD,
-				string_new(stringConcatenate(chrToString(self->prevChr), chrToString(self->chr)),
+				string_new(CONCATENATE_STRING(chrToString(self->prevChr), chrToString(self->chr)),
 						   false),
 				self->chrIndex - 1, self->chrIndex, self->lineIndex);
 
@@ -680,7 +680,7 @@ void lexer_lexNumber(struct Lexer* self) {
 			break;
 		} else if (isalpha(self->chr)) {
 			lexer_error(self, L0006,
-						stringConcatenate("invalid character for ", isFloat ? "float" : "integer"),
+						CONCATENATE_STRING("invalid character for ", isFloat ? "float" : "integer"),
 						lexerToken_new(LEXERTOKENS_NONE, number, self->chrIndex, self->chrIndex,
 									   self->lineIndex));
 		} else if (self->chr == '.') {

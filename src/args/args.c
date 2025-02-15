@@ -3,120 +3,43 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
-#include "../includes.c"
-
-#include "../errors.c"
-#include "../utils/array.c"
-#include "../utils/conversions.c"
-#include "../utils/hashmap.c"
-#include "../utils/panic.c"
-#include "../utils/string.c"
-
-/**
- * Represents an argument.
- */
-struct Arg {
-	char *			  name, *description, *def, *flagShort, *flagLong;
-	enum VariableType type;
-	int				  position; /* If != NULL then required, else not required */
-};
-
-/**
- * Represents a subcommand.
- */
-struct Subcommand {
-	char *		 name, *help;
-	struct Array argumentsFormat;
-};
-
-/**
- * Represents a command type.
- */
-enum CommandType {
-	COMMAND_TYPE_ARGUMENT,
-	COMMAND_TYPE_SUBCOMMAND,
-};
-
-/**
- * Represents a command.
- */
-struct Command {
-	enum CommandType type;
-	union {
-		struct Arg		  arg;
-		struct Subcommand subcommand;
-	} data;
-};
-
-/**
- * Represents arguments.
- */
-struct ArgsFormat {
-	const char *			 NAME, *VERSION, *DESCRIPTION;
-	const struct Subcommand* SUBCOMMAND_PARENT;
-	struct Array			 argumentsFormat;
-	struct Array *			 requiredArguments, *reservedFlags;
-	struct Hashmap *		 defaultValues, *subcommands;
-};
-
-/**
- * Represents reserved flags.
- */
-enum ArgsReservedFlags {
-	ARGS_RESERVED_FLAG_HELP	   = 0,
-	ARGS_RESERVED_FLAG_VERSION = 2,
-};
+#include "./args.h"
+#include "../utils/conversions.h"
+#include "../utils/hashmap.h"
+#include "../utils/panic.h"
+#include "../utils/string.h"
+#include <stdio.h>
+#include <string.h>
 
 /**
  * Represents values for the reserved flags.
  */
-static struct Array* ArgsReservedFlagsValue = &array_new_stack("-h", "--help", "-v", "--version");
+const struct Array* const gp_ARGS_RESERVED_FLAGS_VALUE =
+	&ARRAY_NEW_STACK("-h", "--help", "-v", "--version");
 
-#define arg_init(...)                                                                              \
-	((struct Command){.type		= COMMAND_TYPE_ARGUMENT,                                           \
-					  .data.arg = (struct Arg){.position = -1, ##__VA_ARGS__}})
-#define subcommand_init(...)                                                                       \
-	((struct Command){.type			   = COMMAND_TYPE_SUBCOMMAND,                                  \
-					  .data.subcommand = (struct Subcommand){__VA_ARGS__}})
-#define ARGSFORMAT_STRUCT_SIZE sizeof(struct ArgsFormat)
+// NOLINTBEGIN(bugprone-easily-swappable-parameters)
+struct ArgsFormat* args_format_new_internal(struct Array argumentsFormat, const char* p_name,
+											const char* p_version, const char* p_description,
+											struct Array*			 p_reservedFlags,
+											const struct Subcommand* p_subcommandParent) {
+	// NOLINTEND(bugprone-easily-swappable-parameters)
+	struct ArgsFormat* lp_self = malloc(ARGSFORMAT_STRUCT_SIZE);
 
-/* Forward declarations to silence warnings */
-void argsFormat___check(struct ArgsFormat* self);
-void argsFormat_free(struct ArgsFormat** self);
-
-/**
- * Creates a new ArgsFormat struct.
- *
- * @param argumentsFormat   The arguments config.
- * @param NAME              The name of the program.
- * @param VERSION           The version of the program.
- * @param DESCRIPTION       The description of the program.
- * @param reservedFlags     The reserved flags.
- * @param SUBCOMMAND_PARENT The parent subcommand.
- *
- * @return The created Args struct.
- */
-struct ArgsFormat* argsFormat_new_(struct Array argumentsFormat, const char* NAME,
-								   const char* VERSION, const char* DESCRIPTION,
-								   struct Array*			reservedFlags,
-								   const struct Subcommand* SUBCOMMAND_PARENT) {
-	struct ArgsFormat* self = malloc(ARGSFORMAT_STRUCT_SIZE);
-
-	if (!self) {
+	if (!lp_self) {
 		PANIC("failed to malloc Args struct");
 	}
 
-	self->NAME				= NAME;
-	self->VERSION			= VERSION;
-	self->DESCRIPTION		= DESCRIPTION;
-	self->SUBCOMMAND_PARENT = SUBCOMMAND_PARENT;
-	self->argumentsFormat	= argumentsFormat;
-	self->reservedFlags		= NULL;
+	lp_self->NAME			   = p_name;
+	lp_self->VERSION		   = p_version;
+	lp_self->DESCRIPTION	   = p_description;
+	lp_self->SUBCOMMAND_PARENT = p_subcommandParent;
+	lp_self->argumentsFormat   = argumentsFormat;
+	lp_self->reservedFlags	   = NULL;
 
-	if (reservedFlags) {
-		self->reservedFlags = array_new();
+	if (p_reservedFlags) {
+		lp_self->reservedFlags = array_new();
 
-		for (size_t index = 0; index < reservedFlags->length; index++) {
+		for (size_t index = 0; index < p_reservedFlags->length; index++) {
 #pragma clang diagnostic push // Save previous pragma diagnostic state so we can restore it later
 #pragma clang diagnostic ignored                                                                   \
 	"-Wvoid-pointer-to-int-cast" // Suppress the warning for the following code block
@@ -128,46 +51,47 @@ struct ArgsFormat* argsFormat_new_(struct Array argumentsFormat, const char* NAM
 			// void * to int is a pointer to non-pointer cast Why can't we just do: *(int
 			// *)reservedFlags->_values[index]; Because that would be dereferencing a non-pointer,
 			// which is invalid - and would cause a segfault So, we just cast to int And trade a
-			// segfault for a compiler warning
-			int reservedFlag = (int)reservedFlags->_values[index];
+			// segfault for a compiler warningx
+			int reservedFlag = (int)p_reservedFlags->_values[index];
 #pragma clang diagnostic pop // Restore the previous pragma diagnostic state
 
-			array_append(self->reservedFlags, ArgsReservedFlagsValue->_values[reservedFlag]);
-			array_append(self->reservedFlags, ArgsReservedFlagsValue->_values[reservedFlag + 1]);
+			array_append(lp_self->reservedFlags,
+						 gp_ARGS_RESERVED_FLAGS_VALUE->_values[reservedFlag]);
+			array_append(lp_self->reservedFlags,
+						 gp_ARGS_RESERVED_FLAGS_VALUE->_values[reservedFlag + 1]);
 		}
 	}
 
-	argsFormat___check(self);
+	args_format_check(lp_self);
 
-	return self;
+	return lp_self;
 }
 
-#define argsFormat_new(argumentsFormat, NAME, VERSION, DESCRIPTION, reservedFlags)                 \
-	argsFormat_new_(argumentsFormat, NAME, VERSION, DESCRIPTION, reservedFlags, NULL)
+bool args_format_check_parsed_arguments_name_match(
+	const void* p_element, const void* p_match) { // NOLINT(bugprone-easily-swappable-parameters)
+	char* lp_elementName = NULL;
 
-bool argsFormat___check_parsedArgumentsNameMatch_(const void* element, const void* match) {
-	char* elementName = NULL;
-
-	switch (((struct Command*)element)->type) {
+	switch (((struct Command*)p_element)->type) {
 	case COMMAND_TYPE_ARGUMENT:
-		elementName = ((struct Command*)element)->data.arg.name;
+		lp_elementName = ((struct Command*)p_element)->data.arg.name;
 		break;
 	case COMMAND_TYPE_SUBCOMMAND:
-		elementName = ((struct Command*)element)->data.subcommand.name;
+		lp_elementName = ((struct Command*)p_element)->data.subcommand.name;
 		break;
 	default:
 		PANIC("invalid command type while checking parsed arguments name match");
 	}
 
-	return strcmp(elementName, match) == 0;
+	return strcmp(lp_elementName, p_match) == 0;
 }
 
-bool argsFormat___check_parsedArgumentsShortFlagMatch_(const void* element, const void* match) {
-	char* elementFlagShort = NULL;
+bool args_format_check_parsed_arguments_short_flag_match(
+	const void* p_element, const void* p_match) { // NOLINT(bugprone-easily-swappable-parameters)
+	char* lp_elementFlagShort = NULL;
 
-	switch (((struct Command*)element)->type) {
+	switch (((struct Command*)p_element)->type) {
 	case COMMAND_TYPE_ARGUMENT:
-		elementFlagShort = ((struct Command*)element)->data.arg.flagShort;
+		lp_elementFlagShort = ((struct Command*)p_element)->data.arg.flagShort;
 		break;
 	case COMMAND_TYPE_SUBCOMMAND:
 		return false;
@@ -175,19 +99,20 @@ bool argsFormat___check_parsedArgumentsShortFlagMatch_(const void* element, cons
 		PANIC("invalid command type while checking parsed arguments short flag match");
 	}
 
-	if (!elementFlagShort) { // Some arguments don't have a short flag
+	if (!lp_elementFlagShort) { // Some arguments don't have a short flag
 		return false;
 	}
 
-	return strcmp(elementFlagShort, match) == 0;
+	return strcmp(lp_elementFlagShort, p_match) == 0;
 }
 
-bool argsFormat___check_parsedArgumentsLongFlagMatch_(const void* element, const void* match) {
-	char* elementFlagLong = NULL;
+bool args_format_check_parsed_arguments_long_flag_match(
+	const void* p_element, const void* p_match) { // NOLINT(bugprone-easily-swappable-parameters)
+	char* lp_elementFlagLong = NULL;
 
-	switch (((struct Command*)element)->type) {
+	switch (((struct Command*)p_element)->type) {
 	case COMMAND_TYPE_ARGUMENT:
-		elementFlagLong = ((struct Command*)element)->data.arg.flagLong;
+		lp_elementFlagLong = ((struct Command*)p_element)->data.arg.flagLong;
 		break;
 	case COMMAND_TYPE_SUBCOMMAND:
 		return false;
@@ -195,117 +120,114 @@ bool argsFormat___check_parsedArgumentsLongFlagMatch_(const void* element, const
 		PANIC("invalid command type while checking parsed arguments long flag match");
 	}
 
-	return strcmp(elementFlagLong, match) == 0;
+	return strcmp(lp_elementFlagLong, p_match) == 0;
 }
 
-/**
- * Checks the config for parsing arguments.
- *
- * @param self The current Args struct.
- */
-void argsFormat___check(struct ArgsFormat* self) {
-	self->requiredArguments = array_new();
-	self->defaultValues =
-		hashmap_new(hashmap___hashDJB2, DEFAULT_INITIAL_TABLE_COUNT, DEFAULT_LOAD_FACTOR);
-	self->subcommands =
-		hashmap_new(hashmap___hashDJB2, DEFAULT_INITIAL_TABLE_COUNT, DEFAULT_LOAD_FACTOR);
+void args_format_check(struct ArgsFormat* p_self) {
+	p_self->requiredArguments = array_new();
+	p_self->defaultValues =
+		hashmap_new(hashmap_hash_djb2, DEFAULT_INITIAL_TABLE_COUNT, DEFAULT_LOAD_FACTOR);
+	p_self->subcommands =
+		hashmap_new(hashmap_hash_djb2, DEFAULT_INITIAL_TABLE_COUNT, DEFAULT_LOAD_FACTOR);
 
-	struct Array* parsed_arguments = array_new();
+	struct Array* lp_parsedArguments = array_new();
 
-	for (size_t index = 0; index < self->argumentsFormat.length; index++) {
-		struct Command* command = (struct Command*)self->argumentsFormat._values[index];
+	for (size_t index = 0; index < p_self->argumentsFormat.length; index++) {
+		struct Command* lp_command = (struct Command*)p_self->argumentsFormat._values[index];
 
-		switch (command->type) {
+		switch (lp_command->type) {
 		case COMMAND_TYPE_ARGUMENT: {
-			struct Arg* arg = &command->data.arg;
+			struct Arg* lp_arg = &lp_command->data.arg;
 
-			if (array_contains(parsed_arguments, argsFormat___check_parsedArgumentsNameMatch_,
-							   arg->name)) {
+			if (array_contains(lp_parsedArguments, args_format_check_parsed_arguments_name_match,
+							   lp_arg->name)) {
 				PANIC("duplicate argument / subcommand name");
 			}
 
-			if (!arg->name) {
+			if (!lp_arg->name) {
 				PANIC("argument must have a name");
-			} else if (!arg->description) {
+			} else if (!lp_arg->description) {
 				PANIC("argument must have a description");
 			}
 
-			if (arg->position != -1) { /* Required argument */
-				if (array_index_occupied(self->requiredArguments, arg->position)) {
+			if (lp_arg->position != -1) { /* Required argument */
+				if (array_index_occupied(p_self->requiredArguments, lp_arg->position)) {
 					PANIC("duplicate required argument position");
-				} else if (arg->flagShort || arg->flagLong) {
+				} else if (lp_arg->flagShort || lp_arg->flagLong) {
 					PANIC("required argument cannot have a flag");
-				} else if (arg->def) {
+				} else if (lp_arg->def) {
 					PANIC("required argument cannot have a default value");
-				} else if ((size_t)arg->position != self->requiredArguments->length + 1) {
+				} else if ((size_t)lp_arg->position != p_self->requiredArguments->length + 1) {
 					PANIC("required argument position must be in order");
 				}
 
-				array_append(self->requiredArguments, arg);
+				array_append(p_self->requiredArguments, lp_arg);
 			} else { /* Optional argument/flag */
-				if (!arg->flagLong) {
+				if (!lp_arg->flagLong) {
 					PANIC("optional argument must have at least a long flag");
-				} else if (arg->type != VARIABLE_TYPE_NONE && !arg->def) {
+				} else if (lp_arg->type != VARIABLE_TYPE_NONE && !lp_arg->def) {
 					PANIC("optional argument must have a non-NULL default value");
-				} else if (arg->type == VARIABLE_TYPE_NONE && arg->def) {
+				} else if (lp_arg->type == VARIABLE_TYPE_NONE && lp_arg->def) {
 					PANIC("optional flag must have a NULL default value");
-				} else if (arg->flagShort && strncmp(arg->flagShort, "-", 1) != 0) {
+				} else if (lp_arg->flagShort && strncmp(lp_arg->flagShort, "-", 1) != 0) {
 					PANIC("short flag must start with '-'");
-				} else if (strncmp(arg->flagLong, "--", 2) != 0) {
+				} else if (strncmp(lp_arg->flagLong, "--", 2) != 0) {
 					PANIC("long flag must start with '--'");
-				} else if (arg->flagShort
-						   && array_contains(parsed_arguments,
-											 argsFormat___check_parsedArgumentsShortFlagMatch_,
-											 arg->flagShort)) {
+				} else if (lp_arg->flagShort
+						   && array_contains(lp_parsedArguments,
+											 args_format_check_parsed_arguments_short_flag_match,
+											 lp_arg->flagShort)) {
 					PANIC("duplicate short flag");
-				} else if (array_contains(parsed_arguments,
-										  argsFormat___check_parsedArgumentsLongFlagMatch_,
-										  arg->flagLong)) {
+				} else if (array_contains(lp_parsedArguments,
+										  args_format_check_parsed_arguments_long_flag_match,
+										  lp_arg->flagLong)) {
 					PANIC("duplicate long flag");
-				} else if (arg->flagShort
-						   && array_contains(self->reservedFlags, array___match_string,
-											 arg->flagShort)) {
+				} else if (lp_arg->flagShort
+						   && array_contains(p_self->reservedFlags, array___match_string,
+											 lp_arg->flagShort)) {
 					PANIC("reserved short flag");
-				} else if (array_contains(self->reservedFlags, array___match_string,
-										  arg->flagLong)) {
+				} else if (array_contains(p_self->reservedFlags, array___match_string,
+										  lp_arg->flagLong)) {
 					PANIC("reserved long flag");
 				}
 
-				if (arg->def) { // Optional argument (not flag)
-					hashmap_set(self->defaultValues, arg->name, arg->def);
+				if (lp_arg->def) { // Optional argument (not flag)
+					hashmap_set(p_self->defaultValues, lp_arg->name, lp_arg->def);
 				}
 			}
 
-			array_append(parsed_arguments, command);
+			array_append(lp_parsedArguments, lp_command);
 
 			break;
 		}
 		case COMMAND_TYPE_SUBCOMMAND: {
-			struct Subcommand* subcommandRaw = &command->data.subcommand;
+			struct Subcommand* lp_subcommandRaw = &lp_command->data.subcommand;
 
-			if (array_contains(parsed_arguments, argsFormat___check_parsedArgumentsNameMatch_,
-							   subcommandRaw->name)) {
+			if (array_contains(lp_parsedArguments, args_format_check_parsed_arguments_name_match,
+							   lp_subcommandRaw->name)) {
 				PANIC("duplicate subcommand / argument name");
 			}
 
-			if (!subcommandRaw->name) {
+			if (!lp_subcommandRaw->name) {
 				PANIC("subcommand must have a name");
-			} else if (!subcommandRaw->help) {
+			} else if (!lp_subcommandRaw->help) {
 				PANIC("subcommand must have a help message");
-			} else if (subcommandRaw->argumentsFormat.length == 0) {
+			} else if (lp_subcommandRaw->argumentsFormat.length == 0) {
 				PANIC("subcommand must have arguments");
 			}
 
-			struct ArgsFormat* subcommandFormat = argsFormat_new_(
-				subcommandRaw->argumentsFormat, self->NAME, self->VERSION, self->DESCRIPTION,
-				array_contains(self->reservedFlags, array___match_string,
-							   (void*)ArgsReservedFlagsValue->_values[ARGS_RESERVED_FLAG_HELP])
-					? &array_new_stack((int*)ARGS_RESERVED_FLAG_HELP)
+			struct ArgsFormat* lp_subcommandFormat = args_format_new_internal(
+				lp_subcommandRaw->argumentsFormat, p_self->NAME, p_self->VERSION,
+				p_self->DESCRIPTION,
+				array_contains(
+					p_self->reservedFlags, array___match_string,
+					(void*)gp_ARGS_RESERVED_FLAGS_VALUE->_values[ARGS_RESERVED_FLAG_HELP])
+					? &ARRAY_NEW_STACK((int*)ARGS_RESERVED_FLAG_HELP)
 					: NULL,
-				subcommandRaw);
-			array_append(parsed_arguments, command);
+				lp_subcommandRaw);
+			array_append(lp_parsedArguments, lp_command);
 
-			hashmap_set(self->subcommands, subcommandRaw->name, subcommandFormat);
+			hashmap_set(p_self->subcommands, lp_subcommandRaw->name, lp_subcommandFormat);
 
 			break;
 		}
@@ -314,63 +236,56 @@ void argsFormat___check(struct ArgsFormat* self) {
 		}
 	}
 
-	array_free(&parsed_arguments);
+	array_free(&lp_parsedArguments);
 }
 
-char* argsFormat___error_convertToString_(const void* element) { return (char*)element; }
+char* args_format_error_convert_to_string(const void* p_element) { return (char*)p_element; }
 
-/**
- * Prints an argument parsing error and exits.
- *
- * @param args             The arguments.
- * @param ERROR_MSG_NUMBER The error message number.
- * @param ERROR_MSG        The error message.
- * @param ARG_INDEX        The index of the erroneous argument (0 is equivalent to NULL since 0 is
- * the binary, so the end).
- */
 __attribute__((noreturn)) void args_error(struct Array				  args,
 										  const enum ErrorIdentifiers ERROR_MSG_NUMBER,
-										  const char* ERROR_MSG, const size_t ARG_INDEX) {
-	const char*	 ARGUMENT_INDEX_STRING		  = ARG_INDEX == 0 ? "-1" : ulToString(ARG_INDEX);
-	const size_t ARGUMENT_INDEX_STRING_LENGTH = strlen(ARGUMENT_INDEX_STRING);
-	const char*	 LINE = array_join(&args, " ", argsFormat___error_convertToString_);
+										  const char* p_errorMsg, const size_t ARG_INDEX) {
+	const char*	 lp_argumentIndexString			= ARG_INDEX == 0 ? "-1" : ul_to_string(ARG_INDEX);
+	const size_t l_ARGUMENT_INDEX_STRING_LENGTH = strlen(lp_argumentIndexString);
+	const char*	 lp_line = array_join(&args, " ", args_format_error_convert_to_string);
 
-	printf("-%s> %s\n%s | %s\n%s", repeatChr('-', ARGUMENT_INDEX_STRING_LENGTH), "~/cli",
-		   ARGUMENT_INDEX_STRING, LINE, repeatChr(' ', ARGUMENT_INDEX_STRING_LENGTH + 3));
+	printf("-%s> %s\n%s | %s\n%s", repeat_chr('-', l_ARGUMENT_INDEX_STRING_LENGTH), "~/cli",
+		   lp_argumentIndexString, lp_line, repeat_chr(' ', l_ARGUMENT_INDEX_STRING_LENGTH + 3));
 
 	size_t argumentStartIndex = 0;
 
 	for (size_t index = 0; index < ((ARG_INDEX == 0) ? args.length : ARG_INDEX); index++) {
-		argumentStartIndex += strlen((char*)args._values[index]) + 1;
+		argumentStartIndex += strlen_safe((char*)args._values[index]) + 1;
 	}
 
 	// argumentStartIndex--; // Remove the last space. NB: Commented out to remove `-1` from the
 	// bottom branch below
 
 	if (ARG_INDEX == 0) {
-		printf("%s^ ", repeatChr(' ', argumentStartIndex - 2));
+		printf("%s^ ", repeat_chr(' ', argumentStartIndex - 2));
 	} else {
-		printf("%s%s ", repeatChr(' ', argumentStartIndex),
-			   repeatChr('^', strlen((char*)args._values[ARG_INDEX])));
+		printf("%s%s ", repeat_chr(' ', argumentStartIndex),
+			   repeat_chr('^', strlen_safe((char*)args._values[ARG_INDEX])));
 	}
 
-	printf("%serror[%s]:%s %s\n", F_BRIGHT_RED, error_get(ERROR_MSG_NUMBER), S_RESET, ERROR_MSG);
+	printf("%serror[%s]:%s %s\n", gp_F_BRIGHT_RED, error_get(ERROR_MSG_NUMBER), gp_S_RESET,
+		   p_errorMsg);
 
-	exit(EXIT_FAILURE);
+	exit(EXIT_FAILURE); // NOLINT(concurrency-mt-unsafe)
 }
 
-bool argsFormat_parse_optionalArgumentFlagMatch_(const void* element, const void* match) {
-	struct Command* command = (struct Command*)element;
+bool args_format_parse_optional_argument_flag_match(
+	const void* p_element, const void* p_match) { // NOLINT(bugprone-easily-swappable-parameters)
+	struct Command* lp_command = (struct Command*)p_element;
 
-	switch (command->type) {
+	switch (lp_command->type) {
 	case COMMAND_TYPE_ARGUMENT:
-		if (command->data.arg.position != -1) { // Required argument
+		if (lp_command->data.arg.position != -1) { // Required argument
 			return false;
 		} else {
-			return (command->data.arg.flagShort
-						? strcmp(command->data.arg.flagShort, (char*)match) == 0
+			return (lp_command->data.arg.flagShort
+						? strcmp(lp_command->data.arg.flagShort, (char*)p_match) == 0
 						: false)
-				   || strcmp(command->data.arg.flagLong, (char*)match) == 0;
+				   || strcmp(lp_command->data.arg.flagLong, (char*)p_match) == 0;
 		}
 	case COMMAND_TYPE_SUBCOMMAND:
 		return false;
@@ -379,68 +294,69 @@ bool argsFormat_parse_optionalArgumentFlagMatch_(const void* element, const void
 	}
 }
 
-bool argsFormat_parse_requiredArgumentsExist_(const void* element, const void* _) {
-	return element != NULL;
+// NOLINTBEGIN(bugprone-easily-swappable-parameters, misc-unused-parameters,
+// readability-identifier-length, readability-identifier-naming)
+bool args_format_parse_required_arguments_exist(const void* p_element, const void* _) {
+	// NOLINTEND(bugprone-easily-swappable-parameters, misc-unused-parameters,
+	// readability-identifier-length, readability-identifier-naming)
+	return p_element != NULL;
 }
 
-/**
- * Prints the help message and exits.
- *
- * @param self The current ArgsFormat struct.
- */
-__attribute__((noreturn)) void argsFormat_help_(struct ArgsFormat* self) {
-	if (self->SUBCOMMAND_PARENT) {
-		printf("%s\n\n", self->SUBCOMMAND_PARENT->help);
+__attribute__((noreturn)) void args_format_help(struct ArgsFormat* p_self) {
+	if (p_self->SUBCOMMAND_PARENT) {
+		printf("%s\n\n", p_self->SUBCOMMAND_PARENT->help);
 	} else {
-		printf("%s (%s) is %s\n\n", self->NAME, self->VERSION, self->DESCRIPTION);
+		printf("%s (%s) is %s\n\n", p_self->NAME, p_self->VERSION, p_self->DESCRIPTION);
 	}
 
-	printf("Usage: %s [command] [arguments] [options]\n", self->NAME);
+	printf("Usage: %s [command] [arguments] [options]\n", p_self->NAME);
 
-	struct String* commandString		   = string_new("\0", true);
-	struct String* requiredArgumentsString = string_new("\0", true);
-	struct String* optionsString		   = string_new("\0", true);
-	struct String* flagsString			   = string_new("\0", true);
+	struct String* lp_commandString			  = string_new("\0", true);
+	struct String* lp_requiredArgumentsString = string_new("\0", true);
+	struct String* lp_optionsString			  = string_new("\0", true);
+	struct String* lp_flagsString			  = string_new("\0", true);
 
-	for (size_t index = 0; index < self->argumentsFormat.length; index++) {
-		struct Command* command = (struct Command*)self->argumentsFormat._values[index];
+	for (size_t index = 0; index < p_self->argumentsFormat.length; index++) {
+		struct Command* lp_command = (struct Command*)p_self->argumentsFormat._values[index];
 
-		switch (command->type) {
+		switch (lp_command->type) {
 		case COMMAND_TYPE_SUBCOMMAND: {
-			struct Subcommand* subcommand = &command->data.subcommand;
-			char* helpStr = stringConcatenate("  ", subcommand->name, "\t", subcommand->help, "\n");
+			struct Subcommand* lp_subcommand = &lp_command->data.subcommand;
+			char*			   lp_helpStr =
+				CONCATENATE_STRING("  ", lp_subcommand->name, "\t", lp_subcommand->help, "\n");
 
-			string_appendStr(commandString, helpStr);
-			free(helpStr);
+			string_append_str(lp_commandString, lp_helpStr);
+			free(lp_helpStr);
 
 			break;
 		}
 		case COMMAND_TYPE_ARGUMENT: {
-			struct Arg* arg = &command->data.arg;
+			struct Arg* lp_arg = &lp_command->data.arg;
 
-			if (arg->type == VARIABLE_TYPE_NONE) {
-				if (arg->position == -1) {
-					char* helpStr =
-						stringConcatenate("  ", arg->flagShort ? arg->flagShort : "\b", " ",
-										  arg->flagLong, "\t", arg->description, "\n");
+			if (lp_arg->type == VARIABLE_TYPE_NONE) {
+				if (lp_arg->position == -1) {
+					char* lp_helpStr =
+						CONCATENATE_STRING("  ", lp_arg->flagShort ? lp_arg->flagShort : "\b", " ",
+										   lp_arg->flagLong, "\t", lp_arg->description, "\n");
 
-					string_appendStr(flagsString, helpStr);
-					free(helpStr);
+					string_append_str(lp_flagsString, lp_helpStr);
+					free(lp_helpStr);
 				}
 			} else {
-				if (arg->position == -1) {
-					char* helpStr = stringConcatenate("  ", arg->flagShort ? arg->flagShort : "\b",
-													  " ", arg->flagLong, "\t", arg->description,
-													  " (", variableType_get(arg->type), ")\n");
+				if (lp_arg->position == -1) {
+					char* lp_helpStr = CONCATENATE_STRING(
+						"  ", lp_arg->flagShort ? lp_arg->flagShort : "\b", " ", lp_arg->flagLong,
+						"\t", lp_arg->description, " (", variable_type_get(lp_arg->type), ")\n");
 
-					string_appendStr(optionsString, helpStr);
-					free(helpStr);
+					string_append_str(lp_optionsString, lp_helpStr);
+					free(lp_helpStr);
 				} else {
-					char* helpStr = stringConcatenate("  ", arg->name, "\t", arg->description, " (",
-													  variableType_get(arg->type), ")\n");
+					char* lp_helpStr =
+						CONCATENATE_STRING("  ", lp_arg->name, "\t", lp_arg->description, " (",
+										   variable_type_get(lp_arg->type), ")\n");
 
-					string_appendStr(requiredArgumentsString, helpStr);
-					free(helpStr);
+					string_append_str(lp_requiredArgumentsString, lp_helpStr);
+					free(lp_helpStr);
 				}
 			}
 
@@ -451,177 +367,170 @@ __attribute__((noreturn)) void argsFormat_help_(struct ArgsFormat* self) {
 		}
 	}
 
-	if (commandString->length > 0) {
-		printf("\nCommands:\n%s", commandString->_value);
+	if (lp_commandString->length > 0) {
+		printf("\nCommands:\n%s", lp_commandString->_value);
 	}
 
-	if (requiredArgumentsString->length > 0) {
-		printf("\nRequired arguments:\n%s", requiredArgumentsString->_value);
+	if (lp_requiredArgumentsString->length > 0) {
+		printf("\nRequired arguments:\n%s", lp_requiredArgumentsString->_value);
 	}
 
-	if (optionsString->length > 0) {
-		printf("\nOptions:\n%s", optionsString->_value);
+	if (lp_optionsString->length > 0) {
+		printf("\nOptions:\n%s", lp_optionsString->_value);
 	}
 
-	if (flagsString->length > 0) {
-		printf("\nFlags:\n%s", flagsString->_value);
+	if (lp_flagsString->length > 0) {
+		printf("\nFlags:\n%s", lp_flagsString->_value);
 	}
 
-	string_free(&commandString);
-	string_free(&requiredArgumentsString);
-	string_free(&optionsString);
-	string_free(&flagsString);
+	string_free(&lp_commandString);
+	string_free(&lp_requiredArgumentsString);
+	string_free(&lp_optionsString);
+	string_free(&lp_flagsString);
 
-	exit(EXIT_SUCCESS);
+	exit(EXIT_SUCCESS); // NOLINT(concurrency-mt-unsafe)
 }
 
-/**
- * Parses arguments.
- *
- * @param self The current ArgsFormat struct.
- * @param args The arguments to parse.
- * @param indexOffset The index to start checking arguments from.
- */
-struct Hashmap* argsFormat_parse_(struct ArgsFormat* self, struct Array args, size_t indexOffset) {
-	struct Hashmap* parsed_args =
-		hashmap_new(hashmap___hashDJB2, DEFAULT_INITIAL_TABLE_COUNT, DEFAULT_LOAD_FACTOR);
-	hashmap_combine(parsed_args, self->defaultValues); // Set up the default values
+struct Hashmap* args_format_parse(struct ArgsFormat* p_self, struct Array args,
+								  size_t indexOffset) {
+	struct Hashmap* lp_parsedArgs =
+		hashmap_new(hashmap_hash_djb2, DEFAULT_INITIAL_TABLE_COUNT, DEFAULT_LOAD_FACTOR);
+	hashmap_combine(lp_parsedArgs, p_self->defaultValues); // Set up the default values
 
 	for (size_t index = indexOffset; index < args.length; index++) {
-		char*  arg_raw	  = (char*)args._values[index];
-		size_t real_index = index - indexOffset; // The real index of the argument, used with some
-												 // internal data structures
+		char*  lp_argRaw = (char*)args._values[index];
+		size_t realIndex = index - indexOffset; // The real index of the argument, used with some
+												// internal data structures
 
-		if (strncmp(arg_raw, "-", 1) == 0) { // Long / short flag
-			bool longFlag			 = strncmp(arg_raw, "--", 2) == 0;
-			int	 argumentFormatIndex = array_find(
-				 &self->argumentsFormat, argsFormat_parse_optionalArgumentFlagMatch_, arg_raw);
+		if (strncmp(lp_argRaw, "-", 1) == 0) { // Long / short flag
+			bool longFlag = strncmp(lp_argRaw, "--", 2) == 0;
+			int	 argumentFormatIndex =
+				array_find(&p_self->argumentsFormat, args_format_parse_optional_argument_flag_match,
+						   lp_argRaw);
 
 			if (argumentFormatIndex == -1) {
-				int reserved_flags_index =
-					array_find(self->reservedFlags, array___match_string, arg_raw);
+				int reservedFlagsIndex =
+					array_find(p_self->reservedFlags, array___match_string, lp_argRaw);
 
-				if (reserved_flags_index != -1) {
-					switch (reserved_flags_index
-							- (reserved_flags_index
+				if (reservedFlagsIndex != -1) {
+					switch (reservedFlagsIndex
+							- (reservedFlagsIndex
 							   % 2)) { // Converts to nearest even number, starting from 0
 					case ARGS_RESERVED_FLAG_HELP:
-						argsFormat_help_(self);
+						args_format_help(p_self);
 					case ARGS_RESERVED_FLAG_VERSION:
-						printf("%s %s\n", self->NAME, self->VERSION);
-						exit(EXIT_SUCCESS);
+						printf("%s %s\n", p_self->NAME, p_self->VERSION);
+
+						exit(EXIT_SUCCESS); // NOLINT(concurrency-mt-unsafe)
 					default:
 						PANIC("invalid reserved flag index");
 					}
 				} else {
 					args_error(args, A0001,
-							   stringConcatenate("unknown ", longFlag ? "long" : "short", " flag"),
+							   CONCATENATE_STRING("unknown ", longFlag ? "long" : "short", " flag"),
 							   index);
 				}
 			} else {
-				struct Arg* arg =
-					&((struct Command*)self->argumentsFormat._values[argumentFormatIndex])
+				struct Arg* lp_arg =
+					&((struct Command*)p_self->argumentsFormat._values[argumentFormatIndex])
 						 ->data.arg;
 
-				if (arg->type == VARIABLE_TYPE_NONE) { // Optional flag
-					hashmap_set(parsed_args, arg->name, NULL);
+				if (lp_arg->type == VARIABLE_TYPE_NONE) { // Optional flag
+					hashmap_set(lp_parsedArgs, lp_arg->name, NULL);
 				} else if (index++ == args.length - 1) { // Optional argument and no value
 					args_error(args, A0002,
-							   stringConcatenate("missing value for ", longFlag ? "long" : "short",
-												 " flag"),
-							   real_index);
+							   CONCATENATE_STRING("missing value for ", longFlag ? "long" : "short",
+												  " flag"),
+							   realIndex);
 				} else { // Optional argument and value
-					void* arg_converted = convertToType((char*)args._values[index], arg->type);
+					void* lp_argConverted =
+						convert_to_type((char*)args._values[index], lp_arg->type);
 
-					if (!arg_converted) {
+					if (!lp_argConverted) {
 						args_error(args, A0003,
-								   stringConcatenate("failed to convert argument to ",
-													 variableType_get(arg->type)),
+								   CONCATENATE_STRING("failed to convert argument to ",
+													  variable_type_get(lp_arg->type)),
 								   index);
 					}
 
-					hashmap_set(parsed_args, arg->name, arg_converted);
+					hashmap_set(lp_parsedArgs, lp_arg->name, lp_argConverted);
 				}
 			}
 		} else { // Required argument / Subcommand
-			if (array_index_occupied(self->requiredArguments, real_index)) { // Required argument
-				struct Arg* arg = (struct Arg*)self->requiredArguments->_values[real_index];
-				void*		arg_converted = convertToType(arg_raw, arg->type);
+			if (array_index_occupied(p_self->requiredArguments, realIndex)) { // Required argument
+				struct Arg* lp_arg = (struct Arg*)p_self->requiredArguments->_values[realIndex];
+				void*		lp_argConverted = convert_to_type(lp_argRaw, lp_arg->type);
 
-				if (!arg_converted) {
+				if (!lp_argConverted) {
 					args_error(args, A0003,
-							   stringConcatenate("failed to convert argument to ",
-												 variableType_get(arg->type)),
+							   CONCATENATE_STRING("failed to convert argument to ",
+												  variable_type_get(lp_arg->type)),
 							   index);
 				}
 
-				hashmap_set(parsed_args, arg->name, arg_converted);
-				self->requiredArguments->_values[real_index] = NULL;
+				hashmap_set(lp_parsedArgs, lp_arg->name, lp_argConverted);
+				p_self->requiredArguments->_values[realIndex] = NULL;
 			} else { // Subcommand
-				struct ArgsFormat** subcommandFormatPointer =
-					(struct ArgsFormat**)hashmap_get(self->subcommands, arg_raw);
+				struct ArgsFormat** lp_subcommandFormatPointer =
+					(struct ArgsFormat**)hashmap_get(p_self->subcommands, lp_argRaw);
 
-				if (!subcommandFormatPointer || !*subcommandFormatPointer) {
+				if (!lp_subcommandFormatPointer || !*lp_subcommandFormatPointer) {
 					args_error(args, A0001, "unknown subcommand", index);
 				}
 
-				struct ArgsFormat* subcommandFormat = *subcommandFormatPointer;
+				struct ArgsFormat* lp_subcommandFormat = *lp_subcommandFormatPointer;
 
-				struct Hashmap* subcommandParsedArgs =
-					argsFormat_parse_(subcommandFormat, args, index + 1);
-				hashmap_combine(parsed_args, subcommandParsedArgs);
+				struct Hashmap* lp_subcommandParsedArgs =
+					args_format_parse(lp_subcommandFormat, args, index + 1);
+				hashmap_combine(lp_parsedArgs, lp_subcommandParsedArgs);
 
-				hashmap_free(&subcommandParsedArgs, NULL);
-				argsFormat_free(&subcommandFormat);
+				hashmap_free(&lp_subcommandParsedArgs, NULL);
+				args_format_free(&lp_subcommandFormat);
 
 				break;
 			}
 		}
 	}
 
-	if (array_contains(self->requiredArguments, argsFormat_parse_requiredArgumentsExist_, NULL)) {
-		char* firstArgumentName = "";
+	if (array_contains(p_self->requiredArguments, args_format_parse_required_arguments_exist,
+					   NULL)) {
+		char* lp_firstArgumentName = "";
 
-		for (size_t index = 0; index < self->requiredArguments->length; index++) {
-			struct Arg* arg = (struct Arg*)self->requiredArguments->_values[index];
+		for (size_t index = 0; index < p_self->requiredArguments->length; index++) {
+			struct Arg* lp_arg = (struct Arg*)p_self->requiredArguments->_values[index];
 
-			if (arg) {
-				firstArgumentName = arg->name;
+			if (lp_arg) {
+				lp_firstArgumentName = lp_arg->name;
 
 				break;
 			}
 		}
 
-		args_error(args, A0004, stringConcatenate("missing required argument: ", firstArgumentName),
-				   0);
+		args_error(args, A0004,
+				   CONCATENATE_STRING("missing required argument: ", lp_firstArgumentName), 0);
 	}
 
-	return parsed_args;
+	return lp_parsedArgs;
 }
 
-#define argsFormat_parse(self, argv, argc)                                                         \
-	argsFormat_parse_(self, array_upgrade_stack(argv, argc), 1)
+#define ARGS_FORMAT_PARSE(self, argv, argc)                                                        \
+	argsFormat_parse_(self, ARRAY_UPGRADE_STACK(argv, argc), 1)
 
-/**
- * Frees an ArgsFormat struct.
- *
- * @param self The current ArgsFormat struct.
- */
-void argsFormat_free(struct ArgsFormat** self) {
-	if (self && *self) {
-		array_free(&(*self)->requiredArguments); // Required arguments (inner) are by default on
-												 // stack, so don't have to be explicitly freed
+void args_format_free(struct ArgsFormat** p_self) {
+	if (p_self && *p_self) {
+		array_free(&(*p_self)->requiredArguments); // Required arguments (inner) are by default on
+												   // stack, so don't have to be explicitly freed
 
-		if ((*self)->reservedFlags) {			 // Can be NULL if no reserved flags
-			array_free(&(*self)->reservedFlags); // Reserved flags are on the stack
+		if ((*p_self)->reservedFlags) {			   // Can be NULL if no reserved flags
+			array_free(&(*p_self)->reservedFlags); // Reserved flags are on the stack
 		}
 
-		hashmap_free(&(*self)->defaultValues, NULL); // The default values are on the stack
-		hashmap_free(&(*self)->subcommands, NULL);	 // Again, the format is on the stack
+		hashmap_free(&(*p_self)->defaultValues, NULL); // The default values are on the stack
+		hashmap_free(&(*p_self)->subcommands, NULL);   // Again, the format is on the stack
 
-		free(*self);
+		free(*p_self);
 
-		*self = NULL;
+		*p_self = NULL;
 	} else {
 		PANIC("ArgsFormat struct has already been freed");
 	}

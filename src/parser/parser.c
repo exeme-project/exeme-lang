@@ -305,10 +305,10 @@ void parser_parseFunction(struct Parser* self, const struct LexerToken* funcKeyw
 
 	if (identifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
 		parser_error(self, P0002,
-					 stringConcatenate("expected parser token of type '",
-									   astTokens_getName(ASTTOKENS_VARIABLE),
-									   "' after 'func' keyword, got '",
-									   astTokens_getName(identifier->IDENTIFIER), "'"),
+					 CONCATENATE_STRING("expected parser token of type '",
+										astTokens_getName(ASTTOKENS_VARIABLE),
+										"' after 'func' keyword, got '",
+										astTokens_getName(identifier->IDENTIFIER), "'"),
 					 identifier);
 	}
 
@@ -324,10 +324,10 @@ void parser_parseFunction(struct Parser* self, const struct LexerToken* funcKeyw
 
 		if (openingBrackets->IDENTIFIER != ASTTOKENS_OPEN_BRACE) {
 			parser_error(self, P0002,
-						 stringConcatenate("expected parser token of type '",
-										   astTokens_getName(ASTTOKENS_OPEN_BRACE),
-										   "' after function identifier, got '",
-										   astTokens_getName(openingBrackets->IDENTIFIER), "'"),
+						 CONCATENATE_STRING("expected parser token of type '",
+											astTokens_getName(ASTTOKENS_OPEN_BRACE),
+											"' after function identifier, got '",
+											astTokens_getName(openingBrackets->IDENTIFIER), "'"),
 						 openingBrackets);
 		}
 
@@ -337,9 +337,9 @@ void parser_parseFunction(struct Parser* self, const struct LexerToken* funcKeyw
 	while (true) {
 		if (!parser_parse(self, false, true)) {
 			parser_error(self, P0001,
-						 stringConcatenate("expected parser token of type '",
-										   astTokens_getName(ASTTOKENS_CLOSE_BRACE),
-										   "' after function arguments, got 'EOF'"),
+						 CONCATENATE_STRING("expected parser token of type '",
+											astTokens_getName(ASTTOKENS_CLOSE_BRACE),
+											"' after function arguments, got 'EOF'"),
 						 lastToken);
 		}
 
@@ -352,10 +352,10 @@ void parser_parseFunction(struct Parser* self, const struct LexerToken* funcKeyw
 			continue;
 		} else if (argumentIdentifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
 			parser_error(self, P0002,
-						 stringConcatenate("expected parser token of type '",
-										   astTokens_getName(ASTTOKENS_VARIABLE),
-										   "' for function argument, got '",
-										   astTokens_getName(argumentIdentifier->IDENTIFIER), "'"),
+						 CONCATENATE_STRING("expected parser token of type '",
+											astTokens_getName(ASTTOKENS_VARIABLE),
+											"' for function argument, got '",
+											astTokens_getName(argumentIdentifier->IDENTIFIER), "'"),
 						 argumentIdentifier);
 		}
 
@@ -370,7 +370,7 @@ void parser_parseFunction(struct Parser* self, const struct LexerToken* funcKeyw
 
 		if (argumentTypeSeparator->IDENTIFIER != ASTTOKENS_COLON) {
 			parser_error(self, P0002,
-						 stringConcatenate(
+						 CONCATENATE_STRING(
 							 "expected parser token of type '", astTokens_getName(ASTTOKENS_COLON),
 							 "' after function argument, got '",
 							 astTokens_getName(argumentTypeSeparator->IDENTIFIER), "'"),
@@ -388,10 +388,10 @@ void parser_parseFunction(struct Parser* self, const struct LexerToken* funcKeyw
 
 		if (argumentType->IDENTIFIER != ASTTOKENS_VARIABLE) {
 			parser_error(self, P0002,
-						 stringConcatenate("expected parser token of type '",
-										   astTokens_getName(ASTTOKENS_VARIABLE),
-										   "' for function argument type, got '",
-										   astTokens_getName(argumentType->IDENTIFIER), "'"),
+						 CONCATENATE_STRING("expected parser token of type '",
+											astTokens_getName(ASTTOKENS_VARIABLE),
+											"' for function argument type, got '",
+											astTokens_getName(argumentType->IDENTIFIER), "'"),
 						 argumentType);
 		}
 
@@ -472,8 +472,8 @@ void parser_parseAssignment(struct Parser* self, const struct LexerToken* lexerT
 
 	if (self->parserTokens->length != 1) {
 		lexer_error(self->lexer, P0001,
-					stringConcatenate("expected 1 parser token before assignment, got ",
-									  ulToString(self->parserTokens->length)),
+					CONCATENATE_STRING("expected 1 parser token before assignment, got ",
+									   ulToString(self->parserTokens->length)),
 					lexerToken);
 	}
 
@@ -481,10 +481,10 @@ void parser_parseAssignment(struct Parser* self, const struct LexerToken* lexerT
 
 	if (identifier->IDENTIFIER != ASTTOKENS_VARIABLE) {
 		parser_error(self, P0002,
-					 stringConcatenate("expected parser token of type '",
-									   astTokens_getName(ASTTOKENS_VARIABLE),
-									   "' before assignment, got '",
-									   astTokens_getName(identifier->IDENTIFIER), "'"),
+					 CONCATENATE_STRING("expected parser token of type '",
+										astTokens_getName(ASTTOKENS_VARIABLE),
+										"' before assignment, got '",
+										astTokens_getName(identifier->IDENTIFIER), "'"),
 					 identifier);
 	}
 
@@ -498,8 +498,8 @@ void parser_parseAssignment(struct Parser* self, const struct LexerToken* lexerT
 
 	if (self->parserTokens->length != 1) {
 		lexer_error(self->lexer, P0001,
-					stringConcatenate("expected 1 parser token after assignment, got ",
-									  ulToString(self->parserTokens->length)),
+					CONCATENATE_STRING("expected 1 parser token after assignment, got ",
+									   ulToString(self->parserTokens->length)),
 					lexerToken);
 	}
 
