@@ -61,7 +61,7 @@ const struct Array g_VARIABLETYPE_NAMES = ARRAY_NEW_STACK("none", "string", "int
 
 const char* variable_type_get(const enum VariableType TYPE) {
 	if ((size_t)TYPE + 1 > g_VARIABLETYPE_NAMES.length) {
-		PANIC("VariableType get index out of bounds");
+		PANIC("g_VariableType get index out of bounds");
 	}
 
 	return g_VARIABLETYPE_NAMES._values[TYPE];

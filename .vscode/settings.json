@@ -24,13 +24,16 @@
 	],
 	"cSpell.language": "en-GB",
 	"cSpell.words": [
+		"ASTTOKEN",
 		"ASTTOKENS",
 		"bugprone",
 		"Exeme",
+		"LEXERTOKEN",
 		"LEXERTOKENS",
 		"NOLINTNEXTLINE",
 		"OSSF",
 		"Unlexes",
+		"Wpedantic",
 		"Wvoid"
 	],
 	"editor.bracketPairColorization.enabled": true,

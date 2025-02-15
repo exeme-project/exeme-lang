@@ -391,8 +391,8 @@ __attribute__((noreturn)) void args_format_help(struct ArgsFormat* p_self) {
 	exit(EXIT_SUCCESS); // NOLINT(concurrency-mt-unsafe)
 }
 
-struct Hashmap* args_format_parse(struct ArgsFormat* p_self, struct Array args,
-								  size_t indexOffset) {
+struct Hashmap* args_format_parse_internal(struct ArgsFormat* p_self, struct Array args,
+										   size_t indexOffset) {
 	struct Hashmap* lp_parsedArgs =
 		hashmap_new(hashmap_hash_djb2, DEFAULT_INITIAL_TABLE_COUNT, DEFAULT_LOAD_FACTOR);
 	hashmap_combine(lp_parsedArgs, p_self->defaultValues); // Set up the default values
@@ -481,7 +481,7 @@ struct Hashmap* args_format_parse(struct ArgsFormat* p_self, struct Array args,
 				struct ArgsFormat* lp_subcommandFormat = *lp_subcommandFormatPointer;
 
 				struct Hashmap* lp_subcommandParsedArgs =
-					args_format_parse(lp_subcommandFormat, args, index + 1);
+					args_format_parse_internal(lp_subcommandFormat, args, index + 1);
 				hashmap_combine(lp_parsedArgs, lp_subcommandParsedArgs);
 
 				hashmap_free(&lp_subcommandParsedArgs, NULL);
@@ -512,9 +512,6 @@ struct Hashmap* args_format_parse(struct ArgsFormat* p_self, struct Array args,
 
 	return lp_parsedArgs;
 }
-
-#define ARGS_FORMAT_PARSE(self, argv, argc)                                                        \
-	argsFormat_parse_(self, ARRAY_UPGRADE_STACK(argv, argc), 1)
 
 void args_format_free(struct ArgsFormat** p_self) {
 	if (p_self && *p_self) {

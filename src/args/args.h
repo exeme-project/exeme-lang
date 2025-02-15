@@ -12,12 +12,9 @@
  * Represents an argument.
  */
 struct Arg {
-	// cppcheck-suppress unusedStructMember
 	char *			  name, *description, *def, *flagShort, *flagLong;
 	enum VariableType type;
-	// cppcheck-suppress unusedStructMember
-	int position; /* If != NULL then required, else not required */
-				  // cppcheck-suppress-end unusedStructMember
+	int				  position; /* If != NULL then required, else not required */
 };
 
 /**
@@ -134,7 +131,11 @@ __attribute__((noreturn)) void args_format_help(struct ArgsFormat* p_self);
  *
  * @return The parsed arguments as a hashmap.
  */
-struct Hashmap* args_format_parse(struct ArgsFormat* p_self, struct Array args, size_t indexOffset);
+struct Hashmap* args_format_parse_internal(struct ArgsFormat* p_self, struct Array args,
+										   size_t indexOffset);
+
+#define ARGS_FORMAT_PARSE(self, argv, argc)                                                        \
+	args_format_parse_internal(self, ARRAY_UPGRADE_STACK(argv, argc), 1)
 
 /**
  * Frees an ArgsFormat struct.
