@@ -54,14 +54,14 @@
 
 // X-Macro to define AST token identifiers
 typedef enum {
-#define AST_TOKEN_ENUM_ENTRY(name, free, ...) ASTTOKENS_##name,
+#define AST_TOKEN_ENUM_ENTRY(name, ...) ASTTOKENS_##name,
 	AST_TOKENS(AST_TOKEN_ENUM_ENTRY)
 #undef AST_TOKEN_ENUM_ENTRY
 } ASTTokenIdentifiers;
 
 // X-Macro to define AST token names
 static char* const g_ASTTOKEN_NAMES_INTERNAL[] = {
-#define AST_TOKEN_TO_STRING(name, free, ...) #name,
+#define AST_TOKEN_TO_STRING(name, ...) #name,
 	AST_TOKENS(AST_TOKEN_TO_STRING)
 #undef AST_TOKEN_TO_STRING
 };
@@ -79,7 +79,7 @@ const char* ast_tokens_get_name(
 	const ASTTokenIdentifiers IDENTIFIER); // NOLINT(readability-avoid-const-params-in-decls)
 
 // X-Macro to define AST tokens structs
-#define AST_TOKEN_STRUCT_DEF(name, free, ...)                                                      \
+#define AST_TOKEN_STRUCT_DEF(name, _, ...)                                                         \
 	typedef struct AST_##name {                                                                    \
 		__VA_ARGS__;                                                                               \
 	} AST_##name;
@@ -96,7 +96,7 @@ typedef struct AST {
 	void (*free)(struct AST**); // Free function pointer
 	union {
 // X-Macro to define AST tokens in the AST struct
-#define AST_TOKEN_STRUCT_ENTRY(name, free, ...) struct AST_##name* name;
+#define AST_TOKEN_STRUCT_ENTRY(name, ...) struct AST_##name* name;
 		AST_TOKENS(AST_TOKEN_STRUCT_ENTRY)
 #undef AST_TOKEN_STRUCT_ENTRY
 	} data;
@@ -194,7 +194,7 @@ AST_TOKENS(AST_TOKEN_NEW_FUNCTION_DEFINE) // Define all token new functions
 
 // X-Macro to define AST new function list
 static void (*const g_AST_TOKEN_NEW_FUNCTIONS[])(void*) = {
-#define AST_TOKEN_NEW_FUNC_TO_STRING(name, new, ...) (void (*)(void*)) ast##name##_new,
+#define AST_TOKEN_NEW_FUNC_TO_STRING(name, ...) (void (*)(void*)) ast##name##_new,
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wcast-function-type"
 #pragma clang diagnostic ignored "-Wcast-function-type-strict"
@@ -297,8 +297,7 @@ AST_TOKENS(AST_TOKEN_FREE_GENERIC_FUNCTION_DEFINE) // Define all generic token f
 
 // X-Macro to define AST generic free function list
 static void (*const g_AST_TOKEN_FREE_GENERIC_FUNCTIONS[])(void*) = {
-#define AST_TOKEN_FREE_GENERIC_FUNC_TO_STRING(name, free, ...)                                     \
-	(void (*)(void*)) ast##name##_generic_free,
+#define AST_TOKEN_FREE_GENERIC_FUNC_TO_STRING(name, ...) (void (*)(void*)) ast##name##_generic_free,
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wcast-function-type-strict"
 	AST_TOKENS(AST_TOKEN_FREE_GENERIC_FUNC_TO_STRING)
