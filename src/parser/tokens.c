@@ -12,8 +12,11 @@
 // Create a new function for each node
 AST_TOKENS(AST_TOKEN_NEW_FUNCTION_IMPLEMENT) // NOLINT(bugprone-easily-swappable-parameters)
 
-// Create a free function for each node
-AST_TOKENS(AST_TOKEN_FREE_FUNCTION_IMPLEMENT)
+// Create a specific free function for each node
+AST_TOKENS(AST_TOKEN_FREE_SPECIFIC_FUNCTION_IMPLEMENT)
+
+// Create a generic free function for each node
+AST_TOKENS(AST_TOKEN_FREE_GENERIC_FUNCTION_IMPLEMENT)
 
 const struct Array g_ASTTOKEN_NAMES =
 	ARRAY_UPGRADE_STACK((const void**)g_ASTTOKEN_NAMES_INTERNAL,
@@ -40,10 +43,10 @@ struct AST* ast_new(const int IDENTIFIER, ...) {
 #pragma clang diagnostic ignored "-Wincompatible-function-pointer-types"
 #pragma clang diagnostic ignored "-Wincompatible-function-pointer-types-strict"
 	void (*const lp_NEW_NODE)(struct AST*, va_list) = g_AST_TOKEN_NEW_FUNCTIONS[IDENTIFIER];
-	lp_self->free									= g_AST_TOKEN_FREE_FUNCTIONS[IDENTIFIER];
+	lp_self->free = g_AST_TOKEN_FREE_GENERIC_FUNCTIONS[IDENTIFIER];
 #pragma clang diagnostic pop
 
-	// Pass all var args to the node's constructor
+	// Pass all var args to the node's constructor, but not as var args
 	va_list lpArgs;
 	va_start(lpArgs, IDENTIFIER);
 	lp_NEW_NODE(lp_self, lpArgs);
