@@ -3,8 +3,6 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
-#pragma once
-
 #include "./tokens.h"
 
 const struct Array g_LEXERTOKEN_NAMES = ARRAY_NEW_STACK(

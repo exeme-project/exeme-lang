@@ -3,13 +3,17 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
-#pragma once
-
 #include "./tokens.h"
 #include "../lexer/tokens.h"
 #include "../utils/array.h"
 #include "../utils/panic.h"
 #include <stdarg.h>
+
+// Create a new function for each node
+AST_TOKENS(AST_TOKEN_NEW_FUNCTION_IMPLEMENT) // NOLINT(bugprone-easily-swappable-parameters)
+
+// Create a free function for each node
+AST_TOKENS(AST_TOKEN_FREE_FUNCTION_IMPLEMENT)
 
 const struct Array g_ASTTOKEN_NAMES =
 	ARRAY_UPGRADE_STACK((const void**)g_ASTTOKEN_NAMES_INTERNAL,
@@ -35,8 +39,8 @@ struct AST* ast_new(const int IDENTIFIER, ...) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wincompatible-function-pointer-types"
 #pragma clang diagnostic ignored "-Wincompatible-function-pointer-types-strict"
-	void (*const lp_NEW_NODE)(struct AST*, va_list) = g_AST_NODE_NEW_FUNCTIONS[IDENTIFIER];
-	lp_self->free									= g_AST_NODE_FREE_FUNCTIONS[IDENTIFIER];
+	void (*const lp_NEW_NODE)(struct AST*, va_list) = g_AST_TOKEN_NEW_FUNCTIONS[IDENTIFIER];
+	lp_self->free									= g_AST_TOKEN_FREE_FUNCTIONS[IDENTIFIER];
 #pragma clang diagnostic pop
 
 	// Pass all var args to the node's constructor

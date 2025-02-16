@@ -3,8 +3,6 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
-#pragma once
-
 #include "./compiler.h"
 #include "../parser/parser.h"
 #include "../parser/tokens.h"

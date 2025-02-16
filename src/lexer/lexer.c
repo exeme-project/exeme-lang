@@ -3,8 +3,6 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
-#pragma once
-
 #include "./lexer.h"
 #include "../globals.h"
 #include "../utils/conversions.h"

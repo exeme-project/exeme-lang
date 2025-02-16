@@ -3,8 +3,6 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
-#pragma once
-
 #include "./hashmap.h"
 #include "./panic.h"
 #include <stdlib.h>

@@ -3,12 +3,10 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
-#pragma once
-
 #include "./array.h"
 #include "./panic.h"
-#include "./string.h"
-#include <string.h> // NOLINT(readability-duplicate-include)
+#include "./str.h"
+#include <string.h>
 
 struct Array* array_new(void) {
 	struct Array* lp_self = malloc(ARRAY_STRUCT_SIZE);

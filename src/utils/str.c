@@ -3,12 +3,10 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
-#pragma once
-
-#include "./string.h"
+#include "./str.h"
 #include "../globals.h"
 #include "./panic.h"
-#include <string.h> // NOLINT(readability-duplicate-include)
+#include <string.h>
 
 struct String* string_new(char* p_string, bool copy) {
 	struct String* lp_self = malloc(STRING_STRUCT_SIZE);

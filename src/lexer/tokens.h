@@ -7,7 +7,7 @@
 
 #include "../utils/array.h"
 #include "../utils/panic.h"
-#include "../utils/string.h"
+#include "../utils/str.h"
 
 /**
  * Used to identify different lexer tokens.

@@ -3,8 +3,6 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
-#pragma once
-
 #include "../globals.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -19,8 +19,7 @@
 		"--header-insertion=never"
 	],
 	"cmake.preferredGenerators": [
-		"Ninja",
-		"Visual Studio 17 2022",
+		"Unix Makefiles",
 	],
 	"cSpell.language": "en-GB",
 	"cSpell.words": [
@@ -34,6 +33,7 @@
 		"OSSF",
 		"Unlexes",
 		"Wpedantic",
+		"Wextra",
 		"Wvoid"
 	],
 	"editor.bracketPairColorization.enabled": true,

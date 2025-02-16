@@ -7,93 +7,96 @@
 
 #include "../lexer/lexer.h"
 
-// X-Macro to define AST nodes
-#define AST_NODES(X)                                                                               \
-	X(CHR, AST_NODE_WITH_VALUE, struct String* value)                                              \
-	X(STRING, AST_NODE_WITH_VALUE, struct String* value)                                           \
-	X(INTEGER, AST_NODE_WITH_VALUE, struct String* value)                                          \
-	X(FLOAT, AST_NODE_WITH_VALUE, struct String* value)                                            \
-	X(VARIABLE, AST_NODE_WITH_VALUE, struct String* value)                                         \
-	X(ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier; struct AST * value)        \
-	X(MODULO_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier; struct AST * value) \
-	X(MULTIPLICATION_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier;             \
+// X-Macro to define AST tokens
+#define AST_TOKENS(X)                                                                              \
+	X(CHR, AST_TOKEN_WITH_VALUE, struct String* value)                                             \
+	X(STRING, AST_TOKEN_WITH_VALUE, struct String* value)                                          \
+	X(INTEGER, AST_TOKEN_WITH_VALUE, struct String* value)                                         \
+	X(FLOAT, AST_TOKEN_WITH_VALUE, struct String* value)                                           \
+	X(VARIABLE, AST_TOKEN_WITH_VALUE, struct String* value)                                        \
+	X(ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier; struct AST * value)       \
+	X(MODULO_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;                    \
 	  struct AST * value)                                                                          \
-	X(EXPONENT_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier;                   \
+	X(MULTIPLICATION_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;            \
 	  struct AST * value)                                                                          \
-	X(DIVISION_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier;                   \
+	X(EXPONENT_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;                  \
 	  struct AST * value)                                                                          \
-	X(FLOOR_DIVISION_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier;             \
+	X(DIVISION_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;                  \
 	  struct AST * value)                                                                          \
-	X(ADDITION_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier;                   \
+	X(FLOOR_DIVISION_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;            \
 	  struct AST * value)                                                                          \
-	X(SUBTRACTION_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier;                \
+	X(ADDITION_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;                  \
 	  struct AST * value)                                                                          \
-	X(BITWISE_AND_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier;                \
+	X(SUBTRACTION_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;               \
 	  struct AST * value)                                                                          \
-	X(BITWISE_OR_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier;                 \
+	X(BITWISE_AND_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;               \
 	  struct AST * value)                                                                          \
-	X(BITWISE_XOR_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier;                \
+	X(BITWISE_OR_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;                \
 	  struct AST * value)                                                                          \
-	X(BITWISE_NOT_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier;                \
+	X(BITWISE_XOR_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;               \
 	  struct AST * value)                                                                          \
-	X(BITWISE_LEFT_SHIFT_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier;         \
+	X(BITWISE_NOT_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;               \
 	  struct AST * value)                                                                          \
-	X(BITWISE_RIGHT_SHIFT_ASSIGNMENT, AST_NODE_ASSIGNMENT, struct AST_VARIABLE* identifier;        \
+	X(BITWISE_LEFT_SHIFT_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;        \
 	  struct AST * value)                                                                          \
-	X(OPEN_BRACE, AST_NODE_BASIC, /* No extra fields */)                                           \
-	X(CLOSE_BRACE, AST_NODE_BASIC, /* No extra fields */)                                          \
-	X(COMMA, AST_NODE_BASIC, /* No extra fields */)                                                \
-	X(COLON, AST_NODE_BASIC, /* No extra fields */)                                                \
-	X(FUNCTION_DEFINITION, AST_NODE_FUNCTION_DEFINITION, struct AST_VARIABLE* identifier;          \
+	X(BITWISE_RIGHT_SHIFT_ASSIGNMENT, AST_TOKEN_ASSIGNMENT, struct AST_VARIABLE* identifier;       \
+	  struct AST * value)                                                                          \
+	X(OPEN_BRACE, AST_TOKEN_BASIC, /* No extra fields */)                                          \
+	X(CLOSE_BRACE, AST_TOKEN_BASIC, /* No extra fields */)                                         \
+	X(COMMA, AST_TOKEN_BASIC, /* No extra fields */)                                               \
+	X(COLON, AST_TOKEN_BASIC, /* No extra fields */)                                               \
+	X(FUNCTION_DEFINITION, AST_TOKEN_FUNCTION_DEFINITION, struct AST_VARIABLE* identifier;         \
 	  struct AST_OPEN_BRACE * open_brace; struct Array * arguments; struct Array * argument_types; \
 	  struct AST_CLOSE_BRACE * close_brace)
 
-// X-Macro to define AST node identifiers
+// X-Macro to define AST token identifiers
 typedef enum {
-#define ENUM_ENTRY(name, free, ...) ASTTOKENS_##name,
-	AST_NODES(ENUM_ENTRY)
-#undef ENUM_ENTRY
+#define AST_TOKEN_ENUM_ENTRY(name, free, ...) ASTTOKENS_##name,
+	AST_TOKENS(AST_TOKEN_ENUM_ENTRY)
+#undef AST_TOKEN_ENUM_ENTRY
 } ASTTokenIdentifiers;
 
+// X-Macro to define AST token names
 static char* const g_ASTTOKEN_NAMES_INTERNAL[] = {
-#define ENUM_ENTRY(name, free, ...) #name,
-	AST_NODES(ENUM_ENTRY)
-#undef ENUM_ENTRY
+#define AST_TOKEN_TO_STRING(name, free, ...) #name,
+	AST_TOKENS(AST_TOKEN_TO_STRING)
+#undef AST_TOKEN_TO_STRING
 };
 
 extern const struct Array g_ASTTOKEN_NAMES;
 
 /**
- * Gets the name of an AST node identifier.
+ * Gets the name of an AST token identifier.
  *
- * @param IDENTIFIER The AST node identifier.
+ * @param IDENTIFIER The AST token identifier.
  *
- * @return The name of the AST node identifier.
+ * @return The name of the AST token identifier.
  */
 const char* ast_tokens_get_name(
 	const ASTTokenIdentifiers IDENTIFIER); // NOLINT(readability-avoid-const-params-in-decls)
 
-// X-Macro to define AST node structs
-#define STRUCT_DEF(name, free, ...)                                                                \
+// X-Macro to define AST tokens structs
+#define AST_TOKEN_STRUCT_DEF(name, free, ...)                                                      \
 	typedef struct AST_##name {                                                                    \
 		const struct LexerToken* _token;                                                           \
-		__VA_ARGS__                                                                                \
-		__VA_OPT__(;) /* Only add a semicolon if __VA_ARGS__ is not empty */                       \
+		__VA_ARGS__;                                                                               \
 	} AST_##name;
-
-// Generate AST node structs using AST_NODES
-AST_NODES(STRUCT_DEF)
-
-#undef STRUCT_DEF
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wextra-semi"
+AST_TOKENS(AST_TOKEN_STRUCT_DEF) // Using __VA_OPT__(;) causes compilation errors? This is a
+								 // workaround. No idea why though. Linting is fine with it.
+#pragma clang diagnostic pop
+#undef AST_TOKEN_STRUCT_DEF
 
 // Represents an AST node
 typedef struct AST {
 	ASTTokenIdentifiers identifier;
 	void (*free)(struct AST**); // Free function pointer
 	union {
-#define UNION_ENTRY(name, free, ...) struct AST_##name* name;
-		AST_NODES(UNION_ENTRY)
-#undef UNION_ENTRY
+// X-Macro to define AST tokens in the AST struct
+#define AST_TOKEN_STRUCT_ENTRY(name, free, ...) struct AST_##name* name;
+		AST_TOKENS(AST_TOKEN_STRUCT_ENTRY)
+#undef AST_TOKEN_STRUCT_ENTRY
 	} data;
 } AST;
 
@@ -118,110 +121,145 @@ struct AST* ast_new(const int IDENTIFIER, ...);
  */
 void ast_free(struct AST** p_self);
 
-// Define new functions dynamically
-#define AST_NODE_NEW_FUNCTION(name, ast, ...) ast##_NEW(name, __VA_ARGS__)
+// Dynamically defines the new function for the token
+#define AST_TOKEN_NEW_FUNCTION_DEFINE(name, ast, ...) ast##_NEW_DEFINE(name, __VA_ARGS__)
 
-#define AST_NODE_ASSIGNMENT_NEW(name, fields)                                                      \
-	void ast##name##_new(struct AST*(parent), struct AST_VARIABLE*(identifier),                    \
-						 struct AST*(value)) {                                                     \
+#define AST_TOKEN_ASSIGNMENT_NEW_DEFINE(name, fields)                                              \
+	void ast##name##_new(struct AST*(p_parent), struct AST_VARIABLE*(p_identifier),                \
+						 struct AST*(p_value));
+
+#define AST_TOKEN_BASIC_NEW_DEFINE(name, fields) void ast##name##_new(struct AST*(p_parent));
+
+#define AST_TOKEN_WITH_VALUE_NEW_DEFINE(name, fields)                                              \
+	void ast##name##_new(struct AST*(p_parent), struct String*(p_value));
+
+#define AST_TOKEN_FUNCTION_DEFINITION_NEW_DEFINE(name, fields)                                     \
+	void ast##name##_new(struct AST*(p_ast), struct AST_VARIABLE*(p_identifier),                   \
+						 struct AST_OPEN_BRACE*(p_open_brace), struct Array*(p_arguments),         \
+						 struct Array*(p_argument_types), struct AST_CLOSE_BRACE*(p_close_brace));
+
+AST_TOKENS(AST_TOKEN_NEW_FUNCTION_DEFINE) // Define all token new functions
+
+// Dynamically generates the new function for the token. This will be called in the implementation
+// file
+#define AST_TOKEN_NEW_FUNCTION_IMPLEMENT(name, ast, ...) ast##_NEW_IMPLEMENT(name, __VA_ARGS__)
+
+#define AST_TOKEN_ASSIGNMENT_NEW_IMPLEMENT(name, fields)                                           \
+	void ast##name##_new(struct AST*(p_parent), struct AST_VARIABLE*(p_identifier),                \
+						 struct AST*(p_value)) {                                                   \
 		struct AST_##name* lp_self = malloc(sizeof(struct AST_##name));                            \
 		if (!lp_self) {                                                                            \
 			PANIC("failed to malloc AST_" #name " struct");                                        \
 		}                                                                                          \
-		lp_self->identifier = identifier;                                                          \
-		lp_self->value		= value;                                                               \
-		(parent)->data.name = lp_self;                                                             \
+		lp_self->identifier	  = p_identifier;                                                      \
+		lp_self->value		  = p_value;                                                           \
+		(p_parent)->data.name = lp_self;                                                           \
 	}
 
-#define AST_NODE_BASIC_NEW(name, fields)                                                           \
-	void ast##name##_new(struct AST*(parent)) {                                                    \
+#define AST_TOKEN_BASIC_NEW_IMPLEMENT(name, fields)                                                \
+	void ast##name##_new(struct AST*(p_parent)) {                                                  \
 		struct AST_##name* lp_self = malloc(sizeof(struct AST_##name));                            \
 		if (!lp_self) {                                                                            \
 			PANIC("failed to malloc AST_" #name " struct");                                        \
 		}                                                                                          \
-		(parent)->data.name = lp_self;                                                             \
+		(p_parent)->data.name = lp_self;                                                           \
 	}
 
-#define AST_NODE_WITH_VALUE_NEW(name, fields)                                                      \
-	void ast##name##_new(struct AST*(parent), struct String*(value)) {                             \
+#define AST_TOKEN_WITH_VALUE_NEW_IMPLEMENT(name, fields)                                           \
+	void ast##name##_new(struct AST*(p_parent), struct String*(p_value)) {                         \
 		struct AST_##name* lp_self = malloc(sizeof(struct AST_##name));                            \
 		if (!lp_self) {                                                                            \
 			PANIC("failed to malloc AST_" #name " struct");                                        \
 		}                                                                                          \
-		lp_self->value		= value;                                                               \
-		(parent)->data.name = lp_self;                                                             \
+		lp_self->value		  = p_value;                                                           \
+		(p_parent)->data.name = lp_self;                                                           \
 	}
 
-#define AST_NODE_FUNCTION_DEFINITION_NEW(name, fields)                                             \
-	void ast##name##_new(struct AST*(ast), struct AST_VARIABLE*(identifier),                       \
-						 struct AST_OPEN_BRACE*(open_brace), struct Array*(arguments),             \
-						 struct Array*(argument_types), struct AST_CLOSE_BRACE*(close_brace)) {    \
+#define AST_TOKEN_FUNCTION_DEFINITION_NEW_IMPLEMENT(name, fields)                                  \
+	void ast##name##_new(struct AST*(p_ast), struct AST_VARIABLE*(p_identifier),                   \
+						 struct AST_OPEN_BRACE*(p_open_brace), struct Array*(p_arguments),         \
+						 struct Array*(p_argument_types),                                          \
+						 struct AST_CLOSE_BRACE*(p_close_brace)) {                                 \
 		struct AST_##name* lp_self = malloc(sizeof(struct AST_##name));                            \
 		if (!lp_self) {                                                                            \
 			PANIC("failed to malloc AST_" #name " struct");                                        \
 		}                                                                                          \
-		lp_self->identifier		= identifier;                                                      \
-		lp_self->open_brace		= open_brace;                                                      \
-		lp_self->arguments		= arguments;                                                       \
-		lp_self->argument_types = argument_types;                                                  \
-		lp_self->close_brace	= close_brace;                                                     \
-		(ast)->data.name		= lp_self;                                                         \
+		lp_self->identifier		= p_identifier;                                                    \
+		lp_self->open_brace		= p_open_brace;                                                    \
+		lp_self->arguments		= p_arguments;                                                     \
+		lp_self->argument_types = p_argument_types;                                                \
+		lp_self->close_brace	= p_close_brace;                                                   \
+		(p_ast)->data.name		= lp_self;                                                         \
 	}
 
-// Create new functions for all nodes
-AST_NODES(AST_NODE_NEW_FUNCTION) // NOLINT(bugprone-easily-swappable-parameters)
-
-// Define AST new function list
-static void (*const g_AST_NODE_NEW_FUNCTIONS[])(void*) = {
-#define ENUM_ENTRY(name, new, ...) (void (*)(void*)) ast##name##_new,
+// X-Macro to define AST new function list
+static void (*const g_AST_TOKEN_NEW_FUNCTIONS[])(void*) = {
+#define AST_TOKEN_NEW_FUNC_TO_STRING(name, new, ...) (void (*)(void*)) ast##name##_new,
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wcast-function-type"
 #pragma clang diagnostic ignored "-Wcast-function-type-strict"
-	AST_NODES(ENUM_ENTRY)
+	AST_TOKENS(AST_TOKEN_NEW_FUNC_TO_STRING)
 #pragma clang diagnostic pop
-#undef ENUM_ENTRY
+#undef AST_TOKEN_NEW_FUNC_TO_STRING
 };
 
-// Define free functions dynamically
-#define AST_NODE_FREE_FUNCTION(name, free, ...) free##_FREE(name, __VA_ARGS__)
+// Dynamically defines the free function for the token
+#define AST_TOKEN_FREE_FUNCTION_DEFINE(name, free, ...) free##_FREE_DEFINE(name, __VA_ARGS__)
 
-#define AST_NODE_ASSIGNMENT_FREE(name, fields)                                                     \
-	void ast##name##_free(struct AST_##name** self) {                                              \
-		if (self && *self) {                                                                       \
-			lexer_token_free((struct LexerToken**)&(*self)->_token);                               \
-			astVARIABLE_free((struct AST_VARIABLE**)&(*self)->identifier);                         \
-			ast_free(&(*self)->value);                                                             \
-			free(*self);                                                                           \
-			*self = NULL;                                                                          \
+#define AST_TOKEN_ASSIGNMENT_FREE_DEFINE(name, fields)                                             \
+	void ast##name##_free(struct AST_##name** p_self);
+
+#define AST_TOKEN_BASIC_FREE_DEFINE(name, fields) void ast##name##_free(struct AST_##name** p_self);
+
+#define AST_TOKEN_WITH_VALUE_FREE_DEFINE(name, fields)                                             \
+	void ast##name##_free(struct AST_##name** p_self);
+
+#define AST_TOKEN_FUNCTION_DEFINITION_FREE_DEFINE(name, fields)                                    \
+	void ast##name##_free(struct AST_##name** p_self);
+
+AST_TOKENS(AST_TOKEN_FREE_FUNCTION_DEFINE) // Define all token free functions
+
+// Dynamically generates the free function for the token.  This will be called in the implementation
+// file
+#define AST_TOKEN_FREE_FUNCTION_IMPLEMENT(name, free, ...) free##_FREE_IMPLEMENT(name, __VA_ARGS__)
+
+#define AST_TOKEN_ASSIGNMENT_FREE_IMPLEMENT(name, fields)                                          \
+	void ast##name##_free(struct AST_##name** p_self) {                                            \
+		if (p_self && *p_self) {                                                                   \
+			lexer_token_free((struct LexerToken**)&(*p_self)->_token);                             \
+			astVARIABLE_free((struct AST_VARIABLE**)&(*p_self)->identifier);                       \
+			ast_free(&(*p_self)->value);                                                           \
+			free(*p_self);                                                                         \
+			*p_self = NULL;                                                                        \
 		} else {                                                                                   \
 			PANIC("AST_" #name " struct has already been freed");                                  \
 		}                                                                                          \
 	}
 
-#define AST_NODE_BASIC_FREE(name, fields)                                                          \
-	void ast##name##_free(struct AST_##name** self) {                                              \
-		if (self && *self) {                                                                       \
-			lexer_token_free((struct LexerToken**)&(*self)->_token);                               \
-			free(*self);                                                                           \
-			*self = NULL;                                                                          \
+#define AST_TOKEN_BASIC_FREE_IMPLEMENT(name, fields)                                               \
+	void ast##name##_free(struct AST_##name** p_self) {                                            \
+		if (p_self && *p_self) {                                                                   \
+			lexer_token_free((struct LexerToken**)&(*p_self)->_token);                             \
+			free(*p_self);                                                                         \
+			*p_self = NULL;                                                                        \
 		} else {                                                                                   \
 			PANIC("AST_" #name " struct has already been freed");                                  \
 		}                                                                                          \
 	}
 
-#define AST_NODE_WITH_VALUE_FREE(name, fields)                                                     \
-	void ast##name##_free(struct AST_##name** self) {                                              \
-		if (self && *self) {                                                                       \
-			lexer_token_free((struct LexerToken**)&(*self)->_token);                               \
-			string_free(&(*self)->value);                                                          \
-			free(*self);                                                                           \
-			*self = NULL;                                                                          \
+#define AST_TOKEN_WITH_VALUE_FREE_IMPLEMENT(name, fields)                                          \
+	void ast##name##_free(struct AST_##name** p_self) {                                            \
+		if (p_self && *p_self) {                                                                   \
+			lexer_token_free((struct LexerToken**)&(*p_self)->_token);                             \
+			string_free(&(*p_self)->value);                                                        \
+			free(*p_self);                                                                         \
+			*p_self = NULL;                                                                        \
 		} else {                                                                                   \
 			PANIC("AST_" #name " struct has already been freed");                                  \
 		}                                                                                          \
 	}
 
-#define AST_NODE_FUNCTION_DEFINITION_FREE(name, fields)                                            \
+#define AST_TOKEN_FUNCTION_DEFINITION_FREE_IMPLEMENT(name, fields)                                 \
 	void ast##name##_free(struct AST_##name** p_self) {                                            \
 		if (p_self && *p_self) {                                                                   \
 			lexer_token_free((struct LexerToken**)&(*p_self)->_token);                             \
@@ -236,15 +274,12 @@ static void (*const g_AST_NODE_NEW_FUNCTIONS[])(void*) = {
 		}                                                                                          \
 	}
 
-// Create free functions for all nodes
-AST_NODES(AST_NODE_FREE_FUNCTION)
-
-// Define AST free function list
-static void (*const g_AST_NODE_FREE_FUNCTIONS[])(void*) = {
-#define ENUM_ENTRY(name, free, ...) (void (*)(void*)) ast##name##_free,
+// X-Macro to define AST free function list
+static void (*const g_AST_TOKEN_FREE_FUNCTIONS[])(void*) = {
+#define AST_TOKEN_FREE_FUNC_TO_STRING(name, free, ...) (void (*)(void*)) ast##name##_free,
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wcast-function-type-strict"
-	AST_NODES(ENUM_ENTRY)
+	AST_TOKENS(AST_TOKEN_FREE_FUNC_TO_STRING)
 #pragma clang diagnostic pop
-#undef ENUM_ENTRY
+#undef AST_TOKEN_FREE_FUNC_TO_STRING
 };

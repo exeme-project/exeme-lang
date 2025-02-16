@@ -3,8 +3,6 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
-#pragma once
-
 #include "errors.h"
 #include "./utils/array.h"
 #include "./utils/panic.h"

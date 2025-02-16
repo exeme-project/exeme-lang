@@ -7,7 +7,7 @@
 #include "../utils/conversions.h"
 #include "../utils/hashmap.h"
 #include "../utils/panic.h"
-#include "../utils/string.h"
+#include "../utils/str.h"
 #include <stdio.h>
 #include <string.h>
 
