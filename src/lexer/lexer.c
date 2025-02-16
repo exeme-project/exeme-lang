@@ -151,10 +151,17 @@ bool lexer_get_chr(struct Lexer* p_self, bool skipWhitespace) {
 	}
 
 	while (true) {
-		char prevChr	  = p_self->prevChr;
-		p_self->prevChr	  = p_self->chr;
-		p_self->chrStatus = fgetc(p_self->filePointer); // Specify cast to char to silence warnings
-		p_self->chr		  = (char)p_self->chrStatus;
+		char prevChr	= p_self->prevChr;
+		p_self->prevChr = p_self->chr;
+		int chrStatus	= fgetc(p_self->filePointer);
+
+		if (chrStatus == EOF || chrStatus < 0 || chrStatus > (int)BYTE_MAX) {
+			p_self->chrStatus = EOF;
+		} else {
+			p_self->chrStatus = chrStatus;
+		}
+
+		p_self->chr = (char)p_self->chrStatus;
 		p_self->chrIndex++;
 
 		if (p_self->chrStatus == EOF || ferror(p_self->filePointer)

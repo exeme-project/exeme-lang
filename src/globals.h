@@ -10,6 +10,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS // What is deprecated on Windows isn't always on other OSes.
 
+#define BYTE_MAX		  0xFFU
 #define DENARY_BASE		  10
 #define MAX_STRING_LENGTH 1024U
 

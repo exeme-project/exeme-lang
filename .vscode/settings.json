@@ -19,7 +19,7 @@
 		"--header-insertion=never"
 	],
 	"cmake.preferredGenerators": [
-		"Unix Makefiles",
+		"Ninja",
 	],
 	"cSpell.language": "en-GB",
 	"cSpell.words": [
