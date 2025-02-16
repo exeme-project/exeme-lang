@@ -132,8 +132,10 @@ char* concatenate_string_internal(struct Array array) {
 	return lp_string;
 }
 
+char* create_string_safe(size_t length) { return repeat_chr(' ', length); }
+
 char* duplicate_string(const char* p_string) {
-	char* lp_duplicate = malloc(strlen_safe(p_string) + 1);
+	char* lp_duplicate = create_string_safe(strlen_safe(p_string));
 
 	if (!lp_duplicate) {
 		PANIC("failed to duplicate string: string malloc failed");
@@ -151,10 +153,7 @@ char* repeat_chr(const char CHR, size_t length) {
 		PANIC("failed to repeat chr: string malloc failed");
 	}
 
-	for (size_t index = 0; index < length; index++) {
-		lp_string[index] = CHR;
-	}
-
+	memset(lp_string, CHR, length);
 	lp_string[length] = '\0';
 
 	return lp_string;
@@ -163,8 +162,9 @@ char* repeat_chr(const char CHR, size_t length) {
 void strcpy_safe(char* p_dest, const char* p_src) {
 	if (!p_dest || !p_src) {
 		PANIC("failed to safely strcpy: null pointer passed");
-	} else if (strlen_safe(p_src) != strlen_safe(p_dest)) {
-		PANIC("failed to safely strcpy: source and destination strings are not the same length");
+	} else if (strlen_safe(p_dest) != strlen_safe(p_src)) {
+		PANIC("failed to safely strcpy: destination string length does not match source string "
+			  "length");
 	}
 
 	size_t index = 0;

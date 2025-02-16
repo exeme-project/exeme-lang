@@ -71,6 +71,15 @@ char* concatenate_string_internal(struct Array array);
 #define CONCATENATE_STRING(...) concatenate_string_internal(ARRAY_NEW_STACK(__VA_ARGS__))
 
 /**
+ * Creates a new string.
+ *
+ * @param length The length of the string.
+ *
+ * @return The created string.
+ */
+char* create_string_safe(size_t length);
+
+/**
  * Duplicates a string.
  *
  * @param p_string The string to duplicate.
