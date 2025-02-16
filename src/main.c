@@ -6,8 +6,6 @@
 #include "../lexer/lexer.h"
 #include "./args/args.h"
 #include "./compiler/compiler.h"
-#include "./parser/parser.h"
-#include "./parser/tokens.h"
 #include "./utils/hashmap.h"
 #include "./utils/panic.h"
 #include <locale.h>
