@@ -21,6 +21,7 @@ set(SOURCES
 	src/compiler/tokens.c
     src/utils/array.c
     src/utils/conversions.c
+	src/utils/files.c
     src/utils/hashmap.c
     src/utils/panic.c
 	src/utils/str.c
@@ -39,6 +40,7 @@ set(HEADERS
 	src/compiler/tokens.h
     src/utils/array.h
     src/utils/conversions.h
+	src/utils/files.h
     src/utils/hashmap.h
     src/utils/panic.h
 	src/utils/str.h

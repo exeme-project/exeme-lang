@@ -65,3 +65,31 @@ void ast_free(struct AST** p_self) {
 		PANIC("AST struct has already been freed");
 	}
 }
+
+void* ast_get_data(const struct AST* p_self) {
+	switch (p_self->identifier) {
+		// X-Macro to define AST token getters
+#define AST_TOKEN_GETTER(name, ...)                                                                \
+	case ASTTOKENS_##name: {                                                                       \
+		return p_self->data.name;                                                                  \
+	}
+		AST_TOKENS(AST_TOKEN_GETTER)
+#undef AST_TOKEN_GETTER
+	default:
+		PANIC("unsupported AST token identifier in ast_get_data");
+	}
+}
+
+const struct LexerToken* ast_get_inner_lexer_token(const struct AST* p_self) {
+	switch (p_self->identifier) {
+		// X-Macro to define AST token inner lexer token getters
+#define AST_TOKEN_INNER_LEXER_TOKEN_GETTER(name, ...)                                              \
+	case ASTTOKENS_##name: {                                                                       \
+		return ((struct AST_##name*)p_self)->TOKEN;                                                \
+	}
+		AST_TOKENS(AST_TOKEN_INNER_LEXER_TOKEN_GETTER)
+#undef AST_TOKEN_INNER_LEXER_TOKEN_GETTER
+	default:
+		PANIC("unsupported AST token identifier in ast_get_inner_lexer_token");
+	}
+}

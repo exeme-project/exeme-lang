@@ -4,6 +4,8 @@
  */
 
 #include "./parser.h"
+#include "../utils/conversions.h"
+#include "../utils/files.h"
 #include "./tokens.h"
 
 struct Parser* parser_new(const char* p_filePath) {
@@ -42,11 +44,64 @@ void parser_free(struct Parser** p_self) {
 
 		lexer_free(&(*p_self)->lexer);
 
-		free((*p_self));
-		(*p_self) = NULL;
+		free(*p_self);
+		*p_self = NULL;
 	} else {
 		PANIC("Parser struct has already been freed");
 	}
+}
+
+__attribute__((noreturn)) void parser_error(struct Parser*				p_self,
+											const enum ErrorIdentifiers ERROR_MSG_NUMBER,
+											const char* p_errorMsg, const struct AST* p_token) {
+	FILE*		   lp_filePointer = fopen(p_self->lexer->FILE_PATH, "r");
+	struct String* lp_line		  = string_new("\0", true);
+	size_t		   lineIndex	  = 0;
+
+	while (true) {
+		char chr = (char)fgetc_safe(lp_filePointer);
+
+		if (chr == '\n' || chr == EOF) { // EOL (or EOF)
+			if (p_self->lexer->lineIndex
+				== lineIndex++) { // If we have been copying the line we want
+				break;
+			}
+
+			// string_clear(line);
+			// I believe the above line is not needed. Keeping it here in case I'm mistaken.
+			// Same as in the lexer_error function.
+		} else if (lineIndex == p_self->lexer->lineIndex) { // If this is the line we want
+			string_append_chr(lp_line, chr);
+		}
+	}
+
+	const char* lp_lineNumberString	   = ul_to_string(p_self->lexer->lineIndex + 1);
+	size_t		lineNumberStringLength = strlen_safe(lp_lineNumberString);
+
+	printf("-%s> %s\n%s | %s\n%s", repeat_chr('-', lineNumberStringLength),
+		   p_self->lexer->FILE_PATH, lp_lineNumberString, lp_line->_value,
+		   repeat_chr(' ', lineNumberStringLength + 3));
+
+	if (p_token) { // We know the start and end index of the erroneous token
+		const struct LexerToken* lp_lexerToken = ast_get_inner_lexer_token(p_token);
+
+		printf("%s%s ", repeat_chr(' ', lp_lexerToken->startChrIndex),
+			   repeat_chr('^', lp_lexerToken->endChrIndex - lp_lexerToken->startChrIndex + 1));
+	} else { // We don't since either we weren't given the token, or getting the start and end index
+		// failed, fallback to the current lexer pointer
+		printf("%s^ ", repeat_chr(' ', p_self->lexer->chrIndex));
+	}
+
+	printf("%serror[%s]:%s %s\n", gp_F_BRIGHT_RED, error_get(ERROR_MSG_NUMBER), gp_S_RESET,
+		   p_errorMsg);
+
+	if (!p_token) {
+		printf("%s^ parser didn't receive a token; defaulting "
+			   "to current lexer index.\n",
+			   repeat_chr(' ', lineNumberStringLength + 3 + p_self->lexer->chrIndex));
+	}
+
+	exit(EXIT_FAILURE); // NOLINT(concurrency-mt-unsafe)
 }
 
 void parser_parse_next(struct Parser* p_self) {
@@ -55,6 +110,8 @@ void parser_parse_next(struct Parser* p_self) {
 	const struct LexerToken* lp_lexerToken = lexer_get_token(p_self->lexer, &lexerTokenIndex);
 
 	switch (lp_lexerToken->identifier) {
+	case LEXERTOKENS_CHR:
+
 	default:
 		printf("unsupported lexer token for parser: %s\n",
 			   lexer_tokens_get_name(lp_lexerToken->identifier));

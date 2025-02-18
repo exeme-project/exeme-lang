@@ -123,6 +123,24 @@ struct AST* ast_new(const int IDENTIFIER, ...);
  */
 void ast_free(struct AST** p_self);
 
+/**
+ * Gets the data of the token.
+ *
+ * @param p_self The AST struct.
+ *
+ * @return The data of the token.
+ */
+void* ast_get_data(const struct AST* p_self);
+
+/**
+ * Gets the inner lexer token of the AST token.
+ *
+ * @param p_self The AST struct.
+ *
+ * @return The inner lexer token of the AST token.
+ */
+const struct LexerToken* ast_get_inner_lexer_token(const struct AST* p_self);
+
 // Dynamically defines the new function for the token
 #define AST_TOKEN_NEW_FUNCTION_DEFINE(name, ast, ...) ast##_NEW_DEFINE(name, __VA_ARGS__)
 

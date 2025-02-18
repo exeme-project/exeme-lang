@@ -6,7 +6,10 @@
 #include "./lexer.h"
 #include "../globals.h"
 #include "../utils/conversions.h"
+#include "../utils/files.h"
 #include <ctype.h>
+#include <errno.h>
+#include <string.h>
 
 const struct Array g_KEYWORDS =
 	ARRAY_NEW_STACK("break", "case", "cls", "else", "elif", "enum", "export", "for", "func", "if",
@@ -32,7 +35,8 @@ struct Lexer* lexer_new(const char* p_filePath) {
 	if (!lp_self->filePointer ||		// Only POSIX requires errno is set, and so for
 										// other platforms we have to check for NULL
 		ferror(lp_self->filePointer)) { // Probably file doesn't exist
-		error(CONCATENATE_STRING("failed to open file '", lp_self->FILE_PATH, "'"));
+		error(CONCATENATE_STRING("failed to open file '", lp_self->FILE_PATH, "' - ",
+								 strerror(errno))); // NOLINT(concurrency-mt-unsafe)
 	}
 
 	return lp_self;
@@ -41,9 +45,7 @@ struct Lexer* lexer_new(const char* p_filePath) {
 void lexer_free(struct Lexer** p_self) {
 	if (p_self && *p_self) {
 		if ((*p_self)->filePointer) {
-			if (fclose((*p_self)->filePointer) != 0) {
-				PANIC("failed to close file");
-			}
+			fclose_safe((*p_self)->filePointer);
 		}
 
 		array_free(&(*p_self)->tokens);
@@ -65,7 +67,7 @@ __attribute__((noreturn)) void lexer_error(struct Lexer*			   p_self,
 	size_t lineIndex = 0;
 
 	while (true) {
-		char chr = (char)fgetc(lp_filePointer); // Get a char
+		char chr = (char)fgetc_safe(lp_filePointer);
 
 		if (chr == '\n' || chr == EOF) {			// EOL (or EOF)
 			if (p_self->lineIndex == lineIndex++) { // If we have been copying the line we want
@@ -133,9 +135,7 @@ bool lexer_un_get_chr(struct Lexer* p_self) {
 	p_self->chrIndex--;
 
 	if (ferror(p_self->filePointer)) {
-		if (fclose(p_self->filePointer) != 0) {
-			PANIC("failed to close file");
-		}
+		fclose_safe(p_self->filePointer);
 
 		p_self->filePointer = NULL; // Set to NULL to prevent future errors
 
@@ -151,25 +151,15 @@ bool lexer_get_chr(struct Lexer* p_self, bool skipWhitespace) {
 	}
 
 	while (true) {
-		char prevChr	= p_self->prevChr;
-		p_self->prevChr = p_self->chr;
-		int chrStatus	= fgetc(p_self->filePointer);
-
-		if (chrStatus == EOF || chrStatus < 0 || chrStatus > (int)BYTE_MAX) {
-			p_self->chrStatus = EOF;
-		} else {
-			p_self->chrStatus = chrStatus;
-		}
-
-		p_self->chr = (char)p_self->chrStatus;
+		char prevChr	  = p_self->prevChr;
+		p_self->prevChr	  = p_self->chr;
+		p_self->chrStatus = fgetc_safe(p_self->filePointer);
+		p_self->chr		  = (char)p_self->chrStatus;
 		p_self->chrIndex++;
 
-		if (p_self->chrStatus == EOF || ferror(p_self->filePointer)
-			|| p_self->chr == '\n') {									   // EOF / error or EOL
-			if (p_self->chrStatus == EOF || ferror(p_self->filePointer)) { // EOF / error
-				if (fclose(p_self->filePointer) != 0) {
-					PANIC("failed to close file");
-				}
+		if (p_self->chrStatus == EOF || p_self->chr == '\n') { // EOF / error or EOL
+			if (p_self->chrStatus == EOF) {					   // EOF / error
+				fclose_safe(p_self->filePointer);
 
 				p_self->filePointer = NULL; // Set to NULL to prevent future errors
 			}
