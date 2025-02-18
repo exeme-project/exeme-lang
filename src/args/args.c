@@ -245,7 +245,7 @@ __attribute__((noreturn)) void args_error(struct Array				  args,
 										  const enum ErrorIdentifiers ERROR_MSG_NUMBER,
 										  const char* p_errorMsg, const size_t ARG_INDEX) {
 	const char*	 lp_argumentIndexString			= ARG_INDEX == 0 ? "-1" : ul_to_string(ARG_INDEX);
-	const size_t l_ARGUMENT_INDEX_STRING_LENGTH = strlen(lp_argumentIndexString);
+	const size_t l_ARGUMENT_INDEX_STRING_LENGTH = strlen_safe(lp_argumentIndexString);
 	const char*	 lp_line = array_join(&args, " ", args_format_error_convert_to_string);
 
 	printf("-%s> %s\n%s | %s\n%s", repeat_chr('-', l_ARGUMENT_INDEX_STRING_LENGTH), "~/cli",
