@@ -43,7 +43,6 @@ struct AST* ast_new(const int IDENTIFIER, ...) {
 #pragma clang diagnostic ignored "-Wincompatible-function-pointer-types"
 #pragma clang diagnostic ignored "-Wincompatible-function-pointer-types-strict"
 	void (*const lp_NEW_NODE)(struct AST*, va_list) = g_AST_TOKEN_NEW_FUNCTIONS[IDENTIFIER];
-	lp_self->free = g_AST_TOKEN_FREE_GENERIC_FUNCTIONS[IDENTIFIER];
 #pragma clang diagnostic pop
 
 	// Pass all var args to the node's constructor, but not as var args
@@ -57,7 +56,7 @@ struct AST* ast_new(const int IDENTIFIER, ...) {
 
 void ast_free(struct AST** p_self) {
 	if (p_self && *p_self) {
-		(*p_self)->free(p_self);
+		g_AST_TOKEN_FREE_GENERIC_FUNCTIONS[(*p_self)->identifier](p_self);
 
 		free(*p_self);
 		*p_self = NULL;

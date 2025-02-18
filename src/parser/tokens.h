@@ -93,7 +93,6 @@ AST_TOKENS(AST_TOKEN_STRUCT_DEF) // Using __VA_OPT__(;) causes compilation error
 // Represents an AST node
 typedef struct AST {
 	ASTTokenIdentifiers identifier;
-	void (*free)(struct AST**); // Free function pointer
 	union {
 // X-Macro to define AST tokens in the AST struct
 #define AST_TOKEN_STRUCT_ENTRY(name, ...) struct AST_##name* name;
