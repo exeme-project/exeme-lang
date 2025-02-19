@@ -3,7 +3,6 @@
  * license information. SPDX-License-Identifier: MIT License.
  */
 
-#include "../lexer/lexer.h"
 #include "./args/args.h"
 #include "./compiler/compiler.h"
 #include "./utils/hashmap.h"
