@@ -51,7 +51,7 @@ struct ArgsFormat* args_format_new_internal(struct Array argumentsFormat, const 
 			// void * to int is a pointer to non-pointer cast Why can't we just do: *(int
 			// *)reservedFlags->_values[index]; Because that would be dereferencing a non-pointer,
 			// which is invalid - and would cause a segfault So, we just cast to int And trade a
-			// segfault for a compiler warningx
+			// segfault for a compiler warning
 			int reservedFlag = (int)p_reservedFlags->_values[index];
 #pragma clang diagnostic pop // Restore the previous pragma diagnostic state
 
@@ -257,11 +257,11 @@ __attribute__((noreturn)) void args_error(struct Array				  args,
 		argumentStartIndex += strlen_safe((char*)args._values[index]) + 1;
 	}
 
-	// argumentStartIndex--; // Remove the last space. NB: Commented out to remove `-1` from the
+	// argumentStartIndex--; // Removes the last space. NB: Commented out to remove `-1` from the
 	// bottom branch below
 
 	if (ARG_INDEX == 0) {
-		printf("%s^ ", repeat_chr(' ', argumentStartIndex - 2));
+		printf("%s^ ", repeat_chr(' ', argumentStartIndex));
 	} else {
 		printf("%s%s ", repeat_chr(' ', argumentStartIndex),
 			   repeat_chr('^', strlen_safe((char*)args._values[ARG_INDEX])));

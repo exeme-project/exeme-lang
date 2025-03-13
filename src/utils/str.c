@@ -19,7 +19,12 @@ struct String* string_new(char* p_string, bool copy) {
 		lp_self->length = 0;
 
 		if (copy) {
-			lp_self->_value					 = malloc(1);
+			lp_self->_value = malloc(1);
+
+			if (!lp_self->_value) {
+				PANIC("failed to malloc string while initialising String struct");
+			}
+
 			lp_self->_value[lp_self->length] = '\0';
 		} else {
 			lp_self->_value = p_string;
@@ -180,7 +185,7 @@ void strcpy_safe(char* p_dest, const char* p_src) {
 
 size_t strlen_safe(const char* p_string) {
 	if (!p_string) {
-		// Handle null pointer case, return 0 or an error code
+		// Handle null pointer case, return 0
 		return 0;
 	}
 

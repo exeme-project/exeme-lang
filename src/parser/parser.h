@@ -51,6 +51,14 @@ __attribute__((noreturn)) void parser_error(
 	const char* p_errorMsg, const struct AST* p_token);
 
 /**
+ * Parses a character.
+ *
+ * @param p_self The current Parser struct.
+ */
+
+void parser_parse_chr(struct Parser* p_self);
+
+/**
  * Calls the correct function for lexing the current lexer token.
  *
  * @param p_self The current Parser struct.

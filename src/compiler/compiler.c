@@ -13,6 +13,10 @@
 struct Compiler* compiler_new(const char* p_filePath) {
 	struct Compiler* lp_compiler = malloc(COMPILER_STRUCT_SIZE);
 
+	if (!lp_compiler) {
+		PANIC("failed to malloc Compiler struct");
+	}
+
 	lp_compiler->parser = parser_new(p_filePath);
 
 	return lp_compiler;
