@@ -29,7 +29,7 @@ void array___realloc(struct Array* p_self, size_t newLength) {
 	const void** lp_valuesTemp =
 		realloc(p_self->_values, newLength == 0 ? 1 : (newLength * ARRAY_STRUCT_ELEMENT_SIZE));
 
-	if (lp_valuesTemp == NULL) {
+	if (!lp_valuesTemp) {
 		PANIC("failed to realloc array");
 	}
 
@@ -117,7 +117,7 @@ bool array_index_occupied(struct Array* p_self, size_t index) {
 		return false;
 	}
 
-	return p_self->_values[index] != NULL;
+	return p_self->_values[index];
 }
 
 char* array_join(struct Array* p_self, const char* p_separator, char* (*p_stringify)(const void*)) {

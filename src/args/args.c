@@ -299,7 +299,7 @@ bool args_format_parse_optional_argument_flag_match(
 bool args_format_parse_required_arguments_exist(const void* p_element, const void* _) {
 	// NOLINTEND(bugprone-easily-swappable-parameters, misc-unused-parameters,
 	// readability-identifier-length, readability-identifier-naming)
-	return p_element != NULL;
+	return p_element;
 }
 
 __attribute__((noreturn)) void args_format_help(struct ArgsFormat* p_self) {

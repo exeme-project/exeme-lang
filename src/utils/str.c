@@ -15,22 +15,9 @@ struct String* string_new(char* p_string, bool copy) {
 		PANIC("failed to malloc String struct");
 	}
 
-	if (p_string[0] == '\0') {
-		lp_self->length = 0;
+	lp_self->length = strlen_safe(p_string);
 
-		if (copy) {
-			lp_self->_value = malloc(1);
-
-			if (!lp_self->_value) {
-				PANIC("failed to malloc string while initialising String struct");
-			}
-
-			lp_self->_value[lp_self->length] = '\0';
-		} else {
-			lp_self->_value = p_string;
-		}
-	} else if (copy) {
-		lp_self->length = strlen_safe(p_string);
+	if (copy) {
 		lp_self->_value = malloc(lp_self->length + 1);
 
 		if (!lp_self->_value) {
@@ -44,7 +31,6 @@ struct String* string_new(char* p_string, bool copy) {
 		lp_self->_value[lp_self->length] = '\0';
 	} else {
 		lp_self->_value = p_string;
-		lp_self->length = strlen_safe(lp_self->_value);
 	}
 
 	return lp_self;
@@ -121,8 +107,6 @@ char* concatenate_string_internal(struct Array array) {
 		PANIC("failed to concatenate string: string malloc failed");
 	}
 
-	lp_string[0] = '\0'; // Initialize the string
-
 	size_t offset = 0;
 
 	for (size_t stringIndex = 0; stringIndex < array.length; stringIndex++) {
@@ -133,6 +117,8 @@ char* concatenate_string_internal(struct Array array) {
 			}
 		}
 	}
+
+	lp_string[offset] = '\0';
 
 	return lp_string;
 }

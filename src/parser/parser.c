@@ -153,7 +153,7 @@ bool parser_parse(struct Parser* p_self, bool freeParserTokens, bool nextLine) {
 		if (oldInParsing && p_self->parserTokens->length > 0) {
 			return true;
 		}
-	} while (p_self->AST == NULL);
+	} while (!p_self->AST);
 
 	p_self->inParsing = oldInParsing;
 

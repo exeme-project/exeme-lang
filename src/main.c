@@ -35,7 +35,7 @@ static const struct Array g_ARGUMENTS_FORMAT = ARRAY_NEW_STACK(
 int main(int argc, char** argv) {
 	char* lp_updatedLocale = setlocale(LC_ALL, ""); // NOLINT(concurrency-mt-unsafe)
 
-	if (lp_updatedLocale == NULL) {
+	if (!lp_updatedLocale) {
 		PANIC("failed to update locale to ALL");
 	}
 
