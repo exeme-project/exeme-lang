@@ -409,21 +409,23 @@ struct Hashmap* args_format_parse_internal(struct ArgsFormat* p_self, struct Arr
 						   lp_argRaw);
 
 			if (argumentFormatIndex == -1) {
-				int reservedFlagsIndex =
-					array_find(p_self->reservedFlags, array___match_string, lp_argRaw);
+				if (array_contains(p_self->reservedFlags, array___match_string, lp_argRaw)) {
+					int reservedFlagsIndex = array_find((struct Array*)gp_ARGS_RESERVED_FLAGS_VALUE,
+														array___match_string, lp_argRaw);
 
-				if (reservedFlagsIndex != -1) {
-					switch (reservedFlagsIndex
-							- (reservedFlagsIndex
-							   % 2)) { // Converts to nearest even number, starting from 0
-					case ARGS_RESERVED_FLAG_HELP:
-						args_format_help(p_self);
-					case ARGS_RESERVED_FLAG_VERSION:
-						printf("%s %s\n", p_self->NAME, p_self->VERSION);
+					if (reservedFlagsIndex != -1) {
+						switch (reservedFlagsIndex
+								- (reservedFlagsIndex
+								   % 2)) { // Converts to nearest even number, starting from 0
+						case ARGS_RESERVED_FLAG_HELP:
+							args_format_help(p_self);
+						case ARGS_RESERVED_FLAG_VERSION:
+							printf("%s %s\n", p_self->NAME, p_self->VERSION);
 
-						exit(EXIT_SUCCESS); // NOLINT(concurrency-mt-unsafe)
-					default:
-						PANIC("invalid reserved flag index");
+							exit(EXIT_SUCCESS); // NOLINT(concurrency-mt-unsafe)
+						default:
+							PANIC("invalid reserved flag index");
+						}
 					}
 				} else {
 					args_error(args, A0001,
@@ -457,7 +459,8 @@ struct Hashmap* args_format_parse_internal(struct ArgsFormat* p_self, struct Arr
 				}
 			}
 		} else { // Required argument / Subcommand
-			if (array_index_occupied(p_self->requiredArguments, realIndex)) { // Required argument
+			if (array_index_occupied(p_self->requiredArguments,
+									 realIndex)) { // Required argument
 				struct Arg* lp_arg = (struct Arg*)p_self->requiredArguments->_values[realIndex];
 				void*		lp_argConverted = convert_to_type(lp_argRaw, lp_arg->type);
 
