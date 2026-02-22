@@ -56,7 +56,6 @@
 	},
 	"files.insertFinalNewline": true,
 	"files.trimFinalNewlines": true,
-	"git.enableCommitSigning": true,
 	"git.enableSmartCommit": true,
 	"git.confirmSync": false,
 	"git.autofetch": true,
