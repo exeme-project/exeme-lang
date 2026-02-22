@@ -1,0 +1,108 @@
+import "std.cf"
+import "std.io"
+import "std.types.{array, number, string}"
+
+use array::Array
+use cf::range
+use number::*
+use string::String
+
+;= 
+A simple implementation of a generic stack data structure
+demonstrating Exeme's trait system and generics
+=;
+
+Container<T: Any> = trait {
+	push = func(Self, T)
+	pop = func(Self) -> T
+	peek = func(Self) -> T
+	is_empty = func(Self) -> bool
+	size = func(Self) -> i32
+}
+
+Stack<T: Any> = struct impl Container<T> {
+	items: Array<T>,
+	count: i32,
+}
+
+Stack.new = func() -> Stack<T> {
+	return Stack<T> {
+		items = Array<T> { },
+		count = 0
+	}
+}
+
+Stack.push = func(self, item) {
+	self.items.append(item)
+	self.count = self.count + 1
+}
+
+Stack.pop = func(self) {
+	if self.is_empty() {
+		panic("Cannot pop from empty stack")
+	}
+	
+	item = self.items.get(self.count - 1)
+	self.items.remove(self.count - 1)
+	self.count = self.count - 1
+	
+	return item
+}
+
+Stack.peek = func(self) {
+	if self.is_empty() {
+		panic("Cannot peek empty stack")
+	}
+	return self.items.get(self.count - 1)
+}
+
+Stack.is_empty = func(self) {
+	return self.count == 0
+}
+
+Stack.size = func(self) {
+	return self.count
+}
+
+process_numbers<T: Int|Float> = func(numbers: Array<T>) -> T {
+	stack = Stack<T>.new()
+	sum: T = 0
+	
+	; Push all numbers onto stack
+	for numbers => num {
+		stack.push(num)
+	}
+	
+	; Pop and sum
+	while !stack.is_empty() {
+		sum = sum + stack.pop()
+	}
+	
+	return sum
+}
+
+main = func() {
+	; Create a stack of integers
+	int_stack = Stack<i32>.new()
+	
+	; Push some values
+	for range(1, 6) => i {
+		int_stack.push(i)
+	}
+	
+	io::out("Stack size:")
+	io::out(int_stack.size())
+	
+	; Pop and print
+	while !int_stack.is_empty() {
+		value = int_stack.pop()
+		io::out(value)
+	}
+	
+	; Test with array processing
+	numbers = [1, 2, 3, 4, 5]
+	total = process_numbers(numbers)
+	
+	io::out("Sum:")
+	io::out(total)
+}

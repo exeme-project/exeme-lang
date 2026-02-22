@@ -1,0 +1,88 @@
+import "std.cf"
+import "std.io"
+import "std.types.number"
+
+use cf::range
+use number::*
+
+;= 
+This program demonstrates the Exeme syntax
+with various language features
+=;
+
+; Simple function
+add<T: Int> = func(a: T, b: T) -> T {
+	return a + b
+}
+
+; Trait definition
+Comparable<T: Any> = trait {
+	compare = func(Self, T, T) -> i32
+}
+
+; Struct with trait
+Pair<T: Int|Float> = struct impl Comparable<T> {
+	first: T,
+	second: T,
+}
+
+; Method implementation
+Pair.compare = func(self, a, b) {
+	if a > b {
+		return 1
+	} elif a < b {
+		return -1
+	} else {
+		return 0
+	}
+}
+
+; Function with generics
+max<T: Int|Float> = func(a: T, b: T) -> T {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+; Recursive function
+fibonacci = func(n: i32) -> i32 {
+	if n <= 1 {
+		return n
+	}
+	return fibonacci(n - 1) + fibonacci(n - 2)
+}
+
+main = func() {
+	; Variable declarations
+	x = 10
+	y: i32 = 20
+	
+	; Function calls
+	sum = add(x, y)
+	io::out(sum)
+	
+	; Struct instantiation
+	my_pair = Pair<i32> {
+		first = 5,
+		second = 10
+	}
+	
+	; Method call
+	comparison = my_pair.compare(my_pair.first, my_pair.second)
+	io::out(comparison)
+	
+	; Generic function call
+	maximum = max(42, 17)
+	io::out(maximum)
+	
+	; Arithmetic operators
+	result = 2 ** 3 + 5 * 4 - 10 / 2
+	io::out(result)
+	
+	; Loop
+	for range(0, 5) => i {
+		fib = fibonacci(i)
+		io::out(fib)
+	}
+}

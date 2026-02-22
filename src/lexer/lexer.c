@@ -13,7 +13,7 @@
 
 const struct Array g_KEYWORDS =
 	ARRAY_NEW_STACK("break", "case", "cls", "else", "elif", "enum", "export", "for", "func", "if",
-					"import", "match", "pass", "return", "struct", "use", "while");
+					"impl", "import", "match", "pass", "return", "struct", "trait", "use", "while");
 
 struct Lexer* lexer_new(const char* p_filePath) {
 	struct Lexer* lp_self = malloc(LEXER_STRUCT_SIZE);

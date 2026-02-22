@@ -7,20 +7,20 @@ use cf::range
 use number::*
 
 ; MU stands for MeasurementUnit
-Geometry: trait<MU: Int|UInt|Float> = {
-	area: func(Self) -> MU, ; Not defining logic, so we must define parameters later
+Geometry<MU: Int|UInt|Float> = trait {
+	area = func(Self) -> MU
 }
 
 ; UFloat doesn't exist
-Rectangle: struct<MU: UInt|Float>(Geometry) = {
-	height, width: MU,
+Rectangle<MU: UInt|Float> = struct impl Geometry<MU> {
+	height: MU,
+	width: MU,
 }
 
-Square: struct<MU: UInt|Float>(Geometry) = {
+Square<MU: UInt|Float> = struct impl Geometry<MU> {
 	side: MU,
 }
 
-; Types are pre-defined, so only parameters have to be specified
 Rectangle.area = func(self) {
 	return self.height * self.width
 }
@@ -29,11 +29,11 @@ Square.area = func(self) {
 	return self.side ** 2
 }
 
-display_area: func<T: Geometry<MU>>(shape: T) -> MU = {
+display_area<T: Geometry<MU>> = func(shape: T) -> MU {
 	return shape.area()
 }
 
-main: func() = {
+main = func() {
 	; Default int type is i32
 
 	my_rectangle = Rectangle<i32> {
@@ -49,5 +49,5 @@ main: func() = {
 
 	for range(0, my_shapes.length) => shape {
 		io::out(display_area(shape))
-    }
+	}
 }

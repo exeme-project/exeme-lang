@@ -5,12 +5,12 @@ import "std.types.{number, string}"
 use string::String
 use number::*
 
-Stringer: trait<Type: Any> = {
-	stringify: func(Self, Type) -> String,
+Stringer<Type: Any> = trait {
+	stringify = func(Self, Type) -> String
 }
 
-IntPrinter: struct<Type: Int>(Stringer) = { }
-UIntPrinter: struct<Type: UInt>(Stringer) = { }
+IntPrinter<Type: Int> = struct impl Stringer<Type> { }
+UIntPrinter<Type: UInt> = struct impl Stringer<Type> { }
 
 IntPrinter.stringify = func(self, value) {
 	return String.from(value)
@@ -20,11 +20,11 @@ UIntPrinter.stringify = func(self, value) {
 	return String.from(value)
 }
 
-print: func<Type: Any>(printer: Stringer<Type>, value: Type) = {
+print<Type: Any> = func(printer: Stringer<Type>, value: Type) {
 	io::out(printer.stringify(value))
 }
 
-main: func() = {
+main = func() {
 	int_printer = IntPrinter<i32> { }
 	uint_printer = UIntPrinter<u32> { }
 
