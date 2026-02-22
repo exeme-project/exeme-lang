@@ -2,10 +2,10 @@
 	// Update `../.devcontainer/devcontainer.json` as well.
 	"recommendations": [
 		"7ute.minimal-icon-theme",
-		"aaron-bond.better-comments",
+		"alexanderte.dainty-one-dark-pro-vscode",
+		"edwinhuish.better-comments-next",
 		"gruntfuggly.todo-tree",
 		"jbenden.c-cpp-flylint",
-		"lakshits11.horizon-legacy",
 		"kshetline.ligatures-limited",
 		"llvm-vs-code-extensions.vscode-clangd",
 		"ms-vscode.cmake-tools",
@@ -13,9 +13,7 @@
 		"rreverser.llvm",
 		"streetsidesoftware.code-spell-checker",
 		"streetsidesoftware.code-spell-checker-british-english",
-		"twxs.cmake",
 		"vadimcn.vscode-lldb",
-		"wakatime.vscode-wakatime",
 		"xaver.clang-format",
 		"yzhang.markdown-all-in-one",
 	],

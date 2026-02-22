@@ -31,6 +31,7 @@
 		"LEXERTOKENS",
 		"NOLINTNEXTLINE",
 		"OSSF",
+		"Skifli",
 		"Unlexes",
 		"Wpedantic",
 		"Wextra",
@@ -65,7 +66,7 @@
 	"terminal.integrated.fontFamily": "Fira Code",
 	"terminal.integrated.fontSize": 11,
 	"terminal.integrated.smoothScrolling": true,
-	"workbench.colorTheme": "Horizon Legacy",
+	"workbench.colorTheme": "Dainty – One Dark Pro (chroma 0, lightness 1)",
 	"workbench.iconTheme": "minimal-icon-theme",
 	"workbench.list.smoothScrolling": true,
 }
